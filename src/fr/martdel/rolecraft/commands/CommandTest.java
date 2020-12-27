@@ -17,7 +17,7 @@ public class CommandTest implements CommandExecutor {
 			Player player = (Player) sender;
 			
 			if(cmd.getName().equalsIgnoreCase("test")) {
-				ItemStack item = new ItemStack(Material.STONE);
+				ItemStack item = new ItemStack(Material.STICK);
 				ItemMeta itemmeta = item.getItemMeta();
 				itemmeta.setDisplayName("Onde de choc (Builder)");
 				item.setItemMeta(itemmeta);

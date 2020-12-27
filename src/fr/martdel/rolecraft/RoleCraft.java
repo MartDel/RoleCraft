@@ -7,11 +7,15 @@ import fr.martdel.rolecraft.listeners.PluginListener;
 
 public class RoleCraft extends JavaPlugin {
 	
+	public static RoleCraft main;
+	
 	@Override
 	public void onEnable() {
+		main = this;
+		
 		System.out.println("§b[RoleCraft]§r Server ON !");
 		getCommand("test").setExecutor(new CommandTest());
-		getServer().getPluginManager().registerEvents(new PluginListener(), this);
+		getServer().getPluginManager().registerEvents(new PluginListener(this), this);
 	}
 	
 	@Override
