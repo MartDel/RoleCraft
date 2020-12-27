@@ -42,7 +42,12 @@ public class PluginListener implements Listener {
 					event.setCancelled(true);
 					Location center = player.getLocation();
 					ShockWave wave = new ShockWave(plugin, center);
+					if(!wave.checkEnvironment()) {
+						player.sendMessage("Il faut un espace dégagé pour lancer une §5onde de choc§r !");
+						return;
+					}
 					wave.launch();
+					wave.makeDamages(player);
 				} else if(iMeta.getDisplayName().contains("§dSceptre§r")) { // TODO Add lore check
 					event.setCancelled(true);
 					Fireball fireball = player.launchProjectile(Fireball.class);
