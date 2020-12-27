@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import fr.martdel.rolecraft.RoleCraft;
 import fr.martdel.rolecraft.powers.Bunker;
+import fr.martdel.rolecraft.powers.ShockWave;
 
 public class PluginListener implements Listener {
 	
@@ -29,12 +30,17 @@ public class PluginListener implements Listener {
 		// Using an item
 		if(item != null && (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) && item.hasItemMeta()) {
 			ItemMeta iMeta = item.getItemMeta();
-			// Shock wave for builders
-			if(iMeta.getDisplayName().equalsIgnoreCase("Onde de choc (Builder)")) { // TODO Add lore check
+			// Bunker power
+			if(iMeta.getDisplayName().equalsIgnoreCase("Bunker")) { // TODO Add lore check
 				event.setCancelled(true);
 				Location center = player.getLocation();
 				Bunker bunker = new Bunker(plugin, center);
 				bunker.build();
+			} else if(iMeta.getDisplayName().equalsIgnoreCase("Onde de choc")) { // TODO Add lore check
+				event.setCancelled(true);
+				Location center = player.getLocation();
+				ShockWave wave = new ShockWave(plugin, center);
+				wave.launch();
 			}
 		}
 	}

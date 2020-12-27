@@ -18,8 +18,8 @@ public class Bunker {
 	
 	private Location center;
 
-	private BukkitScheduler scheduler;
 	private RoleCraft plugin;
+	private BukkitScheduler scheduler;
 
 	public Bunker(RoleCraft plugin, Location center) {
 		this.center = center;
