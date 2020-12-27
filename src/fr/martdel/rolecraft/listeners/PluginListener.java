@@ -1,6 +1,7 @@
 package fr.martdel.rolecraft.listeners;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,17 +31,23 @@ public class PluginListener implements Listener {
 		// Using an item
 		if(item != null && (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) && item.hasItemMeta()) {
 			ItemMeta iMeta = item.getItemMeta();
-			// Bunker power
-			if(iMeta.getDisplayName().equalsIgnoreCase("Bunker")) { // TODO Add lore check
-				event.setCancelled(true);
-				Location center = player.getLocation();
-				Bunker bunker = new Bunker(plugin, center);
-				bunker.build();
-			} else if(iMeta.getDisplayName().equalsIgnoreCase("Onde de choc")) { // TODO Add lore check
-				event.setCancelled(true);
-				Location center = player.getLocation();
-				ShockWave wave = new ShockWave(plugin, center);
-				wave.launch();
+			if(iMeta.hasDisplayName()) {				
+				// Bunker power
+				if(iMeta.getDisplayName().equalsIgnoreCase("Bunker")) { // TODO Add lore check
+					event.setCancelled(true);
+					Location center = player.getLocation();
+					Bunker bunker = new Bunker(plugin, center);
+					bunker.build();
+				} else if(iMeta.getDisplayName().equalsIgnoreCase("Onde de choc")) { // TODO Add lore check
+					event.setCancelled(true);
+					Location center = player.getLocation();
+					ShockWave wave = new ShockWave(plugin, center);
+					wave.launch();
+				} else if(iMeta.getDisplayName().contains("§dSceptre§r")) { // TODO Add lore check
+					event.setCancelled(true);
+					Fireball fireball = player.launchProjectile(Fireball.class);
+					fireball.setIsIncendiary(false);
+				}
 			}
 		}
 	}

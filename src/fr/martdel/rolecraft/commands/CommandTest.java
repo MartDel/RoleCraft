@@ -1,12 +1,10 @@
 package fr.martdel.rolecraft.commands;
 
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import fr.martdel.rolecraft.powers.Scepter;
 
 public class CommandTest implements CommandExecutor {
 
@@ -17,11 +15,7 @@ public class CommandTest implements CommandExecutor {
 			Player player = (Player) sender;
 			
 			if(cmd.getName().equalsIgnoreCase("test")) {
-				ItemStack item = new ItemStack(Material.STICK);
-				ItemMeta itemmeta = item.getItemMeta();
-				itemmeta.setDisplayName("Onde de choc");
-				item.setItemMeta(itemmeta);
-				player.getInventory().addItem(item);
+				new Scepter(1).give(player);
 			}
 		}
 		
