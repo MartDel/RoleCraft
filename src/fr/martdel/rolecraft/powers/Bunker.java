@@ -10,26 +10,28 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import fr.martdel.rolecraft.RoleCraft;
 
-public class BuilderShockWave {
+public class Bunker {
 	
-	private final Material BLOCKTYPE = Material.STONE;
-	private final int STARTRADIUS = 2;
-	private final int DELAY = 2;
+	private final Material BLOCKTYPE = Material.BEDROCK;
+	private final int RADIUS = 2;
+	private final int BUILD_DELAY = 2;
 	
 	private Location center;
+
 	private BukkitScheduler scheduler;
 	private RoleCraft plugin;
 
-	public BuilderShockWave(RoleCraft plugin, Location center) {
+	public Bunker(RoleCraft plugin, Location center) {
 		this.center = center;
+		
 		this.plugin = plugin;
 		this.scheduler = plugin.getServer().getScheduler();
 	}
 	
-	public void setStartCircle() {
-		Location[] row_starters = getCorners(STARTRADIUS);
-		for (int i = 0; i < row_starters.length; i++) {
-			List<Location> blocs = getBlocsForRow(row_starters[i], getRowLength(STARTRADIUS), i);
+	public void build() {
+		Location[] corners = getCorners();
+		for (int i = 0; i < corners.length; i++) {
+			List<Location> blocs = getBlocsForRow(corners[i], getRowLength(), i);
 			scheduler.runTaskLater(plugin, new Runnable() {
 				private int i = 0;
 				@Override
@@ -37,26 +39,22 @@ public class BuilderShockWave {
 					Location bloc = blocs.get(i);
 					bloc.getWorld().getBlockAt(bloc).setType(BLOCKTYPE);
 					i++;
-					if(i < blocs.size()) scheduler.runTaskLater(plugin, this, DELAY);
+					if(i < blocs.size()) scheduler.runTaskLater(plugin, this, BUILD_DELAY);
 				}
-			}, DELAY);
+			}, BUILD_DELAY);
 		}
 	}
 	
-	public void setCircle(int radius) {
-		//		
+	private int getRowLength() {
+		return (RADIUS * 2) + 2;
 	}
 	
-	private int getRowLength(int radius) {
-		return (radius * 2) + 2;
-	}
-	
-	private Location[] getCorners(int radius) {
+	private Location[] getCorners() {
 		World world = center.getWorld();
 		int x = center.getBlockX();
 		int y = center.getBlockY();
 		int z = center.getBlockZ();
-		int r = radius + 1;
+		int r = RADIUS + 1;
 		
 		Location[] corners = {
 			new Location(world, x - r, y, z + r),
@@ -85,13 +83,12 @@ public class BuilderShockWave {
 		else starter_i = starter.getBlockZ();
 		
 		int y = starter.getBlockY();
-		for (int j = 0; j < 2; j++) {
-			y += j;
-			
-			for (int k = 0; k < length; k++) {
+		for (int j = 0; j < 2; j++) {			
+			y += j * 2;
+			for (int i = 0; i < length; i++) {
 				int new_value = 0;
-				if(increase) new_value = starter_i + k;
-				else new_value = starter_i - k;
+				if(increase) new_value = starter_i + i;
+				else new_value = starter_i - i;
 
 				Location current_bloc = starter;
 				if(increaseX) current_bloc.setX(new_value);

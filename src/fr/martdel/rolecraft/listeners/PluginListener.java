@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import fr.martdel.rolecraft.RoleCraft;
-import fr.martdel.rolecraft.powers.BuilderShockWave;
+import fr.martdel.rolecraft.powers.Bunker;
 
 public class PluginListener implements Listener {
 	
@@ -33,8 +33,8 @@ public class PluginListener implements Listener {
 			if(iMeta.getDisplayName().equalsIgnoreCase("Onde de choc (Builder)")) { // TODO Add lore check
 				event.setCancelled(true);
 				Location center = player.getLocation();
-				BuilderShockWave circle = new BuilderShockWave(plugin, center);
-				circle.setStartCircle();
+				Bunker bunker = new Bunker(plugin, center);
+				bunker.build();
 			}
 		}
 	}
