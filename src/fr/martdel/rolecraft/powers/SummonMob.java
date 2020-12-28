@@ -42,9 +42,6 @@ public class SummonMob {
 			public void run() {
 				Location target = victim.getLocation();
 				Location position = mob.getLocation();
-//				double xdif = Math.abs(target.getBlockX()) - Math.abs(position.getBlockX());
-//				double ydif = Math.abs(target.getBlockY()) - Math.abs(position.getBlockY());
-//				double zdif = Math.abs(target.getBlockZ()) - Math.abs(position.getBlockZ());
 				double xdif = target.getBlockX() - position.getBlockX();
 				double ydif = target.getBlockY() - position.getBlockY();
 				double zdif = target.getBlockZ() - position.getBlockZ();
@@ -58,7 +55,6 @@ public class SummonMob {
 				} else {
 					yaw = Math.atan(Math.abs(zdif) / Math.abs(xdif));
 					yaw = Math.toDegrees(yaw);
-					System.out.println(yaw);
 					if(xdif > 0 && zdif > 0) yaw = -90 + yaw;
 					else if(xdif < 0 && zdif > 0) yaw = 90 - yaw;
 					else if(xdif < 0 && zdif < 0) yaw = 90 + yaw;
@@ -67,22 +63,16 @@ public class SummonMob {
 				
 				// Get pitch to target victim
 				double pitch = Math.atan(Math.abs(ydif) / Math.abs(distance2D));
+				pitch = Math.toDegrees(pitch);
 				if(ydif > 0) pitch = -pitch;
 				
-				System.out.println("-----");
-				RoleCraft.printLocation(position);
-				RoleCraft.printLocation(target);
-				System.out.println("xdif=" + xdif + " ydif=" + ydif + " zdif=" + zdif);
-				System.out.println("distance: " + distance2D);
-				System.out.println("yaw=" + yaw + " pitch=" + pitch);
-				System.out.println("(float) : yaw=" + (float) yaw + " pitch=" + (float) pitch);
 				mob.setRotation((float) yaw, (float) pitch);
 				
 				SmallFireball fireball = mob.launchProjectile(SmallFireball.class);
 				fireball.setIsIncendiary(true);
 				
 				i++;
-				if(i < 10) scheduler.runTaskLater(plugin, this, delay);
+				if(i < 10 && !victim.isDead()) scheduler.runTaskLater(plugin, this, delay);
 				else mob.remove();
 			}
 		}, delay);

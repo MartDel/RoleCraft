@@ -77,7 +77,6 @@ public class PluginListener implements Listener {
 			ItemStack weapon = shooter.getItemInHand();
 			if(weapon.getType().equals(Material.BOW) && weapon.getItemMeta().getDisplayName().equalsIgnoreCase("§dInvocateur")) {
 				event.setDamage(0);
-				System.out.println("invoke");
 				Location spawner = shooter.getLocation();
 				SummonMob mob = new SummonMob(plugin, spawner);
 				LivingEntity summon = mob.spawn(EntityType.BLAZE);
