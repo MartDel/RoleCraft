@@ -12,8 +12,12 @@ import fr.martdel.rolecraft.RoleCraft;
 
 public class SummonMob {
 
+	private final int DELAY = 10;
+	private final int LIFE = 20 * 20;
+	
 	private Location location;
 	private World world;
+	private int ticklife;
 	private LivingEntity mob;
 	private LivingEntity victim;
 	
@@ -23,6 +27,7 @@ public class SummonMob {
 	public SummonMob(RoleCraft plugin, Location spawner) {
 		this.location = spawner;
 		this.world = spawner.getWorld();
+		this.ticklife = LIFE;
 		
 		this.plugin = plugin;
 		this.scheduler = plugin.getServer().getScheduler();
@@ -34,10 +39,14 @@ public class SummonMob {
 		else return null;
 	}
 	
+	public void attack(LivingEntity v) {
+		this.attack(v, DELAY);
+	}
+	
 	public void attack(LivingEntity v, int delay) {
 		this.victim = v;
 		scheduler.runTaskLater(plugin, new Runnable() {
-			private int i = 0;
+			private int life = 0;
 			@Override
 			public void run() {
 				Location target = victim.getLocation();
@@ -69,10 +78,10 @@ public class SummonMob {
 				mob.setRotation((float) yaw, (float) pitch);
 				
 				SmallFireball fireball = mob.launchProjectile(SmallFireball.class);
-				fireball.setIsIncendiary(true);
+				fireball.setIsIncendiary(false);
 				
-				i++;
-				if(i < 10 && !victim.isDead()) scheduler.runTaskLater(plugin, this, delay);
+				life += delay;
+				if(life < ticklife && !victim.isDead()) scheduler.runTaskLater(plugin, this, delay);
 				else mob.remove();
 			}
 		}, delay);
@@ -80,6 +89,10 @@ public class SummonMob {
 	
 	public void setEntity(LivingEntity mob) {
 		this.mob = mob;
+	}
+	
+	public void setTickLife(int life) {
+		this.ticklife = life;
 	}
 
 }

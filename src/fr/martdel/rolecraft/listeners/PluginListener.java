@@ -36,26 +36,30 @@ public class PluginListener implements Listener {
 		ItemStack item = event.getItem();
 		
 		// Using an item
-		if(item != null && (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) && item.hasItemMeta()) {
+		if(item != null && item.hasItemMeta() && (action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK))) {
 			ItemMeta iMeta = item.getItemMeta();
 			if(iMeta.hasDisplayName()) {				
 				// Bunker power
-				if(iMeta.getDisplayName().equalsIgnoreCase("Bunker")) { // TODO Add lore check
+				if(iMeta.getDisplayName().equalsIgnoreCase(RoleCraft.config.getString("powers.bunker.item_name"))) {
 					event.setCancelled(true);
 					Location center = player.getLocation();
 					Bunker bunker = new Bunker(plugin, center);
+					if(!bunker.checkBunkerEnvironment()) {
+						player.sendMessage("Il faut un espace dégagé pour poser un §5bunker§r !");
+						return;
+					}
 					bunker.build();
-				} else if(iMeta.getDisplayName().equalsIgnoreCase("Onde de choc")) { // TODO Add lore check
+				} else if(iMeta.getDisplayName().equalsIgnoreCase(RoleCraft.config.getString("powers.shockwave.item_name"))) {
 					event.setCancelled(true);
 					Location center = player.getLocation();
 					ShockWave wave = new ShockWave(plugin, center);
-					if(!wave.checkEnvironment()) {
+					if(!wave.checkWaveEnvironment()) {
 						player.sendMessage("Il faut un espace dégagé pour lancer une §5onde de choc§r !");
 						return;
 					}
 					wave.launch();
 					wave.makeDamages(player);
-				} else if(iMeta.getDisplayName().contains("§dSceptre§r")) { // TODO Add lore check
+				} else if(iMeta.getDisplayName().contains("§dSceptre")) {
 					event.setCancelled(true);
 					Fireball fireball = player.launchProjectile(Fireball.class);
 					fireball.setIsIncendiary(false);
@@ -83,7 +87,7 @@ public class PluginListener implements Listener {
 				summon.setAI(false);
 				summon.setInvulnerable(true);
 				mob.setEntity(summon);
-				mob.attack(victim, 20);
+				mob.attack(victim);
 			}
 		}
 	}

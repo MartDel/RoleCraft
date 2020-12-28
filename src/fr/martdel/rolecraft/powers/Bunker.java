@@ -5,33 +5,36 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import fr.martdel.rolecraft.RoleCraft;
+import fr.martdel.rolecraft.superclass.SquareBuilder;
 
-public class Bunker {
+public class Bunker extends SquareBuilder {
 	
-	private final Material BLOCKTYPE = Material.BEDROCK;
-	private final int RADIUS = 2;
-	private final int BUILD_DELAY = 2;
-	
-	private Location center;
+	private static final Material ITEMTYPE = Material.BEDROCK;
+	private static final Material BLOCKTYPE = Material.BEDROCK;
+	private static final int RADIUS = RoleCraft.config.getInt("powers.bunker.radius");
+	private static final int BUILD_DELAY = RoleCraft.config.getInt("powers.bunker.speed");
+	private static final int LIFE = RoleCraft.config.getInt("powers.bunker.life");
 
 	private RoleCraft plugin;
 	private BukkitScheduler scheduler;
 
 	public Bunker(RoleCraft plugin, Location center) {
-		this.center = center;
-		
+		super(center, RADIUS);		
 		this.plugin = plugin;
 		this.scheduler = plugin.getServer().getScheduler();
 	}
 	
 	public void build() {
-		Location[] corners = getCorners();
+		Location[] corners = getCorners(RADIUS);
 		for (int i = 0; i < corners.length; i++) {
-			List<Location> blocs = getBlocsForRow(corners[i], getRowLength(), i);
+			List<Location> blocs = getBlocsForRow(corners[i], getRowLength(RADIUS), i);
 			scheduler.runTaskLater(plugin, new Runnable() {
 				private int i = 0;
 				@Override
@@ -40,33 +43,33 @@ public class Bunker {
 					bloc.getWorld().getBlockAt(bloc).setType(BLOCKTYPE);
 					i++;
 					if(i < blocs.size()) scheduler.runTaskLater(plugin, this, BUILD_DELAY);
+					else scheduler.runTaskLater(plugin, new Runnable() {
+						@Override
+						public void run() { destroy(); }
+					}, LIFE);
 				}
 			}, BUILD_DELAY);
 		}
 	}
 	
-	private int getRowLength() {
-		return (RADIUS * 2) + 2;
+	public void destroy() {
+		Location[] corners = getCorners(RADIUS);
+		for (int i = 0; i < corners.length; i++) {
+			List<Location> blocs = getBlocsForRow(corners[i], getRowLength(RADIUS), i);
+			scheduler.runTaskLater(plugin, new Runnable() {
+				private int i = 0;
+				@Override
+				public void run() {
+					Location bloc = blocs.get(i);
+					bloc.getWorld().getBlockAt(bloc).setType(Material.AIR);
+					i++;
+					if(i < blocs.size()) scheduler.runTaskLater(plugin, this, BUILD_DELAY);
+				}
+			}, BUILD_DELAY);
+		}
 	}
 	
-	private Location[] getCorners() {
-		World world = center.getWorld();
-		int x = center.getBlockX();
-		int y = center.getBlockY();
-		int z = center.getBlockZ();
-		int r = RADIUS + 1;
-		
-		Location[] corners = {
-			new Location(world, x - r, y, z + r),
-			new Location(world, x + r, y, z + r),
-			new Location(world, x + r, y, z - r),
-			new Location(world, x - r, y, z - r)
-		};
-		
-		return corners;
-	}
-	
-	private List<Location> getBlocsForRow(Location starter, int length, int rank) {
+	public List<Location> getBlocsForRow(Location starter, int length, int rank) {
 		List<Location> blocs = new ArrayList<>();
 		
 		boolean increase = false;
@@ -99,6 +102,16 @@ public class Bunker {
 		}
 		
 		return blocs;
+	}
+	
+	public static ItemStack getItemStack() {
+		ItemStack item = new ItemStack(ITEMTYPE);
+		ItemMeta itemmeta = item.getItemMeta();
+		itemmeta.setDisplayName(RoleCraft.config.getString("powers.bunker.item_name"));
+		itemmeta.addEnchant(Enchantment.DURABILITY, 200, true);
+		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		item.setItemMeta(itemmeta);
+		return item;
 	}
 
 }

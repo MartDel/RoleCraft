@@ -7,49 +7,36 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import fr.martdel.rolecraft.RoleCraft;
+import fr.martdel.rolecraft.superclass.SquareBuilder;
 
-public class ShockWave {
-
-	private final int DELAY = 2;
-	private final int MAXRADIUS = 5;
+public class ShockWave extends SquareBuilder {
+	
+	private static final Material ITEMTYPE = Material.TNT;
+	private static final int MAXRADIUS = RoleCraft.config.getInt("powers.shockwave.max_radius");
+	private static final int DELAY = RoleCraft.config.getInt("powers.shockwave.speed");
+	private static final int DAMAGE = RoleCraft.config.getInt("powers.shockwave.damage");
 
 	private Location center;
 	private int radius = 1;
-	private List<Location> affected_ground;
 
 	private RoleCraft plugin;
 	private BukkitScheduler scheduler;
 
 	public ShockWave(RoleCraft plugin, Location center) {
+		super(center, MAXRADIUS);
 		this.center = center;
-		this.affected_ground = new ArrayList<>();
-		
 		this.plugin = plugin;
 		this.scheduler = plugin.getServer().getScheduler();
-	}
-	
-	public boolean checkEnvironment() {
-		affected_ground.clear();
-		for (int r = 1; r < MAXRADIUS; r++) {
-			Location[] corners = getCorners(r);
-			for (int i = 0; i < corners.length; i++) {
-				List<Location> blocs = getBlocsForRow(corners[i], getRowLength(r), i);
-				for (Location bloc : blocs) {
-					Block current_bloc = bloc.getWorld().getBlockAt(bloc);
-					affected_ground.add(bloc);
-					if(!current_bloc.getType().equals(Material.AIR)) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
 	}
 
 	public void launch() {
@@ -94,37 +81,16 @@ public class ShockWave {
 				if(mob instanceof Player) {
 					Player player = (Player) mob;
 					if(!player.isSneaking() && !player.equals(damager)) {
-						player.setHealth(0);
+						player.damage(DAMAGE);
 					}
 				} else {
-					mob.setHealth(0);
+					mob.damage(DAMAGE);;
 				}
 			}
 		}
 	}
 	
-	private int getRowLength(int radius) {
-		return (radius * 2) + 2;
-	}
-	
-	private Location[] getCorners(int radius) {
-		World world = center.getWorld();
-		int x = center.getBlockX();
-		int y = center.getBlockY();
-		int z = center.getBlockZ();
-		int r = radius + 1;
-		
-		Location[] corners = {
-			new Location(world, x - r, y, z + r),
-			new Location(world, x + r, y, z + r),
-			new Location(world, x + r, y, z - r),
-			new Location(world, x - r, y, z - r)
-		};
-		
-		return corners;
-	}
-	
-	private List<Location> getBlocsForRow(Location starter, int length, int rank) {
+	public List<Location> getBlocsForRow(Location starter, int length, int rank) {
 		List<Location> blocs = new ArrayList<>();
 		
 		boolean increase = false;
@@ -154,99 +120,15 @@ public class ShockWave {
 		
 		return blocs;
 	}
-	
-//	private boolean addRules(Location bloc) {
-//		Integer x = bloc.getBlockX();
-//		Integer z = bloc.getBlockZ();
-//		
-//		// Check if the bloc is a forbidden bloc or not
-//		Block b = bloc.getWorld().getBlockAt(bloc);
-//		if(!b.getType().equals(Material.AIR)) {
-//			// Add rule
-//			System.out.println("Bloc détecté");
-//			
-//			// Check corners
-//			Location[] corners = getCorners(radius);
-//			for (int i = 0; i < corners.length; i++) {
-//				if(corners[i].equals(bloc)) {
-//					System.out.println("dans un coin : " + i + " " + radius);
-//					Integer[] coord = {bloc.getBlockX() - center.getBlockX(), bloc.getBlockZ() - center.getBlockZ()};
-//					forbidden_corners.put(i, coord);
-//					System.out.println("Nouvelle règle : i=" + i + " x=" + coord[0] + " z=" + coord[1]);
-//					return false;
-//				}
-//			}
-//			
-//			// Check x
-//			if((z - center.getBlockZ()) > radius || (z - center.getBlockZ()) < (0 - radius)) {
-//				System.out.println("en X");
-//				Integer z_state = getZState(z, center.getBlockZ());
-//				forbidden_x.put(x, z_state);				
-//				return false;
-//			}
-//			
-//			// Check z
-//			if((x - center.getBlockX()) > radius || (x - center.getBlockX()) < (0 - radius)) {
-//				System.out.println("en Z");
-//				Integer x_state = getZState(x, center.getBlockX());
-//				forbidden_z.put(z, x_state);
-//				return false;
-//			}
-//		}
-//		return true;
-//	}
-//	
-//	private boolean checkRules(Location bloc) {
-//		Integer x = bloc.getBlockX();
-//		Integer z = bloc.getBlockZ();
-//		
-//		// Check corners
-//		Set<Integer> keys = forbidden_corners.keySet();
-//		for (Integer i : keys) {
-//			Integer[] coord = forbidden_corners.get(i);
-//			switch (i) {
-//			case 0: 
-//				if((x - center.getBlockX()) <= coord[0] && (z - center.getBlockZ()) >= coord[1]) {
-//					return false;
-//				}
-//				break;
-//			case 1:
-//				if((x - center.getBlockX()) >= coord[0] && (z - center.getBlockZ()) >= coord[1]) {
-//					return false;
-//				}
-//				break;
-//			case 2: 
-//				if((x - center.getBlockX()) >= coord[0] && (z - center.getBlockZ()) <= coord[1]) {
-//					return false;	
-//				}
-//				break;
-//			case 3: 
-//				if((x - center.getBlockX()) <= coord[0] && (z - center.getBlockZ()) <= coord[1]) {
-//					return false;
-//				}
-//				break;
-//			}
-//		}
-//		
-//		// Check x
-//		if(forbidden_x.containsKey(x)) {
-//			Integer z_state = getZState(z, center.getBlockZ());
-//			if(forbidden_x.get(x).equals(z_state)) return false;
-//		}
-//		
-//		// Check z
-//		if(forbidden_z.containsKey(z)) {
-//			Integer x_state = getZState(x, center.getBlockX());
-//			if(forbidden_z.get(z).equals(x_state)) return false;
-//		}
-//		
-//		return true;
-//	}
-//	
-//	private Integer getZState(Integer z, Integer playerZ) {
-//		if(z - playerZ > 0) return 1;
-//		else if (z - playerZ < 0) return -1;
-//		return 0;
-//	}
+
+	public static ItemStack getItemStack() {
+		ItemStack item = new ItemStack(ITEMTYPE);
+		ItemMeta itemmeta = item.getItemMeta();
+		itemmeta.setDisplayName(RoleCraft.config.getString("powers.shockwave.item_name"));
+		itemmeta.addEnchant(Enchantment.DAMAGE_ALL, 200, true);
+		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		item.setItemMeta(itemmeta);
+		return item;
+	}
 
 }

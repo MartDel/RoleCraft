@@ -4,7 +4,7 @@ author: MartDel
 main: fr.martdel.rolecraft.RoleCraft
 
 commands:
-  # For test
-  test:
-    description: Test command
-    permission: test.use
+  # Powers
+  power:
+    description: Get a power item
+    permission: power.use
