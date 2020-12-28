@@ -1,18 +1,25 @@
 package fr.martdel.rolecraft.listeners;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import fr.martdel.rolecraft.RoleCraft;
 import fr.martdel.rolecraft.powers.Bunker;
 import fr.martdel.rolecraft.powers.ShockWave;
+import fr.martdel.rolecraft.powers.SummonMob;
 
 public class PluginListener implements Listener {
 	
@@ -53,6 +60,31 @@ public class PluginListener implements Listener {
 					Fireball fireball = player.launchProjectile(Fireball.class);
 					fireball.setIsIncendiary(false);
 				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onArrowTouch(EntityDamageByEntityEvent event) {
+		DamageCause cause = event.getCause();
+		Entity damager = event.getDamager();
+		Entity v = event.getEntity();
+		if(damager.getType().equals(EntityType.ARROW) && cause.equals(DamageCause.PROJECTILE) && v instanceof LivingEntity) {
+			Arrow arrow = (Arrow) damager;
+			Player shooter = (Player) arrow.getShooter();
+			LivingEntity victim = (LivingEntity) v;
+			@SuppressWarnings("deprecation")
+			ItemStack weapon = shooter.getItemInHand();
+			if(weapon.getType().equals(Material.BOW) && weapon.getItemMeta().getDisplayName().equalsIgnoreCase("§dInvocateur")) {
+				event.setDamage(0);
+				System.out.println("invoke");
+				Location spawner = shooter.getLocation();
+				SummonMob mob = new SummonMob(plugin, spawner);
+				LivingEntity summon = mob.spawn(EntityType.BLAZE);
+				summon.setAI(false);
+				summon.setInvulnerable(true);
+				mob.setEntity(summon);
+				mob.attack(victim, 20);
 			}
 		}
 	}

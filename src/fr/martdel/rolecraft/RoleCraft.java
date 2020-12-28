@@ -1,5 +1,6 @@
 package fr.martdel.rolecraft;
 
+import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import fr.martdel.rolecraft.commands.CommandTest;
@@ -21,6 +22,13 @@ public class RoleCraft extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		System.out.println("§b[RoleCraft]§r Server OFF...");
+	}
+	
+	public static void printLocation(Location l) {
+		System.out.println(
+				"x=" + l.getBlockX() +
+				" y=" + l.getBlockY() +
+				" z=" + l.getBlockZ());
 	}
 
 }
