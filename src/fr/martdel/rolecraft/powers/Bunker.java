@@ -22,6 +22,8 @@ public class Bunker extends SquareBuilder {
 	private static final int BUILD_DELAY = RoleCraft.config.getInt("powers.bunker.speed");
 	private static final int LIFE = RoleCraft.config.getInt("powers.bunker.life");
 
+	public static final int COOLDOWN = RoleCraft.config.getInt("powers.bunker.cooldown");
+
 	private RoleCraft plugin;
 	private BukkitScheduler scheduler;
 

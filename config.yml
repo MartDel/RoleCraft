@@ -1,11 +1,18 @@
 powers:
   shockwave:
     item_name: §5Onde de choc
-    max_radius: 5	# The shockwave size
+    max_radius: 5	# The shock wave size
     speed: 2	# How many ticks for a one block propagation
     damage: 10
+    cooldown: 1200	# How many ticks before do a shock wave again (bug when cooldown < 200)
   bunker:
     item_name: §5Bunker
     radius: 2	# The bunker size
     speed: 2	# How many ticks before the next block in the animation
     life: 400	# How many ticks before destroying the bunker
+    cooldown: 2400	# How many ticks before build a bunker again (bug when cooldown < 200)
+  # Loader for powers cooldown
+  loader:
+    item_name1: §8Chargement de
+    item_name2: §8->§a
+    item_name3: §a%

@@ -26,6 +26,8 @@ public class ShockWave extends SquareBuilder {
 	private static final int DELAY = RoleCraft.config.getInt("powers.shockwave.speed");
 	private static final int DAMAGE = RoleCraft.config.getInt("powers.shockwave.damage");
 
+	public static final int COOLDOWN = RoleCraft.config.getInt("powers.shockwave.cooldown");
+
 	private Location center;
 	private int radius = 1;
 

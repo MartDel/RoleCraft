@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import fr.martdel.rolecraft.RoleCraft;
 import fr.martdel.rolecraft.powers.Bunker;
+import fr.martdel.rolecraft.powers.PowerLoader;
 import fr.martdel.rolecraft.powers.ShockWave;
 import fr.martdel.rolecraft.powers.SummonMob;
 
@@ -49,6 +50,8 @@ public class PluginListener implements Listener {
 						return;
 					}
 					bunker.build();
+					PowerLoader loader = new PowerLoader(plugin, player, Bunker.getItemStack());
+					loader.startLoading(Bunker.COOLDOWN);
 				} else if(iMeta.getDisplayName().equalsIgnoreCase(RoleCraft.config.getString("powers.shockwave.item_name"))) {
 					event.setCancelled(true);
 					Location center = player.getLocation();
@@ -59,6 +62,8 @@ public class PluginListener implements Listener {
 					}
 					wave.launch();
 					wave.makeDamages(player);
+					PowerLoader loader = new PowerLoader(plugin, player, ShockWave.getItemStack());
+					loader.startLoading(ShockWave.COOLDOWN);
 				} else if(iMeta.getDisplayName().contains("§dSceptre")) {
 					event.setCancelled(true);
 					Fireball fireball = player.launchProjectile(Fireball.class);
