@@ -5,6 +5,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import fr.martdel.rolecraft.powers.Bomb;
 import fr.martdel.rolecraft.powers.Bunker;
 import fr.martdel.rolecraft.powers.ShockWave;
 import fr.martdel.rolecraft.powers.SummonMob;
@@ -28,6 +30,9 @@ public class CommandPower implements CommandExecutor {
 					} else if(args[0].equalsIgnoreCase("bunker")) {
 						ItemStack bunker = Bunker.getItemStack();
 						player.getInventory().addItem(bunker);
+					} else if(args[0].equalsIgnoreCase("bomb")) {
+						ItemStack bomb = Bomb.getItemStack();
+						player.getInventory().addItem(bomb);
 					}
 				}
 			}

@@ -16,8 +16,8 @@ import fr.martdel.rolecraft.superclass.SquareBuilder;
 
 public class Bunker extends SquareBuilder {
 	
-	private static final Material ITEMTYPE = Material.BEDROCK;
-	private static final Material BLOCKTYPE = Material.BEDROCK;
+	private static final Material ITEMTYPE = Material.getMaterial(RoleCraft.config.getString("powers.bunker.item_type"));
+	private static final Material BLOCKTYPE = Material.getMaterial(RoleCraft.config.getString("powers.bunker.block_type"));
 	private static final int RADIUS = RoleCraft.config.getInt("powers.bunker.radius");
 	private static final int BUILD_DELAY = RoleCraft.config.getInt("powers.bunker.speed");
 	private static final int LIFE = RoleCraft.config.getInt("powers.bunker.life");

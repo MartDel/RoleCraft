@@ -22,7 +22,7 @@ import fr.martdel.rolecraft.superclass.SquareBuilder;
 
 public class ShockWave extends SquareBuilder {
 	
-	private static final Material ITEMTYPE = Material.TNT;
+	private static final Material ITEMTYPE = Material.getMaterial(RoleCraft.config.getString("powers.shockwave.item_type"));;
 	private static final int MAXRADIUS = RoleCraft.config.getInt("powers.shockwave.max_radius");
 	private static final int DELAY = RoleCraft.config.getInt("powers.shockwave.speed");
 	private static final int DAMAGE = RoleCraft.config.getInt("powers.shockwave.damage");
@@ -130,7 +130,7 @@ public class ShockWave extends SquareBuilder {
 		ItemMeta itemmeta = item.getItemMeta();
 		itemmeta.setDisplayName(ITEMNAME);
 		itemmeta.setLore(Arrays.asList("Tirez sur un ennemi pour", "§dinvoquer un allié§r"));
-		itemmeta.addEnchant(Enchantment.DAMAGE_ALL, 200, true);
+		itemmeta.addEnchant(Enchantment.DURABILITY, 200, true);
 		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		item.setItemMeta(itemmeta);
 		return item;

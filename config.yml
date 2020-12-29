@@ -1,21 +1,29 @@
 powers:
   shockwave:
     item_name: §5Onde de choc
+    item_type: TNT
     max_radius: 5	# The shock wave size
     speed: 2	# How many ticks for a one block propagation
     damage: 10
     cooldown: 1200	# How many ticks before do a shock wave again (bug when cooldown < 200)
   bunker:
     item_name: §5Bunker
+    item_type: SHIELD
+    block_type: BEDROCK
     radius: 2	# The bunker size
     speed: 2	# How many ticks before the next block in the animation
     life: 400	# How many ticks before destroying the bunker
     cooldown: 2400	# How many ticks before build a bunker again (bug when cooldown < 200)
   summoner:
     item_name: §dInvocateur
+    item_type: BOW
     life: 400	# How many ticks before the mob die
     attack_delay: 10	# How many ticks before another fire ball
     cooldown: 2400	# How many ticks before summon again (bug when cooldown < 200)
+  bomb:
+    bomb_name: §5Bombe de minage
+    bomb_type: TNT
+    radius: 2
   # Loader for powers cooldown
   loader:
     item_name1: §8Chargement de

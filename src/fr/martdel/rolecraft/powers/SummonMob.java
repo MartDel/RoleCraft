@@ -20,7 +20,7 @@ public class SummonMob {
 	private static final int LIFE = RoleCraft.config.getInt("powers.summoner.life");
 	private static final int DELAY = RoleCraft.config.getInt("powers.summoner.attack_delay");
 
-	public static final Material ITEMTYPE = Material.BOW;
+	public static final Material ITEMTYPE = Material.getMaterial(RoleCraft.config.getString("powers.summoner.item_type"));
 	public static final String ITEMNAME = RoleCraft.config.getString("powers.summoner.item_name");
 	public static final int COOLDOWN = RoleCraft.config.getInt("powers.summoner.cooldown");
 	

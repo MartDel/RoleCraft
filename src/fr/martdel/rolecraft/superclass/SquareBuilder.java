@@ -11,6 +11,8 @@ public abstract class SquareBuilder {
 	
 	private Location center;
 	private int maxradius;
+	
+	private Integer current_y = 0;
 
 	public SquareBuilder(Location center, int radius) {
 		this.center = center;
@@ -38,15 +40,16 @@ public abstract class SquareBuilder {
 	}
 	
 	public int getRowLength(int radius) {
-		return (radius * 2) + 2;
+		if(radius != 0) return (radius * 2) + 1;
+		else return 1;
 	}
 	
 	public Location[] getCorners(int radius) {
 		World world = center.getWorld();
 		int x = center.getBlockX();
-		int y = center.getBlockY();
+		int y = center.getBlockY() + current_y;
 		int z = center.getBlockZ();
-		int r = radius + 1;
+		int r = radius != 0 ? radius : 0;
 		
 		Location[] corners = {
 			new Location(world, x - r, y, z + r),
@@ -56,6 +59,9 @@ public abstract class SquareBuilder {
 		};
 		
 		return corners;
-	}	
+	}
+
+	public Integer getCurrent_y() { return current_y; }
+	public void setCurrent_y(Integer current_y) { this.current_y = current_y; }
 
 }
