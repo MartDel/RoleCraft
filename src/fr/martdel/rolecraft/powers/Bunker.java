@@ -23,6 +23,7 @@ public class Bunker extends SquareBuilder {
 	private static final int LIFE = RoleCraft.config.getInt("powers.bunker.life");
 
 	public static final int COOLDOWN = RoleCraft.config.getInt("powers.bunker.cooldown");
+	public static final String ITEMNAME = RoleCraft.config.getString("powers.bunker.item_name");
 
 	private RoleCraft plugin;
 	private BukkitScheduler scheduler;
@@ -109,7 +110,7 @@ public class Bunker extends SquareBuilder {
 	public static ItemStack getItemStack() {
 		ItemStack item = new ItemStack(ITEMTYPE);
 		ItemMeta itemmeta = item.getItemMeta();
-		itemmeta.setDisplayName(RoleCraft.config.getString("powers.bunker.item_name"));
+		itemmeta.setDisplayName(ITEMNAME);
 		itemmeta.addEnchant(Enchantment.DURABILITY, 200, true);
 		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		item.setItemMeta(itemmeta);

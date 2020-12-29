@@ -1,7 +1,6 @@
 package fr.martdel.rolecraft.listeners;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -41,7 +40,7 @@ public class PluginListener implements Listener {
 			ItemMeta iMeta = item.getItemMeta();
 			if(iMeta.hasDisplayName()) {				
 				// Bunker power
-				if(iMeta.getDisplayName().equalsIgnoreCase(RoleCraft.config.getString("powers.bunker.item_name"))) {
+				if(iMeta.getDisplayName().equalsIgnoreCase(Bunker.ITEMNAME)) {
 					event.setCancelled(true);
 					Location center = player.getLocation();
 					Bunker bunker = new Bunker(plugin, center);
@@ -52,7 +51,7 @@ public class PluginListener implements Listener {
 					bunker.build();
 					PowerLoader loader = new PowerLoader(plugin, player, Bunker.getItemStack());
 					loader.startLoading(Bunker.COOLDOWN);
-				} else if(iMeta.getDisplayName().equalsIgnoreCase(RoleCraft.config.getString("powers.shockwave.item_name"))) {
+				} else if(iMeta.getDisplayName().equalsIgnoreCase(ShockWave.ITEMNAME)) {
 					event.setCancelled(true);
 					Location center = player.getLocation();
 					ShockWave wave = new ShockWave(plugin, center);
@@ -84,7 +83,7 @@ public class PluginListener implements Listener {
 			LivingEntity victim = (LivingEntity) v;
 			@SuppressWarnings("deprecation")
 			ItemStack weapon = shooter.getItemInHand();
-			if(weapon.getType().equals(Material.BOW) && weapon.getItemMeta().getDisplayName().equalsIgnoreCase("§dInvocateur")) {
+			if(weapon.getType().equals(SummonMob.ITEMTYPE) && weapon.getItemMeta().getDisplayName().equalsIgnoreCase(SummonMob.ITEMNAME)) {
 				event.setDamage(0);
 				Location spawner = shooter.getLocation();
 				SummonMob mob = new SummonMob(plugin, spawner);
@@ -93,6 +92,8 @@ public class PluginListener implements Listener {
 				summon.setInvulnerable(true);
 				mob.setEntity(summon);
 				mob.attack(victim);
+				PowerLoader loader = new PowerLoader(plugin, shooter, SummonMob.getItemStack());
+				loader.startLoading(SummonMob.COOLDOWN);
 			}
 		}
 	}

@@ -1,19 +1,28 @@
 package fr.martdel.rolecraft.powers;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.SmallFireball;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import fr.martdel.rolecraft.RoleCraft;
 
 public class SummonMob {
 
-	private final int DELAY = 10;
-	private final int LIFE = 20 * 20;
+	private static final int LIFE = RoleCraft.config.getInt("powers.summoner.life");
+	private static final int DELAY = RoleCraft.config.getInt("powers.summoner.attack_delay");
+
+	public static final Material ITEMTYPE = Material.BOW;
+	public static final String ITEMNAME = RoleCraft.config.getString("powers.summoner.item_name");
+	public static final int COOLDOWN = RoleCraft.config.getInt("powers.summoner.cooldown");
 	
 	private Location location;
 	private World world;
@@ -93,6 +102,16 @@ public class SummonMob {
 	
 	public void setTickLife(int life) {
 		this.ticklife = life;
+	}
+	
+	public static ItemStack getItemStack() {
+		ItemStack item = new ItemStack(ITEMTYPE);
+		ItemMeta itemmeta = item.getItemMeta();
+		itemmeta.setDisplayName(ITEMNAME);
+		itemmeta.addEnchant(Enchantment.DAMAGE_ALL, 200, true);
+		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		item.setItemMeta(itemmeta);
+		return item;
 	}
 
 }

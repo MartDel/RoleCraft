@@ -1,6 +1,7 @@
 package fr.martdel.rolecraft.powers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.bukkit.Location;
@@ -27,6 +28,7 @@ public class ShockWave extends SquareBuilder {
 	private static final int DAMAGE = RoleCraft.config.getInt("powers.shockwave.damage");
 
 	public static final int COOLDOWN = RoleCraft.config.getInt("powers.shockwave.cooldown");
+	public static final String ITEMNAME = RoleCraft.config.getString("powers.shockwave.item_name");
 
 	private Location center;
 	private int radius = 1;
@@ -126,7 +128,8 @@ public class ShockWave extends SquareBuilder {
 	public static ItemStack getItemStack() {
 		ItemStack item = new ItemStack(ITEMTYPE);
 		ItemMeta itemmeta = item.getItemMeta();
-		itemmeta.setDisplayName(RoleCraft.config.getString("powers.shockwave.item_name"));
+		itemmeta.setDisplayName(ITEMNAME);
+		itemmeta.setLore(Arrays.asList("Tirez sur un ennemi pour", "§dinvoquer un allié§r"));
 		itemmeta.addEnchant(Enchantment.DAMAGE_ALL, 200, true);
 		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		item.setItemMeta(itemmeta);

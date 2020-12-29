@@ -11,6 +11,11 @@ powers:
     speed: 2	# How many ticks before the next block in the animation
     life: 400	# How many ticks before destroying the bunker
     cooldown: 2400	# How many ticks before build a bunker again (bug when cooldown < 200)
+  summoner:
+    item_name: §dInvocateur
+    life: 400	# How many ticks before the mob die
+    attack_delay: 10	# How many ticks before another fire ball
+    cooldown: 2400	# How many ticks before summon again (bug when cooldown < 200)
   # Loader for powers cooldown
   loader:
     item_name1: §8Chargement de
