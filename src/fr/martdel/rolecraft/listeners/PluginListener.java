@@ -1,6 +1,8 @@
 package fr.martdel.rolecraft.listeners;
 
 import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -119,6 +121,8 @@ public class PluginListener implements Listener {
 				public void run() {
 					Bomb bomb = new Bomb(item.getLocation());
 					bomb.explode();
+					World world = item.getWorld();
+					world.spawnParticle(Particle.SMOKE_NORMAL, item.getLocation(), 3);
 					item.remove();
 					player.getInventory().addItem(Bomb.getItemStack());
 				}
