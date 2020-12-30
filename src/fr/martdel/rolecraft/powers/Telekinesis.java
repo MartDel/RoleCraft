@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import fr.martdel.rolecraft.ConditionBuilder;
 import fr.martdel.rolecraft.RoleCraft;
 
 public class Telekinesis {
@@ -39,6 +40,7 @@ public class Telekinesis {
 	public void moveBloc() {
 		player.sendMessage(STARTMSG);
 		scheduler.runTaskLater(plugin, new Runnable() {
+			private Location player_loc = null;
 			@Override
 			public void run() {
 				ItemStack tk_item = player.getInventory().getItemInMainHand();
@@ -49,31 +51,53 @@ public class Telekinesis {
 					return;
 				}
 				
+				if(player_loc == null) player_loc = player.getLocation();
+				
 				if(bloc.equals(target_bloc)) {
+					Location new_player_loc = player.getLocation();
+					if(!locationEquals(player_loc, new_player_loc)) {
+						int xdif = new_player_loc.getBlockX() - player_loc.getBlockX();
+						int zdif = new_player_loc.getBlockZ() - player_loc.getBlockZ();
+						Location bloc_loc = bloc.getLocation();
+						bloc_loc.setX(bloc_loc.getBlockX() + xdif);
+						bloc_loc.setZ(bloc_loc.getBlockZ() + zdif);
+						moveTo(bloc_loc);
+						player_loc = new_player_loc;
+					}
 					scheduler.runTaskLater(plugin, this, 1);
 					return;
 				}
 				
-				World world = bloc.getWorld();
-				Material type = bloc.getType();
-				Location bloc_loc = bloc.getLocation();
-				
-				Block empty_bloc = getEmptyBlocAround(target_bloc);
-				if(empty_bloc == null) {
+				Block target = getEmptyBlocAround(target_bloc);
+				if(target == null) {
 					player.sendMessage(STOPMSG);
 					player.getInventory().setItem(slot, getItemStack());
 					return;
 				}
-				Location target = empty_bloc.getLocation();
-				world.getBlockAt(bloc_loc).setType(Material.AIR);
-				world.getBlockAt(target).setType(type);
+				moveTo(target);
 				
-				bloc = empty_bloc;
 				scheduler.runTaskLater(plugin, this, 1);
 			}
 		}, 1);
 	}
 	
+	public void moveTo(Block target) {
+		Material type = bloc.getType();
+		bloc.setType(Material.AIR);
+		target.setType(type);
+		bloc = target;
+	}
+	public void moveTo(Location target) {
+		Block target_bloc = target.getWorld().getBlockAt(target);
+		moveTo(target_bloc);
+	}
+	
+	private boolean locationEquals(Location loc1, Location loc2) {
+		ConditionBuilder condition = new ConditionBuilder(loc1.getBlockX() == loc2.getBlockX());
+		condition.and(loc1.getBlockZ() == loc2.getBlockZ());
+		return condition.result();
+	}
+
 	private Block getEmptyBlocAround(Block center_bloc) {
 		Location center = center_bloc.getLocation();
 		World world = center.getWorld(); int x = center.getBlockX();
