@@ -13,12 +13,21 @@ public class PowerLoader {
 	private static final Material LOADERTYPE = Material.CLOCK;
 
 	private ItemStack item;
+	private ItemStack give_item;
 	private Player player;
 	private RoleCraft plugin;
 	private BukkitScheduler scheduler;
 
 	public PowerLoader(RoleCraft rolecraft, Player player, ItemStack itemStack) {
 		this.item = itemStack;
+		this.give_item = null;
+		this.player = player;
+		this.plugin = rolecraft;
+		this.scheduler = rolecraft.getServer().getScheduler();
+	}
+	public PowerLoader(RoleCraft rolecraft, Player player, ItemStack itemStack, ItemStack giveItem) {
+		this.item = itemStack;
+		this.give_item = giveItem;
 		this.player = player;
 		this.plugin = rolecraft;
 		this.scheduler = rolecraft.getServer().getScheduler();
@@ -63,7 +72,7 @@ public class PowerLoader {
 				
 				t++;
 				if(t < cooldown) scheduler.runTaskLater(plugin, this, 1);
-				else player.getInventory().setItem(slot, item);
+				else player.getInventory().setItem(slot, give_item != null ? give_item : item);
 			}
 		}, 1);
 	}

@@ -22,7 +22,7 @@ public class CommandPower implements CommandExecutor {
 			if(cmd.getName().equalsIgnoreCase("power")) {
 				if(args.length != 0) {
 					if(args[0].equalsIgnoreCase("summoner")) {
-						ItemStack summoner = SummonMob.getItemStack();
+						ItemStack summoner = SummonMob.getSpawner();
 						player.getInventory().addItem(summoner);
 					} else if(args[0].equalsIgnoreCase("shockwave")) {
 						ItemStack shockwave = ShockWave.getItemStack();

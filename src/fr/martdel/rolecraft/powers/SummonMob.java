@@ -20,8 +20,9 @@ public class SummonMob {
 	private static final int LIFE = RoleCraft.config.getInt("powers.summoner.life");
 	private static final int DELAY = RoleCraft.config.getInt("powers.summoner.attack_delay");
 
-	public static final Material ITEMTYPE = Material.getMaterial(RoleCraft.config.getString("powers.summoner.item_type"));
 	public static final String ITEMNAME = RoleCraft.config.getString("powers.summoner.item_name");
+	public static final Material SPAWNERTYPE = Material.getMaterial(RoleCraft.config.getString("powers.summoner.spawner_type"));
+	public static final Material VIEWFINDERTYPE = Material.getMaterial(RoleCraft.config.getString("powers.summoner.viewfinder_type"));
 	public static final int COOLDOWN = RoleCraft.config.getInt("powers.summoner.cooldown");
 	
 	private Location location;
@@ -104,11 +105,21 @@ public class SummonMob {
 		this.ticklife = life;
 	}
 	
-	public static ItemStack getItemStack() {
-		ItemStack item = new ItemStack(ITEMTYPE);
+	public static ItemStack getSpawner() {
+		ItemStack item = new ItemStack(SPAWNERTYPE);
 		ItemMeta itemmeta = item.getItemMeta();
 		itemmeta.setDisplayName(ITEMNAME);
-		itemmeta.addEnchant(Enchantment.DAMAGE_ALL, 200, true);
+		itemmeta.addEnchant(Enchantment.DURABILITY, 200, true);
+		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		item.setItemMeta(itemmeta);
+		return item;
+	}
+	
+	public static ItemStack getViewFinder() {
+		ItemStack item = new ItemStack(VIEWFINDERTYPE);
+		ItemMeta itemmeta = item.getItemMeta();
+		itemmeta.setDisplayName(ITEMNAME);
+		itemmeta.addEnchant(Enchantment.DURABILITY, 200, true);
 		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		item.setItemMeta(itemmeta);
 		return item;

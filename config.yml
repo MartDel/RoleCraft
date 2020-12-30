@@ -16,7 +16,8 @@ powers:
     cooldown: 2400	# How many ticks before build a bunker again (bug when cooldown < 200)
   summoner:
     item_name: §5Invocateur
-    item_type: BOW
+    spawner_type: STICK		# The spawner is the item used to get the summoned mob location
+    viewfinder_type: BOW	# The viewfinder is the item used to get the victim
     life: 400	# How many ticks before the mob die
     attack_delay: 10	# How many ticks before another fire ball
     cooldown: 2400	# How many ticks before summon again (bug when cooldown < 200)

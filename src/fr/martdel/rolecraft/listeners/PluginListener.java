@@ -1,6 +1,10 @@
 package fr.martdel.rolecraft.listeners;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Arrow;
@@ -43,11 +47,13 @@ public class PluginListener implements Listener {
 		
 		// Using an item
 		if(item != null && item.hasItemMeta()) {
+			Material type = item.getType();
 			ItemMeta iMeta = item.getItemMeta();
 			if(iMeta.hasDisplayName()) {
+				String name = iMeta.getDisplayName();
 				
 				if(action.equals(Action.LEFT_CLICK_AIR) || action.equals(Action.LEFT_CLICK_BLOCK)) {
-					if(iMeta.getDisplayName().equalsIgnoreCase(ShockWave.ITEMNAME)) {
+					if(name.equalsIgnoreCase(ShockWave.ITEMNAME)) {
 						// Shockwave power
 						event.setCancelled(true);
 						Location center = player.getLocation();
@@ -64,7 +70,26 @@ public class PluginListener implements Listener {
 				}
 				
 				if(action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
-					if(iMeta.getDisplayName().equalsIgnoreCase(Bunker.ITEMNAME)) {
+					if(action.equals(Action.RIGHT_CLICK_BLOCK)) {
+						if(name.equalsIgnoreCase(SummonMob.ITEMNAME) && type.equals(SummonMob.SPAWNERTYPE)) {
+							// Bunker power
+							event.setCancelled(true);
+							Location clicked_bloc = event.getClickedBlock().getLocation();
+							ItemStack viewfinder = SummonMob.getViewFinder();
+							ItemMeta viewfinderMeta = viewfinder.getItemMeta();
+							viewfinderMeta.setLore(Arrays.asList(
+								"Invoquer un blaze sur le bloc :",
+								Integer.toString(clicked_bloc.getBlockX()),
+								Integer.toString(clicked_bloc.getBlockY() + 1),
+								Integer.toString(clicked_bloc.getBlockZ())
+							));
+							viewfinder.setItemMeta(viewfinderMeta);
+							int current_slot = player.getInventory().first(item);
+							player.getInventory().setItem(current_slot, viewfinder);
+						}
+					}
+					
+					if(name.equalsIgnoreCase(Bunker.ITEMNAME)) {
 						// Bunker power
 						event.setCancelled(true);
 						Location center = player.getLocation();
@@ -87,24 +112,33 @@ public class PluginListener implements Listener {
 		DamageCause cause = event.getCause();
 		Entity damager = event.getDamager();
 		Entity v = event.getEntity();
+		
 		if(damager.getType().equals(EntityType.ARROW) && cause.equals(DamageCause.PROJECTILE) && v instanceof LivingEntity) {
 			Arrow arrow = (Arrow) damager;
-			Player shooter = (Player) arrow.getShooter();
 			LivingEntity victim = (LivingEntity) v;
-			@SuppressWarnings("deprecation")
-			ItemStack weapon = shooter.getItemInHand();
-			if(weapon.getType().equals(SummonMob.ITEMTYPE) && weapon.getItemMeta().getDisplayName().equalsIgnoreCase(SummonMob.ITEMNAME)) {
-				// Summoner power
-				event.setDamage(0);
-				Location spawner = shooter.getLocation();
-				SummonMob mob = new SummonMob(plugin, spawner);
-				LivingEntity summon = mob.spawn(EntityType.BLAZE);
-				summon.setAI(false);
-				summon.setInvulnerable(true);
-				mob.setEntity(summon);
-				mob.attack(victim);
-				PowerLoader loader = new PowerLoader(plugin, shooter, SummonMob.getItemStack());
-				loader.startLoading(SummonMob.COOLDOWN);
+			
+			if(arrow.getShooter() instanceof Player) {
+				Player shooter = (Player) arrow.getShooter();
+				@SuppressWarnings("deprecation")
+				ItemStack weapon = shooter.getItemInHand();
+				
+				if(weapon.getType().equals(SummonMob.VIEWFINDERTYPE) && weapon.getItemMeta().getDisplayName().equalsIgnoreCase(SummonMob.ITEMNAME)) {
+					// Summoner power
+					event.setDamage(0);
+					List<String> weapon_lore = weapon.getItemMeta().getLore();
+					Location spawn = shooter.getLocation();
+					spawn.setX(Integer.parseInt(weapon_lore.get(1)));
+					spawn.setY(Integer.parseInt(weapon_lore.get(2)));
+					spawn.setZ(Integer.parseInt(weapon_lore.get(3)));
+					SummonMob mob = new SummonMob(plugin, spawn);
+					LivingEntity summon = mob.spawn(EntityType.BLAZE);
+					summon.setAI(false);
+					summon.setInvulnerable(true);
+					mob.setEntity(summon);
+					mob.attack(victim);
+					PowerLoader loader = new PowerLoader(plugin, shooter, weapon, SummonMob.getSpawner());
+					loader.startLoading(SummonMob.COOLDOWN);
+				}
 			}
 		}
 	}
