@@ -25,6 +25,13 @@ powers:
     bomb_name: §5Bombe de minage
     bomb_type: TNT
     radius: 2
+  telekinesis:
+    item_name: §5Lasso de télékinésie
+    using_name: §5Télékinésie §aen cours...
+    item_type: LEAD
+    max_distance: 5
+    start_msg: §5La télékinésie a §adémarrée
+    stop_msg: §5La télékinésie s'est §carrétée
   # Loader for powers cooldown
   loader:
     item_name1: §8Chargement de

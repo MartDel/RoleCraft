@@ -10,6 +10,7 @@ import fr.martdel.rolecraft.powers.Bomb;
 import fr.martdel.rolecraft.powers.Bunker;
 import fr.martdel.rolecraft.powers.ShockWave;
 import fr.martdel.rolecraft.powers.SummonMob;
+import fr.martdel.rolecraft.powers.Telekinesis;
 
 public class CommandPower implements CommandExecutor {
 
@@ -33,6 +34,9 @@ public class CommandPower implements CommandExecutor {
 					} else if(args[0].equalsIgnoreCase("bomb")) {
 						ItemStack bomb = Bomb.getItemStack();
 						player.getInventory().addItem(bomb);
+					} else if(args[0].equalsIgnoreCase("telekinesis")) {	
+						ItemStack tk = Telekinesis.getItemStack();
+						player.getInventory().addItem(tk);
 					}
 				}
 			}

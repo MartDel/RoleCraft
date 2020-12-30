@@ -1,7 +1,6 @@
 package fr.martdel.rolecraft.powers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -29,7 +28,8 @@ public class Bomb extends SquareBuilder {
 	public void explode() {
 		List<Location> to_explode = getCrackedBlocs();
 		for (Location bloc : to_explode) {
-			bloc.getWorld().getBlockAt(bloc).setType(Material.AIR);
+//			bloc.getWorld().getBlockAt(bloc).setType(Material.AIR);
+			bloc.getWorld().getBlockAt(bloc).breakNaturally();
 		}
 	}
 	
@@ -93,7 +93,6 @@ public class Bomb extends SquareBuilder {
 		ItemStack item = new ItemStack(BOMBTYPE);
 		ItemMeta itemmeta = item.getItemMeta();
 		itemmeta.setDisplayName(BOMBNAME);
-		itemmeta.setLore(Arrays.asList("Posez la bombe puis", "§ddéclenchez le détonateur§r !"));
 		itemmeta.addEnchant(Enchantment.DURABILITY, 200, true);
 		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		item.setItemMeta(itemmeta);

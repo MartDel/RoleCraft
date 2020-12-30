@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -30,6 +31,7 @@ import fr.martdel.rolecraft.powers.Bunker;
 import fr.martdel.rolecraft.powers.PowerLoader;
 import fr.martdel.rolecraft.powers.ShockWave;
 import fr.martdel.rolecraft.powers.SummonMob;
+import fr.martdel.rolecraft.powers.Telekinesis;
 
 public class PluginListener implements Listener {
 	
@@ -70,9 +72,11 @@ public class PluginListener implements Listener {
 				}
 				
 				if(action.equals(Action.RIGHT_CLICK_AIR) || action.equals(Action.RIGHT_CLICK_BLOCK)) {
+					
 					if(action.equals(Action.RIGHT_CLICK_BLOCK)) {
+						
 						if(name.equalsIgnoreCase(SummonMob.ITEMNAME) && type.equals(SummonMob.SPAWNERTYPE)) {
-							// Bunker power
+							// Summoner power
 							event.setCancelled(true);
 							Location clicked_bloc = event.getClickedBlock().getLocation();
 							ItemStack viewfinder = SummonMob.getViewFinder();
@@ -86,6 +90,20 @@ public class PluginListener implements Listener {
 							viewfinder.setItemMeta(viewfinderMeta);
 							int current_slot = player.getInventory().first(item);
 							player.getInventory().setItem(current_slot, viewfinder);
+						} else if(name.equalsIgnoreCase(Telekinesis.ITEMNAME)) {
+							// Telekinesis power
+							event.setCancelled(true);
+							iMeta.setDisplayName(Telekinesis.USINGNAME);
+							item.setItemMeta(iMeta);
+							Block clicked = event.getClickedBlock();
+							Telekinesis tk = new Telekinesis(plugin, player, clicked);
+							tk.setItemSlot(player.getInventory().first(item));
+							tk.moveBloc();
+						} else if(name.equalsIgnoreCase(Telekinesis.USINGNAME)) {
+							// Stop telekinesis power
+							event.setCancelled(true);
+							iMeta.setDisplayName(Telekinesis.ITEMNAME);
+							item.setItemMeta(iMeta);
 						}
 					}
 					
@@ -119,8 +137,7 @@ public class PluginListener implements Listener {
 			
 			if(arrow.getShooter() instanceof Player) {
 				Player shooter = (Player) arrow.getShooter();
-				@SuppressWarnings("deprecation")
-				ItemStack weapon = shooter.getItemInHand();
+				ItemStack weapon = shooter.getInventory().getItemInMainHand();
 				
 				if(weapon.getType().equals(SummonMob.VIEWFINDERTYPE) && weapon.getItemMeta().getDisplayName().equalsIgnoreCase(SummonMob.ITEMNAME)) {
 					// Summoner power
@@ -168,5 +185,5 @@ public class PluginListener implements Listener {
 	public void onItemPickup(EntityPickupItemEvent event) {
 		// TODO check bomb pickup
 	}
-
+	
 }
