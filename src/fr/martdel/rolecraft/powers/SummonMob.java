@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import fr.martdel.rolecraft.RoleCraft;
+import fr.martdel.rolecraft.Trigonometry;
 
 public class SummonMob {
 
@@ -64,7 +65,12 @@ public class SummonMob {
 				double xdif = target.getBlockX() - position.getBlockX();
 				double ydif = target.getBlockY() - position.getBlockY();
 				double zdif = target.getBlockZ() - position.getBlockZ();
-				double distance2D = Math.sqrt(Math.pow(xdif, 2) + Math.pow(zdif, 2));
+				
+				Trigonometry targetinfo = new Trigonometry();
+				targetinfo.setX(Math.abs(xdif));
+				targetinfo.setY(Math.abs(ydif));
+				targetinfo.setZ(Math.abs(zdif));
+				targetinfo.calculWithCoordinates();
 
 				// Get yaw to target victim
 				double yaw = 1;
@@ -72,8 +78,7 @@ public class SummonMob {
 					if(zdif < 0) yaw = 179;
 					else yaw = 1;
 				} else {
-					yaw = Math.atan(Math.abs(zdif) / Math.abs(xdif));
-					yaw = Math.toDegrees(yaw);
+					yaw = targetinfo.getYaw();
 					if(xdif > 0 && zdif > 0) yaw = -90 + yaw;
 					else if(xdif < 0 && zdif > 0) yaw = 90 - yaw;
 					else if(xdif < 0 && zdif < 0) yaw = 90 + yaw;
@@ -81,8 +86,7 @@ public class SummonMob {
 				}
 				
 				// Get pitch to target victim
-				double pitch = Math.atan(Math.abs(ydif) / Math.abs(distance2D));
-				pitch = Math.toDegrees(pitch);
+				double pitch = targetinfo.getPitch();
 				if(ydif > 0) pitch = -pitch;
 				
 				mob.setRotation((float) yaw, (float) pitch);

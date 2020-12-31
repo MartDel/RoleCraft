@@ -8,18 +8,22 @@ public class ConditionBuilder {
 		this.main = condition;
 	}
 	
-	public void and(boolean condition) {
+	public ConditionBuilder and(boolean condition) {
 		this.main = main && condition;
+		return this;
 	}
-	public void and(ConditionBuilder condition) {
+	public ConditionBuilder and(ConditionBuilder condition) {
 		this.main = main && condition.result();
+		return this;
 	}
 	
-	public void or(boolean condition) {
+	public ConditionBuilder or(boolean condition) {
 		this.main = main || condition;
+		return this;
 	}
-	public void or(ConditionBuilder condition) {
+	public ConditionBuilder or(ConditionBuilder condition) {
 		this.main = main || condition.result();
+		return this;
 	}
 	
 	public boolean result() {
