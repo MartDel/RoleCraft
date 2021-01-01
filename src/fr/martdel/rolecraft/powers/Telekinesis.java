@@ -58,53 +58,6 @@ public class Telekinesis {
 
 				Block target_bloc = player.getTargetBlockExact(MAXDISTANCE);
 				if(target_bloc == null) {
-//					Location center = player.getLocation();
-//					World world = center.getWorld();
-//					
-//					// Get empty blocks
-//					List<Block> empty_blocs = new ArrayList<>();
-//					for(int y = -MAXDISTANCE; y <= MAXDISTANCE; y++) {
-//						if(y == -MAXDISTANCE || y == MAXDISTANCE) {
-//							for (int x = -MAXDISTANCE; x <= MAXDISTANCE; x++) {
-//								for (int z = -MAXDISTANCE; z <= MAXDISTANCE; z++) {
-//									Location current_bloc_loc = new Location(world, center.getBlockX() + x, center.getBlockY() + y, center.getBlockZ() + z);
-//									Block current_bloc = world.getBlockAt(current_bloc_loc);
-//									if(current_bloc.getType().equals(Material.AIR)) empty_blocs.add(current_bloc);
-//								}
-//							}
-//						} else {
-//							for (int z = -MAXDISTANCE; z <= MAXDISTANCE; z++) {
-//								if(z == -MAXDISTANCE || z == MAXDISTANCE) {
-//									for (int x = -MAXDISTANCE; x <= MAXDISTANCE; x++) {
-//										Location current_bloc_loc = new Location(world, center.getBlockX() + x, center.getBlockY() + y, center.getBlockZ() + z);
-//										Block current_bloc = world.getBlockAt(current_bloc_loc);
-//										if(current_bloc.getType().equals(Material.AIR)) empty_blocs.add(current_bloc);
-//									}
-//								} else {
-//									Location current_bloc_loc = new Location(world, center.getBlockX() - MAXDISTANCE, center.getBlockY() + y, center.getBlockZ() + z);
-//									Block current_bloc = world.getBlockAt(current_bloc_loc);
-//									if(current_bloc.getType().equals(Material.AIR)) empty_blocs.add(current_bloc);
-//									
-//									current_bloc_loc = new Location(world, center.getBlockX() + MAXDISTANCE, center.getBlockY() + y, center.getBlockZ() + z);
-//									current_bloc = world.getBlockAt(current_bloc_loc);
-//									if(current_bloc.getType().equals(Material.AIR)) empty_blocs.add(current_bloc);
-//								}
-//							}
-//						}
-//					}
-//					
-//					Block search = null;
-//					for (Block empty_bloc : empty_blocs) {
-//						empty_bloc.setType(Material.STONE);
-//						Block refresh_targetbloc = player.getTargetBlockExact(MAXDISTANCE);
-//						if(refresh_targetbloc != null || empty_bloc.equals(refresh_targetbloc)) {
-//							search = refresh_targetbloc;
-//							break;
-//						} else empty_bloc.setType(Material.AIR);
-//					}
-//					
-//					if(search != null) moveTo(search);
-					
 					scheduler.runTaskLater(plugin, this, delay);
 					return;
 				}

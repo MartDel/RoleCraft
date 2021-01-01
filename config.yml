@@ -32,8 +32,17 @@ powers:
     max_distance: 5
     start_msg: §5La télékinésie a §adémarrée
     stop_msg: §5La télékinésie s'est §carrétée
+  fertility:
+    item_name: §5Fertilité
+    item_type: BONE_MEAL
+    radius: 2
+    end_msg: §5La fertilisation est §aterminée
+    not_found_msg: §5Le terrain n'est §cpas propice à la fertilisation
+    tree: JUNGLE_LOG
+    tree_height: 10
   # Loader for powers cooldown
   loader:
+    item_type: CLOCK
     item_name1: §8Chargement de
     item_name2: §8->§a
     item_name3: §a%

@@ -10,7 +10,7 @@ import fr.martdel.rolecraft.RoleCraft;
 
 public class PowerLoader {
 	
-	private static final Material LOADERTYPE = Material.CLOCK;
+	private static final Material LOADERTYPE = Material.getMaterial(RoleCraft.config.getString("powers.loader.item_type"));
 
 	private ItemStack item;
 	private ItemStack give_item;

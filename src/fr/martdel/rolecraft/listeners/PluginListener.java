@@ -28,6 +28,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import fr.martdel.rolecraft.RoleCraft;
 import fr.martdel.rolecraft.powers.Bomb;
 import fr.martdel.rolecraft.powers.Bunker;
+import fr.martdel.rolecraft.powers.Fertility;
 import fr.martdel.rolecraft.powers.PowerLoader;
 import fr.martdel.rolecraft.powers.ShockWave;
 import fr.martdel.rolecraft.powers.SummonMob;
@@ -119,6 +120,11 @@ public class PluginListener implements Listener {
 						bunker.build();
 						PowerLoader loader = new PowerLoader(plugin, player, Bunker.getItemStack());
 						loader.startLoading(Bunker.COOLDOWN);
+					} else if(name.equalsIgnoreCase(Fertility.ITEMNAME)) {
+						// Fertility power
+						event.setCancelled(true);
+						Fertility fertility = new Fertility(plugin, player);
+						fertility.run();
 					}
 				}
 			}

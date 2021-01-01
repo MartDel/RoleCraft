@@ -22,7 +22,7 @@ import fr.martdel.rolecraft.superclass.SquareBuilder;
 
 public class ShockWave extends SquareBuilder {
 	
-	private static final Material ITEMTYPE = Material.getMaterial(RoleCraft.config.getString("powers.shockwave.item_type"));;
+	private static final Material ITEMTYPE = Material.getMaterial(RoleCraft.config.getString("powers.shockwave.item_type"));
 	private static final int MAXRADIUS = RoleCraft.config.getInt("powers.shockwave.max_radius");
 	private static final int DELAY = RoleCraft.config.getInt("powers.shockwave.speed");
 	private static final int DAMAGE = RoleCraft.config.getInt("powers.shockwave.damage");

@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 import fr.martdel.rolecraft.powers.Bomb;
 import fr.martdel.rolecraft.powers.Bunker;
+import fr.martdel.rolecraft.powers.Fertility;
 import fr.martdel.rolecraft.powers.ShockWave;
 import fr.martdel.rolecraft.powers.SummonMob;
 import fr.martdel.rolecraft.powers.Telekinesis;
@@ -37,6 +38,9 @@ public class CommandPower implements CommandExecutor {
 					} else if(args[0].equalsIgnoreCase("telekinesis")) {	
 						ItemStack tk = Telekinesis.getItemStack();
 						player.getInventory().addItem(tk);
+					} else if(args[0].equalsIgnoreCase("fertility")) {	
+						ItemStack fertility = Fertility.getItemStack();
+						player.getInventory().addItem(fertility);
 					}
 				}
 			}
