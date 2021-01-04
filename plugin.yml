@@ -9,3 +9,6 @@ commands:
   power:
     description: Get a power item
     permission: power.use
+  # For tests
+  test:
+    permission: test.use

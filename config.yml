@@ -46,3 +46,27 @@ powers:
     item_name1: §8Chargement de
     item_name2: §8->§a
     item_name3: §a%
+
+announcements: [
+  "§bSeules les épées peuvent infliger des dégâts. Rappelez-vous en si vous n’êtes ni Aventurier, ni Garde, ni Éleveur.",
+  "§bN’oubliez pas de rejoindre notre serveur discord pour une meilleure communication avec les autres joueurs : https://discord.gg/mSGVzjJ",
+  "§bVos Admins préférés sont constamment en train de préparer des Events des plus sympathiques, restez informés et tenez vous prêts !",
+  "§bPour pimenter et varier votre aventure, n’hésitez pas à faire un tour au hall des missions au centre du village.",
+  "§bN’hésitez pas à consulter le règlement du serveur à la banque pour rester dans le droit chemin.",
+  "§bLes PNJs de la place du marché sont utiles pour débuter mais ils sont bien moins rentables que de vendre vos ressources à d’autres joueurs.",
+  "§bVous pouvez consulter votre enderchest à la banque.",
+  "§bN'oubliez pas de mettre vos biens en sûreté en ouvrant un compte à la banque.",
+  "§bVous pouvez acheter une boite aux lettres à la banque pour recevoir des messages ou des items d'autres joueurs lorsque vous n'êtes pas là.",
+  "§bSi vous ne pouvez pas crafter un item, n'hésitez pas à demander aux autres citoyens de vous aider.",
+  "§bVous pouvez tout autant acheter une maison que demander à un builder de vous en construire une sur mesure.",
+  "§bN'oubliez pas que le partage, la communication et l'échange entre citoyens sont la base de notre communauté.",
+  "§bUn banquier peut vous accorder un prêt pour acheter votre future maison.",
+  "§bSi vous travaillez bien, vous gagnerez régulièrement en niveau. Il s’affiche à côté de votre pseudo et peut être consulté avec la commande /level.",
+  "§bChaque métier possède une spécialisation. Vous la débloquez passé un certain niveau. Alors patience et travaillez bien !",
+  "§bSi vous avez des comptes à régler, une arène PVP est mise à votre disposition !",
+  "§bLa map est remplie de secrets bien cachés et continue de s'agrandir de jour en jour. N’hésitez pas à l’explorer pour, peut être, en découvrir les mystères…",
+  "§bLa map est protégée des joueurs, vous ne pouvez pas poser ou casser de blocs dans le village et ses alentours.",
+  "§bLes émeraudes ne pouvant pas être échangées avec un PNJ, vous pouvez les vendre en cliquant sur une pancartes à la banque.",
+  "§bVous êtes perdu avec les commandes du serveur? Rendez-vous à la banque et cliquez sur une des pancartes, elle vous donnera un livre récapitulant toutes les commandes disponibles.",
+  "§bLe PNJ Charlatan peut vous fournir de la nourriture mais il sera bien plus intéressant pour vous d’aller voir un fermier ou un éleveur."
+]
