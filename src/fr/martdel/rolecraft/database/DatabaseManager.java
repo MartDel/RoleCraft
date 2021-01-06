@@ -3,6 +3,7 @@ package fr.martdel.rolecraft.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class DatabaseManager {
 	
@@ -11,10 +12,11 @@ public class DatabaseManager {
 	public void connect() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			this.connection = DriverManager.getConnection(
-					DBCredentials.toURI(),
-					DBCredentials.USERNAME,
-					DBCredentials.PASSWORD);
+			Properties properties = new Properties();
+			properties.setProperty("user", DBCredentials.USERNAME);
+			properties.setProperty("password", DBCredentials.PASSWORD);
+			properties.setProperty("useSSL", "false");
+			this.connection = DriverManager.getConnection(DBCredentials.toURI(), properties);
 		} catch (SQLException | ClassNotFoundException e) {
 			// TODO Add pushbullet notification
 			e.printStackTrace();

@@ -3,8 +3,8 @@ package fr.martdel.rolecraft.database;
 public abstract class DBCredentials {
 	
 	public static final String HOST = "localhost";
-	public static final String USERNAME = "debian-sys-maint";
-	public static final String PASSWORD = "glTsY8j6p0olqFFD";
+	public static final String USERNAME = "rolecraft";
+	public static final String PASSWORD = "Rxx^4i49!h#By5";
 	public static final String DBNAME = "rolecraft";
 	public static final int PORT = 3306;
 	

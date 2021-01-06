@@ -26,7 +26,7 @@ public class CommandTest implements CommandExecutor {
 				Integer job = player.getJob();
 				if(job == null) {
 					player.getPlayer().sendMessage("Pas de travail");
-					player.setJob(0);
+					player.addJob(0);
 				} else {
 					player.getPlayer().sendMessage(job.toString());
 				}
