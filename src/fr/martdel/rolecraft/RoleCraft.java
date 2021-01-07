@@ -13,6 +13,7 @@ import fr.martdel.rolecraft.commands.CommandPower;
 import fr.martdel.rolecraft.commands.CommandTest;
 import fr.martdel.rolecraft.database.DatabaseManager;
 import fr.martdel.rolecraft.listeners.PluginListener;
+import fr.martdel.rolecraft.listeners.PowerListener;
 
 public class RoleCraft extends JavaPlugin {
 	
@@ -36,9 +37,10 @@ public class RoleCraft extends JavaPlugin {
 			}
 		}.runTaskTimer(this, 0, 12000);
 		
-		getCommand("test").setExecutor(new CommandTest(this));
+		getCommand("test").setExecutor(new CommandTest());
 		getCommand("power").setExecutor(new CommandPower());
 		getServer().getPluginManager().registerEvents(new PluginListener(this), this);
+		getServer().getPluginManager().registerEvents(new PowerListener(this), this);
 	}
 	
 	@Override
