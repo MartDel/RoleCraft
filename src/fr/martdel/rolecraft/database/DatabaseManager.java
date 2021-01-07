@@ -39,5 +39,10 @@ public class DatabaseManager {
 		return connection;
 	}
 
+	public static void error(SQLException e) {
+		// TODO Pushbullet notification
+		e.printStackTrace();
+	}
+
 
 }
