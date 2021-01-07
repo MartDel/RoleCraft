@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -94,6 +95,18 @@ public class PluginListener implements Listener {
 		if(team != null) {
 			event.setFormat("§" + color +  prefix + "§r %1$s> %2$s");
 		}
+	}
+	
+	@EventHandler
+	public void onDie(PlayerDeathEvent event) {
+		Player player = event.getEntity();
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
+		TeamManager team = customPlayer.getTeam();
+		/*
+		 * NEW PLAYER DIES
+		 */
+		TeamManager team_new = new TeamManager(plugin, "Nouveau");
+		if(team.getName().equals(team_new.getName())) event.setKeepInventory(true);
 	}
 	
 }
