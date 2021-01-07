@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -107,6 +108,15 @@ public class PluginListener implements Listener {
 		 */
 		TeamManager team_new = new TeamManager(plugin, "Nouveau");
 		if(team.getName().equals(team_new.getName())) event.setKeepInventory(true);
+	}
+	
+	@EventHandler
+	public void onCraft(CraftItemEvent event) {
+		ItemStack item = event.getCurrentItem();
+		/*
+		 * REMOVE EMERALD CRAFT
+		 */
+		if(item.getType().equals(Material.EMERALD)) event.setCancelled(true);
 	}
 	
 }
