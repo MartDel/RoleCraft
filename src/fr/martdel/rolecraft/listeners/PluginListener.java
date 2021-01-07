@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +16,7 @@ import fr.martdel.rolecraft.CustomPlayer;
 import fr.martdel.rolecraft.RoleCraft;
 import fr.martdel.rolecraft.TeamManager;
 
+@SuppressWarnings("deprecation")
 public class PluginListener implements Listener {
 	
 	private RoleCraft plugin;
@@ -77,6 +79,20 @@ public class PluginListener implements Listener {
 			event.setQuitMessage("(§4-§r) §" + color + prefix + "§r" + player.getDisplayName());
 		} catch (Exception e) {
 			event.setQuitMessage("(§4-§r) " + player.getDisplayName());
+		}
+	}
+	
+	@EventHandler
+	public void onMessage(PlayerChatEvent event) {
+		Player player = event.getPlayer();
+		CustomPlayer customPLayer = new CustomPlayer(player, plugin);
+		TeamManager team = customPLayer.getTeam();
+		String color = team.getColor();
+		String prefix = team.getTeam().getPrefix();
+		
+		// <%1$s> %2$s
+		if(team != null) {
+			event.setFormat("§" + color +  prefix + "§r %1$s> %2$s");
 		}
 	}
 	
