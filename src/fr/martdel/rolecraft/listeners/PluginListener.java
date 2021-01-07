@@ -32,7 +32,7 @@ public class PluginListener implements Listener {
 		Player player = event.getPlayer();
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
 		
-		if(customPlayer.isSaved()) {
+		if(customPlayer.isRegistered()) {
 			TeamManager team = customPlayer.getTeam();
 			String color = team.getColor();
 			String prefix = team.getTeam().getPrefix();
@@ -55,7 +55,7 @@ public class PluginListener implements Listener {
 			player.teleport(worldspawn);
 			
 			// Set data
-			customPlayer.save();
+			customPlayer.register();
 			new TeamManager(plugin, "Nouveau").add(player);
 			
 			// Give the start compass to choose his job
@@ -87,8 +87,8 @@ public class PluginListener implements Listener {
 	@EventHandler
 	public void onMessage(PlayerChatEvent event) {
 		Player player = event.getPlayer();
-		CustomPlayer customPLayer = new CustomPlayer(player, plugin);
-		TeamManager team = customPLayer.getTeam();
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
+		TeamManager team = customPlayer.getTeam();
 		String color = team.getColor();
 		String prefix = team.getTeam().getPrefix();
 		
