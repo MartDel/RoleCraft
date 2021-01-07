@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import fr.martdel.rolecraft.CustomPlayer;
 import fr.martdel.rolecraft.RoleCraft;
 import fr.martdel.rolecraft.TeamManager;
@@ -31,8 +31,8 @@ public class PluginListener implements Listener {
 		if(customPlayer.isSaved()) {
 			TeamManager team = customPlayer.getTeam();
 			String color = team.getColor();
-			
-			event.setJoinMessage("(§a+§r) §" + color + "[" + team.getName() + "] §r" + player.getDisplayName());
+			String prefix = team.getTeam().getPrefix();
+			event.setJoinMessage("(§a+§r) §" + color + prefix + "§r" + player.getDisplayName());
 			System.out.println(player.getDisplayName() + " vient de rejoindre le serveur.");
 			System.out.println("Il a choisi le metier de " + customPlayer.getStringJob("fr"));
 //			System.out.println("Il possede un score de " + main.getScore().getScore(player));
@@ -54,6 +54,7 @@ public class PluginListener implements Listener {
 			customPlayer.save();
 			new TeamManager(plugin, "Nouveau").add(player);
 			
+			// Give the start compass to choose his job
 			ItemStack compass = new ItemStack(Material.COMPASS);
 			ItemMeta compassMeta = compass.getItemMeta();
 			compassMeta.setDisplayName("§9Choisir son métier");
@@ -61,6 +62,21 @@ public class PluginListener implements Listener {
 			compassMeta.setCustomModelData(3);
 			compass.setItemMeta(compassMeta);
 			player.getInventory().addItem(compass);
+		}
+	}
+	
+	@EventHandler
+	public void onQuit(PlayerQuitEvent event) {
+		Player player = event.getPlayer();
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
+		
+		try {
+			TeamManager team = customPlayer.getTeam();
+			String color = team.getColor();
+			String prefix = team.getTeam().getPrefix();
+			event.setQuitMessage("(§4-§r) §" + color + prefix + "§r" + player.getDisplayName());
+		} catch (Exception e) {
+			event.setQuitMessage("(§4-§r) " + player.getDisplayName());
 		}
 	}
 	

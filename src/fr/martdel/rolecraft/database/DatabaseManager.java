@@ -16,6 +16,7 @@ public class DatabaseManager {
 			properties.setProperty("user", DBCredentials.USERNAME);
 			properties.setProperty("password", DBCredentials.PASSWORD);
 			properties.setProperty("autoReconnect", "true");
+			properties.setProperty("allowPublicKeyRetrieval", "true");
 			properties.setProperty("useSSL", "false");
 			this.connection = DriverManager.getConnection(DBCredentials.toURI(), properties);
 		} catch (SQLException | ClassNotFoundException e) {

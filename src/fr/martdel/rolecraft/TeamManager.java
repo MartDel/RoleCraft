@@ -81,5 +81,7 @@ public class TeamManager {
 	// GETTERS AND SETTERS
 	public String getName() { return name; }
 	public void setName(String name) { this.name = name; }
+	public Team getTeam() { return tm; }
+	public void setTeam(Team team) { this.tm = team; }
 	
 }
