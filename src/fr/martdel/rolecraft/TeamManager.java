@@ -8,10 +8,17 @@ public class TeamManager {
 	
 	private Team tm;
 	private String name;
+	private RoleCraft plugin;
 
 	public TeamManager(RoleCraft main, String name) {
 		this.tm = main.getServer().getScoreboardManager().getMainScoreboard().getTeam(name);
 		this.name = name;
+		this.plugin = main;
+	}
+	public TeamManager(RoleCraft main, Team tm) {
+		this.tm = tm;
+		this.name = tm.getName();
+		this.plugin = main;
 	}
 	
 	/**
@@ -54,6 +61,9 @@ public class TeamManager {
 		this.remove(player);
 		otherTeam.add(player);
 	}
+	public void move(Player player, String teamname) {
+		move(player, new TeamManager(plugin, teamname));
+	}
 	
 	/**
 	 * Get the team color to print it
@@ -69,13 +79,10 @@ public class TeamManager {
 	 * @param player
 	 * @return TeamManager
 	 */
-	public static TeamManager getPlayerTeam(RoleCraft plugin, Player player, String job) {
-		String[] extra_teams = {"Admin", "Nouveau"};
-		for(String team_name : extra_teams) {
-			TeamManager team = new TeamManager(plugin, team_name);
-			if(team.isIn(player)) return team;
-		}
-		return new TeamManager(plugin, job);
+	public static TeamManager getPlayerTeam(RoleCraft plugin, Player player) {
+		@SuppressWarnings("deprecation")
+		Team team = plugin.getServer().getScoreboardManager().getMainScoreboard().getPlayerTeam(player);
+		return new TeamManager(plugin, team);
 	}
 	
 	// GETTERS AND SETTERS

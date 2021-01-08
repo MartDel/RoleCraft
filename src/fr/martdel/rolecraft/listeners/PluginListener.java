@@ -30,22 +30,24 @@ public class PluginListener implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
 		
 		if(customPlayer.isRegistered()) {
 			TeamManager team = customPlayer.getTeam();
 			String color = team.getColor();
 			String prefix = team.getTeam().getPrefix();
+			
 			event.setJoinMessage("(§a+§r) §" + color + prefix + "§r" + player.getDisplayName());
+			
 			System.out.println(player.getDisplayName() + " vient de rejoindre le serveur.");
 			System.out.println("Il a choisi le metier de " + customPlayer.getStringJob("fr"));
-//			System.out.println("Il possede un score de " + main.getScore().getScore(player));
+			System.out.println("Il possede un score de " + customPlayer.getScore());
 		} else {
 			/*
 			 * NEW PLAYER
 			 */
-			System.out.println(player.getDisplayName() + " est nouveau sur ce serveur!");
 			event.setJoinMessage("(§a+§r) Un nouveau joueur, §a" + player.getDisplayName() + "§r, vient d'arriver sur le serveur!");
+			System.out.println(player.getDisplayName() + " est nouveau sur ce serveur!");
 			
 			// TP to World Spawn
 			double x = RoleCraft.config.getDouble("world_spawn.x");

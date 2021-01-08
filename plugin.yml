@@ -5,6 +5,10 @@ main: fr.martdel.rolecraft.RoleCraft
 api-version: 1.13
 
 commands:
+  # Public commands
+  switch:
+    description: Permet aux admins de s'OP facilement
+
   # Powers
   power:
     description: Get a power item

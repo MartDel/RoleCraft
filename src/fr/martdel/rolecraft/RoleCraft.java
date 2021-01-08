@@ -9,7 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import fr.martdel.rolecraft.commands.CommandPower;
+import fr.martdel.rolecraft.commands.CommandPublic;
 import fr.martdel.rolecraft.commands.CommandTest;
 import fr.martdel.rolecraft.database.DatabaseManager;
 import fr.martdel.rolecraft.listeners.PluginListener;
@@ -19,7 +19,11 @@ public class RoleCraft extends JavaPlugin {
 	
 	public static FileConfiguration config;
 	
+	private final String[] PUBLICCOMMANDS = {"switch"};
+	private final String[] TESTCOMMANDS = {"test", "power"};
+	
 	private DatabaseManager db;
+	private Score lvl;
 	
 	@Override
 	public void onEnable() {
@@ -28,7 +32,21 @@ public class RoleCraft extends JavaPlugin {
 		RoleCraft.config = this.getConfig();
 		
 		this.db = new DatabaseManager();
+		this.lvl = new Score(this, "Niveau");
 		
+		// Commands
+		for (String command : PUBLICCOMMANDS) {
+			getCommand(command).setExecutor(new CommandPublic(this));
+		}
+		for (String command : TESTCOMMANDS) {
+			getCommand(command).setExecutor(new CommandTest(this));
+		}
+		
+		// Listeners
+		getServer().getPluginManager().registerEvents(new PluginListener(this), this);
+		getServer().getPluginManager().registerEvents(new PowerListener(this), this);
+		
+		// Announcements
 		List<String> announcements = config.getStringList("announcements");
 		new BukkitRunnable() {
 			@Override
@@ -36,11 +54,6 @@ public class RoleCraft extends JavaPlugin {
 				Bukkit.broadcastMessage("§5[Info Serveur]§b " + announcements.get(new Random().nextInt(announcements.size())));
 			}
 		}.runTaskTimer(this, 0, 12000);
-		
-		getCommand("test").setExecutor(new CommandTest());
-		getCommand("power").setExecutor(new CommandPower());
-		getServer().getPluginManager().registerEvents(new PluginListener(this), this);
-		getServer().getPluginManager().registerEvents(new PowerListener(this), this);
 	}
 	
 	@Override
@@ -50,6 +63,15 @@ public class RoleCraft extends JavaPlugin {
 	
 	public DatabaseManager getDB() { return db; }
 	
+	/**
+	 * Capitalize the first letter of a string
+	 * @param str The string
+	 * @return String
+	 */
+	public static String firstLetterToUpperCase(String str) {
+		return str.substring(0, 1).toUpperCase() + str.substring(1);
+	}
+	
 	public static void printLocation(Location l) {
 		System.out.println(
 			"x=" + l.getBlockX() +
@@ -57,5 +79,7 @@ public class RoleCraft extends JavaPlugin {
 			" z=" + l.getBlockZ()
 		);
 	}
+
+	public Score getLvl() { return lvl; }
 
 }
