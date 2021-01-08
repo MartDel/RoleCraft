@@ -7,7 +7,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class Money {
+public class Wallet {
 
 	public static final String RUBYNAME = "Rubis";
 	public static final Material RUBYTYPE = Material.EMERALD;
@@ -18,7 +18,7 @@ public class Money {
 	private Player player;
 	private Inventory inv;
 		
-	public Money(Player player) {
+	public Wallet(Player player) {
 		this.player = player;
 		this.inv = player.getInventory();
 	}

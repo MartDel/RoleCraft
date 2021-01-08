@@ -6,8 +6,42 @@ api-version: 1.13
 
 commands:
   # Public commands
+  mp:
+    description: Envoi un message prive a un autre joueur
+  farmer:
+    description: Envoi un message a tous les fermiers
+  miner:
+    description: Envoi un message a tous les mineurs
+  explorer:
+    description: Envoi un message a tous les aventuriers
+  builder:
+    description: Envoi un message a tous les builders
+  admin:
+    description: Envoi un message a tous les admins
+  level:
+    description: Affiche le score du joueur
+  invite:
+    description: Invite un joueur a rejoindre le Discord
+  ginfo:
+    description: Permet d'obtenir une information sur le terrain
+  sell:
+    description: Permet de vendre un terrain
   switch:
     description: Permet aux admins de s'OP facilement
+
+  # Admin commands
+  delimiter:
+    description: Give au joueur un stick pour delimiter la zone d'une propriete
+    permission: ground.use
+  path:
+    description: Give au joueur un item pour generer un chemin grace a WorldEdit
+    permission: path.use
+  spawn:
+    description: Tp le joueur au milieu du village
+    permission: spawn.use
+  rubis:
+    description: Give des rubis
+    permission: rubis.use
 
   # Powers
   power:
@@ -15,4 +49,5 @@ commands:
     permission: power.use
   # For tests
   test:
+    description: Test command
     permission: test.use

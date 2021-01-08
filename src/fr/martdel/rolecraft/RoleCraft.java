@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import fr.martdel.rolecraft.commands.CommandAdmin;
 import fr.martdel.rolecraft.commands.CommandPublic;
 import fr.martdel.rolecraft.commands.CommandTest;
 import fr.martdel.rolecraft.database.DatabaseManager;
@@ -19,7 +20,8 @@ public class RoleCraft extends JavaPlugin {
 	
 	public static FileConfiguration config;
 	
-	private final String[] PUBLICCOMMANDS = {"switch"};
+	private final String[] PUBLICCOMMANDS = {"switch", "mp", "farmer", "miner", "explorer", "builder", "admin", "level", "invite", "ginfo", "sell"};
+	private final String[] ADMINCOMMANDS = {"delimiter", "path", "spawn", "rubis"};
 	private final String[] TESTCOMMANDS = {"test", "power"};
 	
 	private DatabaseManager db;
@@ -37,6 +39,9 @@ public class RoleCraft extends JavaPlugin {
 		// Commands
 		for (String command : PUBLICCOMMANDS) {
 			getCommand(command).setExecutor(new CommandPublic(this));
+		}
+		for (String command : ADMINCOMMANDS) {
+			getCommand(command).setExecutor(new CommandAdmin(this));
 		}
 		for (String command : TESTCOMMANDS) {
 			getCommand(command).setExecutor(new CommandTest(this));

@@ -99,10 +99,6 @@ public class CustomPlayer {
 	@SuppressWarnings("deprecation")
 	public int getMaxHearts() { return (int) player.getMaxHealth() / 2; }
 	
-	public TeamManager getTeam() {
-		return TeamManager.getPlayerTeam(plugin, player);
-	}
-	
 	/**
 	 * Load and get data from database
 	 * @return this (CustomPlayer)
@@ -386,6 +382,9 @@ public class CustomPlayer {
 	/*
 	 * GETTERS and SETTERS
 	 */
+	public TeamManager getTeam() { return TeamManager.getPlayerTeam(plugin, player); }
+	public Wallet getWallet() { return new Wallet(player); }
+	
 	public Boolean isAdmin() { return this.is_admin; }
 	public void setAdmin(Boolean is_admin) { this.is_admin = is_admin; }
 
