@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : ven. 08 jan. 2021 à 00:49
+-- Généré le : lun. 11 jan. 2021 à 08:04
 -- Version du serveur :  8.0.22-0ubuntu0.20.04.3
 -- Version de PHP : 7.4.3
 
@@ -21,6 +21,30 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `rolecraft`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `admin_grounds`
+--
+
+CREATE TABLE `admin_grounds` (
+  `id` int NOT NULL,
+  `owner_uuid` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `x1` int DEFAULT NULL,
+  `y1` int DEFAULT NULL,
+  `z1` int DEFAULT NULL,
+  `x2` int DEFAULT NULL,
+  `y2` int DEFAULT NULL,
+  `z2` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `admin_grounds`
+--
+
+INSERT INTO `admin_grounds` (`id`, `owner_uuid`, `x1`, `y1`, `z1`, `x2`, `y2`, `z2`) VALUES
+(2, 'd985993e-f3ed-45fc-8cdf-0dc38748e73f', NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -85,14 +109,38 @@ CREATE TABLE `players` (
   `pseudo` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `admin` bit(1) NOT NULL DEFAULT b'0',
   `level` int NOT NULL DEFAULT '1',
+  `score` int NOT NULL DEFAULT '0',
   `job` int DEFAULT NULL,
   `spe` bit(1) NOT NULL DEFAULT b'0',
-  `house` int DEFAULT NULL
+  `house` int DEFAULT NULL,
+  `shop` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `shops`
+--
+
+CREATE TABLE `shops` (
+  `id` int NOT NULL,
+  `x1` int NOT NULL,
+  `y1` int NOT NULL,
+  `z1` int NOT NULL,
+  `x2` int NOT NULL,
+  `y2` int NOT NULL,
+  `z2` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Index pour les tables déchargées
 --
+
+--
+-- Index pour la table `admin_grounds`
+--
+ALTER TABLE `admin_grounds`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Index pour la table `builds`
@@ -119,8 +167,20 @@ ALTER TABLE `players`
   ADD PRIMARY KEY (`uuid`);
 
 --
+-- Index pour la table `shops`
+--
+ALTER TABLE `shops`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT pour les tables déchargées
 --
+
+--
+-- AUTO_INCREMENT pour la table `admin_grounds`
+--
+ALTER TABLE `admin_grounds`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `builds`
@@ -138,6 +198,12 @@ ALTER TABLE `farms`
 -- AUTO_INCREMENT pour la table `houses`
 --
 ALTER TABLE `houses`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `shops`
+--
+ALTER TABLE `shops`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 COMMIT;
 
