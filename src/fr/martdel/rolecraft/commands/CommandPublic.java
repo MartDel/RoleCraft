@@ -1,14 +1,26 @@
 package fr.martdel.rolecraft.commands;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
 import fr.martdel.rolecraft.CustomPlayer;
 import fr.martdel.rolecraft.RoleCraft;
 import fr.martdel.rolecraft.TeamManager;
@@ -43,29 +55,27 @@ public class CommandPublic implements CommandExecutor {
 					}
 
 					StringBuilder message = new StringBuilder();
-					for(int i = 0; i < args.length; i++) {
-						message.append(args[i] + " ");
+					for(int j = 0; j < args.length; j++) {
+						message.append(args[j] + " ");
 					}
 
-					List<Map<?, ?>> jobs_list = RoleCraft.config.getMapList("jobs");
-					@SuppressWarnings("unchecked")
-					Map<String, String> job = (Map<String, String>) jobs_list.get(i);
-					String fr = job.get("fr") + "s";
-					String player_color = customPlayer.getTeam().getColor();
-					
-					TeamManager to_team = new TeamManager(plugin, RoleCraft.firstLetterToUpperCase(job.get("fr")));
-					
-					for(OfflinePlayer p : plugin.getServer().getOfflinePlayers()) {
-						if(p instanceof Player) {
-							Player addressees = (Player) p;
-							
-							if(to_team.isIn(addressees)) {
-								addressees.sendMessage("(A tous les " + fr + ") [§" + player_color + player.getDisplayName() + "§r] " + message);
-							}
-						}
+					PreparedStatement query = plugin.getDB().getConnection().prepareStatement("SELECT uuid FROM players WHERE job=?");
+					query.setInt(1, i);
+					ResultSet result = query.executeQuery();
+					while(result.next()) {
+						String uuid = result.getString("uuid");
+						Player addressees = plugin.getServer().getPlayer(uuid);
+						
+						List<Map<?, ?>> jobs_list = RoleCraft.config.getMapList("jobs");
+						@SuppressWarnings("unchecked")
+						Map<String, String> job = (Map<String, String>) jobs_list.get(i);
+						String fr = job.get("fr") + "s";
+						String player_color = team.getColor();						
+						
+						addressees.sendMessage("(A tous les " + fr + ") [§" + player_color + player.getDisplayName() + "§r] " + message);
 					}
+					query.close();
 					
-					player.sendMessage("(A tous les " + fr + ") [§" + player_color + player.getDisplayName() + "§r] " + message);
 					return true;
 				}
 			}
@@ -102,90 +112,35 @@ public class CommandPublic implements CommandExecutor {
 				/*
 				 * SEND A PRIVATE MESSAGE TO AN OTHER PLAYER
 				 */
-				if(args.length > 1) {
-					String addressees_str = args[0];
-					Player addressees = null;
-					
-					for(OfflinePlayer a : plugin.getServer().getOfflinePlayers()) {
-						if(a instanceof Player) {
-							Player p = (Player) a;
-							if(p.getDisplayName().equalsIgnoreCase(addressees_str)) addressees = p;
-						}
-					}
-					if(addressees == null) {
-						player.sendMessage("§4Nom du joueur non valide");
-						return false;
-					}
-					
-					StringBuilder message = new StringBuilder();
-					for(int i = 1; i < args.length; i++) {
-						message.append(args[i] + " ");
-					}
-					
-					String sender_color = customPlayer.getTeam().getColor();
-					String addressees_color = new CustomPlayer(addressees, plugin).getTeam().getColor();
-					
-					player.sendMessage("[§" + sender_color + player.getDisplayName() + "§r] -> [§" + addressees_color + addressees.getDisplayName() + "§r] " + message);
-					addressees.sendMessage("[§" + sender_color + player.getDisplayName() + "§r] " + message);
-				} else {
+				if(args.length <= 1) {
 					player.sendMessage("§4Il manque des arguments");
-				}
-			} else if(cmd.getName().equalsIgnoreCase("farmer")){
-				/*
-				 * SEND A MESSAGE TO ALL OF PLAYERS IN THE FARMER TEAM
-				 */
-				if(args.length < 1) {
-					player.sendMessage("§4Il manque un argument.");
 					return false;
 				}
-
-				StringBuilder message = new StringBuilder();
-				for(int i = 0; i < args.length; i++) {
-					message.append(args[i] + " ");
+				
+				String addressees_str = args[0];
+				Player addressees = null;
+				
+				for(OfflinePlayer a : plugin.getServer().getOfflinePlayers()) {
+					if(a instanceof Player) {
+						Player p = (Player) a;
+						if(p.getDisplayName().equalsIgnoreCase(addressees_str)) addressees = p;
+					}
 				}
-				teamMsg(0, message.toString(), player);
-			} else if(cmd.getName().equalsIgnoreCase("miner")){
-				/*
-				 * SEND A MESSAGE TO ALL OF PLAYERS IN THE MINER TEAM
-				 */
-				if(args.length < 1) {
-					player.sendMessage("§4Il manque un argument.");
+				if(addressees == null) {
+					player.sendMessage("§4Nom du joueur non valide");
 					return false;
 				}
-
+				
 				StringBuilder message = new StringBuilder();
-				for(int i = 0; i < args.length; i++) {
+				for(int i = 1; i < args.length; i++) {
 					message.append(args[i] + " ");
 				}
-				teamMsg(1, message.toString(), player);
-			} else if(cmd.getName().equalsIgnoreCase("explorer")){
-				/*
-				 * SEND A MESSAGE TO ALL OF PLAYERS IN THE EXPLORER TEAM
-				 */
-				if(args.length < 1) {
-					player.sendMessage("§4Il manque un argument.");
-					return false;
-				}
-
-				StringBuilder message = new StringBuilder();
-				for(int i = 0; i < args.length; i++) {
-					message.append(args[i] + " ");
-				}
-				teamMsg(2, message.toString(), player);
-			} else if(cmd.getName().equalsIgnoreCase("builder")){
-				/*
-				 * SEND A MESSAGE TO ALL OF PLAYERS IN THE BUILDER TEAM
-				 */
-				if(args.length < 1) {
-					player.sendMessage("§4Il manque un argument.");
-					return false;
-				}
-
-				StringBuilder message = new StringBuilder();
-				for(int i = 0; i < args.length; i++) {
-					message.append(args[i] + " ");
-				}
-				teamMsg(3, message.toString(), player);
+				
+				String sender_color = customPlayer.getTeam().getColor();
+				String addressees_color = new CustomPlayer(addressees, plugin).getTeam().getColor();
+				
+				player.sendMessage("[§" + sender_color + player.getDisplayName() + "§r] -> [§" + addressees_color + addressees.getDisplayName() + "§r] " + message);
+				addressees.sendMessage("[§" + sender_color + player.getDisplayName() + "§r] " + message);
 			} else if(cmd.getName().equalsIgnoreCase("admin")){
 				/*
 				 * SEND A MESSAGE TO ALL OF PLAYERS IN THE ADMIN TEAM
@@ -195,61 +150,27 @@ public class CommandPublic implements CommandExecutor {
 					return false;
 				}
 				
-				int player_job = main.getJobs().getScore(player);
-				String player_color = main.getConfig().getString("jobs." + player_job + ".color");
-
 				StringBuilder message = new StringBuilder();
 				for(int i = 0; i < args.length; i++) {
 					message.append(args[i] + " ");
 				}
-				for(OfflinePlayer p : main.getServer().getOfflinePlayers()) {
-					if((p instanceof Player) && p.isOnline()) {
-						Player c_player = (Player) p;
-						if(main.getSbAdmins().getScore(c_player) == 1) c_player.sendMessage("(A tous les admins) [§" + player_color + player.getDisplayName() + "§r] " + message.toString());
-					}
+
+				String player_color = team.getColor();
+				
+				PreparedStatement query = plugin.getDB().getConnection().prepareStatement("SELECT uuid FROM players WHERE admin=?");
+				query.setByte(1, (byte) 1);
+				ResultSet result = query.executeQuery();
+				while(result.next()) {
+					String uuid = result.getString("uuid");
+					Player addressees = plugin.getServer().getPlayer(uuid);
+					addressees.sendMessage("(A tous les admins) [§" + player_color + player.getDisplayName() + "§r] " + message.toString());
 				}
+				query.close();
+				
 				player.sendMessage("(A tous les admins) [§" + player_color + player.getDisplayName() + "§r] " + message.toString());
-			} else if(cmd.getName().equalsIgnoreCase("hide")) {
-				/*
-				 * HIDE/PRINT BROADCAST MESSAGES
-				 */
-				int hide = main.getHide().getScore(player);
-				if(hide == 0) {
-					main.getHide().setScore(player, 1);
-					player.sendMessage("L'affichage des annonces est désactivé");
-				} else {
-					main.getHide().setScore(player, 0);
-					player.sendMessage("L'affichage des annonces est activé");
-				}
-			} else if(cmd.getName().equalsIgnoreCase("switch")) {
-				/*
-				 * SWITCH AN ADMIN TO RP OR A RP ADMIN TO ADMIN
-				 */
-				if(main.getSbAdmins().getScore(player) == 1) {
-					if(player.isOp()) {
-						player.setOp(false);
-						player.setGameMode(GameMode.SURVIVAL);
-						player.sendMessage("Vous n'êtes plus OP");
-						if(main.getSpe().getScore(player) == 0) {
-							String job = main.getConfig().getString("jobs." + main.getJobs().getScore(player) + ".en");
-							main.getAdmins().move(player, main.getTeam(job));
-						} else {
-							String spe = main.getConfig().getString("spe." + main.getJobs().getScore(player) + ".en");
-							main.getAdmins().move(player, main.getTeam(spe));
-						}
-					} else {
-						player.setOp(true);
-						player.setGameMode(GameMode.CREATIVE);
-						player.sendMessage("Vous êtes OP");
-						main.removeOfAllTeams(player);
-						main.getAdmins().add(player);
-					}
-				} else {
-					player.sendMessage("§4Vous ne pouvez pas exécuter cette commande :");
-					player.sendMessage("§6Vous n'avez pas les droits administrateurs de ce serveur.");
-				}
-			} else if(cmd.getName().equalsIgnoreCase("level")) player.sendMessage("Votre niveau actuel s'élève à §a" + main.getLVL().getScore(player)); // PRINT PLAYER'S LVL
-			else if(cmd.getName().equalsIgnoreCase("invite")) {
+			} else if(cmd.getName().equalsIgnoreCase("level")) {
+				player.sendMessage("Votre niveau actuel s'élève à §a" + customPlayer.getLevel()); // PRINT PLAYER'S LVL
+			} else if(cmd.getName().equalsIgnoreCase("invite")) {
 				/*
 				 * INVITE A PLAYER TO THE DISCORD SERVER
 				 */
@@ -258,15 +179,7 @@ public class CommandPublic implements CommandExecutor {
 					return false;
 				}
 				
-				Player addressees = null;
-				String addressees_str = args[0];
-				
-				for(OfflinePlayer a : main.getServer().getOfflinePlayers()) {
-					if(a instanceof Player) {
-						Player p = (Player) a;
-						if(p.getDisplayName().equalsIgnoreCase(addressees_str)) addressees = p;
-					}
-				}
+				Player addressees = plugin.getServer().getPlayer(args[0]);
 				if(addressees == null) {
 					player.sendMessage("§4Nom du joueur non valide.");
 					return false;
@@ -302,87 +215,6 @@ public class CommandPublic implements CommandExecutor {
 				paper_meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 				paper.setItemMeta(paper_meta);
 				player.getInventory().addItem(paper);
-			} else if(cmd.getName().equalsIgnoreCase("delegate")) {
-				/*
-				 * SELL A GROUND TO AN OTHER PLAYER
-				 */
-				if(args.length == 3) {
-					String type = args[0];
-					String type_fr = null;
-					String addressees_str = args[1];
-					Player addressees = null;
-					String price_str = args[2];
-					Integer price = null;
-					
-					if(type.equalsIgnoreCase("shop")) {
-						type_fr = "Magasin";
-					} else if(type.equalsIgnoreCase("ground")){
-						type_fr = "Maison";
-					} else if(type.equalsIgnoreCase("farm")){
-						type_fr = "Ferme";
-					} else if(type.equalsIgnoreCase("build")){
-						type_fr = "Construction";
-					} else {
-						player.sendMessage("§4Type de transaction invalide.");
-						return false;
-					}
-					
-					
-					for(OfflinePlayer a : main.getServer().getOfflinePlayers()) {
-						if(a instanceof Player) {
-							Player p = (Player) a;
-							if(p.getDisplayName().equalsIgnoreCase(addressees_str)) addressees = p;
-						}
-					}
-					if(addressees == null) {
-						player.sendMessage("§4Nom du joueur non valide.");
-						return false;
-					}
-					if(addressees.equals(player)) {
-						player.sendMessage("§4Vous ne pouvez pas délégué un terrain à vous-même.");
-						return false;
-					}
-					if(type.equalsIgnoreCase("farm") && main.getJobs().getScore(addressees) != 0) {
-						player.sendMessage("§4Vous ne pouvez pas vendre une ferme à un joueur qui n'est pas fermier.");
-						return false;
-					}
-					if(type.equalsIgnoreCase("build") && main.getJobs().getScore(addressees) != 3 && !addressees.isOp()) {
-						player.sendMessage("§4Vous ne pouvez pas vendre un terrain de construction à un joueur qui n'est pas builder.");
-						return false;
-					}
-					if(!addressees.isOnline()) {
-						player.sendMessage("§4Le joueur n'est pas en ligne pour le moment.");
-						player.sendMessage("§4Attendez qu'il se reconnecte avant de demander la transaction.");
-						return false;
-					}
-					
-					try {
-						price = Integer.parseInt(price_str);
-					} catch (Exception e) {
-						player.sendMessage("§4Le prix indiqué n'est pas valide.");
-						return false;
-					}
-					
-					// Give confirmation book
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "give " + addressees.getDisplayName() + " written_book{pages:['[\"\",{\"text\":\"Demande de \"},{\"text\":\"CONFIRMATION\",\"color\":\"red\"},{\"text\":\" :\\\\n\\\\nExpéditeur : \",\"color\":\"reset\"},{\"selector\":\"" + player.getDisplayName() + "\"},{\"text\":\"\\\\n\\\\nType : \"},{\"text\":\"" + type_fr + "\",\"italic\":true},{\"text\":\"\\\\n\\\\nMontant : \",\"color\":\"reset\"},{\"text\":\"" + price + "\",\"italic\":true,\"color\":\"green\"},{\"text\":\" rubys\",\"color\":\"green\"},{\"text\":\"\\\\n\\\\n\",\"color\":\"reset\"},{\"text\":\"Cliquez ICI\",\"underlined\":true,\"color\":\"light_purple\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/confirm " + type + " " + player.getDisplayName() + " " + price + " TM6j6W\"}},{\"text\":\" pour confirmer!\",\"color\":\"reset\"}]'],title:\"Demande de confirmation\",author:MartDel,display:{Lore:[\"Détails de la transaction et confirmation.\"]}}");
-					/*if(!player.isOp()) {
-						System.out.println("give non op");
-						player.setOp(true);
-						player.performCommand("give " + addressees.getDisplayName() + " written_book{pages:['[\"\",{\"text\":\"Demande de \"},{\"text\":\"CONFIRMATION\",\"color\":\"red\"},{\"text\":\" :\\\\n\\\\nExpéditeur : \",\"color\":\"reset\"},{\"selector\":\"" + player.getDisplayName() + "\"},{\"text\":\"\\\\n\\\\nType : \"},{\"text\":\"" + type_fr + "\",\"italic\":true},{\"text\":\"\\\\n\\\\nMontant : \",\"color\":\"reset\"},{\"text\":\"" + price + "\",\"italic\":true,\"color\":\"green\"},{\"text\":\" rubys\",\"color\":\"green\"},{\"text\":\"\\\\n\\\\n\",\"color\":\"reset\"},{\"text\":\"Cliquez ICI\",\"underlined\":true,\"color\":\"light_purple\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/confirm " + type + " " + player.getDisplayName() + " " + price + " TM6j6W\"}},{\"text\":\" pour confirmer!\",\"color\":\"reset\"}]'],title:\"Demande de confirmation\",author:MartDel,display:{Lore:[\"Détails de la transaction et confirmation.\"]}}");
-						player.setOp(false);
-					} else {
-						player.performCommand("give " + addressees.getDisplayName() + " written_book{pages:['[\"\",{\"text\":\"Demande de \"},{\"text\":\"CONFIRMATION\",\"color\":\"red\"},{\"text\":\" :\\\\n\\\\nExpéditeur : \",\"color\":\"reset\"},{\"selector\":\"" + player.getDisplayName() + "\"},{\"text\":\"\\\\n\\\\nType : \"},{\"text\":\"" + type_fr + "\",\"italic\":true},{\"text\":\"\\\\n\\\\nMontant : \",\"color\":\"reset\"},{\"text\":\"" + price + "\",\"italic\":true,\"color\":\"green\"},{\"text\":\" rubys\",\"color\":\"green\"},{\"text\":\"\\\\n\\\\n\",\"color\":\"reset\"},{\"text\":\"Cliquez ICI\",\"underlined\":true,\"color\":\"light_purple\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/confirm " + type + " " + player.getDisplayName() + " " + price + " TM6j6W\"}},{\"text\":\" pour confirmer!\",\"color\":\"reset\"}]'],title:\"Demande de confirmation\",author:MartDel,display:{Lore:[\"Détails de la transaction et confirmation.\"]}}");
-						System.out.println("give op");
-					}*/
-					
-					addressees.sendMessage("§a" + player.getDisplayName() + "§6 veut te vendre une propriété.");
-					addressees.sendMessage("§6Un livre t'a été donné pour que tu puisses confirmer la transaction.");
-					addressees.sendMessage("§6Il attend ta confirmation!");
-					player.sendMessage("§6La demande de confirmation a été envoyé à §a" + addressees.getDisplayName());
-					player.sendMessage("§6Nous attendons sa réponse avec impatience!");
-				} else {
-					player.sendMessage("§4Il manque un argument.");
-				}
 			} else if(cmd.getName().equalsIgnoreCase("confirm")) {
 				/*
 				 * CONFIRM A SELL BY AN OTHER PLAYER
@@ -599,37 +431,6 @@ public class CommandPublic implements CommandExecutor {
 	}
 	
 	/**
-	 * Send a message to all of team players
-	 * @param team ID of the job -> get team name
-	 * @param msg Message to send
-	 * @param sender Player who send the message
-	 */
-	public void teamMsg(int team, String msg, Player sender) {
-		String fr = main.getConfig().getString("jobs." + team + ".fr") + "s";
-		
-		int player_job = main.getJobs().getScore(sender);
-		String player_color = main.getConfig().getString("jobs." + player_job + ".color");
-		TeamManager player_team = main.getPlayerTeam(sender);
-		
-		if(player_team.getName().equalsIgnoreCase("Admin")) {
-			player_color = "9";
-		} else if(player_team.getName().equalsIgnoreCase("Nouveau") || player_team.getName().equalsIgnoreCase("Petit nouveau")) {
-			player_color = "b";
-		}
-		
-		for(OfflinePlayer p : main.getServer().getOfflinePlayers()) {
-			if(p instanceof Player) {
-				Player addressees = (Player) p;
-				if(main.getJobs().getScore(addressees) == team) {
-					addressees.sendMessage("(A tous les " + fr + ") [§" + player_color + sender.getDisplayName() + "§r] " + msg);
-				}
-			}
-		}
-		
-		sender.sendMessage("(A tous les " + fr + ") [§" + player_color + sender.getDisplayName() + "§r] " + msg);
-	}
-	
-	/**
 	 * Return true if the coo are in the protected map
 	 * @param coo Location to analyse
 	 * @return boolean
@@ -682,9 +483,6 @@ public class CommandPublic implements CommandExecutor {
 
 			if(xMin <= x && x <= xMax && zMin <= z && z <= zMax) return true;
 		}
-		}
-		
-		return false;
 	}
 
 }
