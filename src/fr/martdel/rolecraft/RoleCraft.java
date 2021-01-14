@@ -20,7 +20,7 @@ public class RoleCraft extends JavaPlugin {
 	
 	public static FileConfiguration config;
 	
-	private final String[] PUBLICCOMMANDS = {"switch", "mp", "farmer", "miner", "explorer", "builder", "admin", "level", "invite", "ginfo", "sell"};
+	private final String[] PUBLICCOMMANDS = {"switch", "mp", "farmer", "miner", "explorer", "builder", "admin", "invite", "ginfo", "sell"};
 	private final String[] ADMINCOMMANDS = {"delimiter", "path", "spawn", "rubis"};
 	private final String[] TESTCOMMANDS = {"test", "power"};
 	

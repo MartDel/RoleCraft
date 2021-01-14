@@ -1,10 +1,12 @@
 package fr.martdel.rolecraft.database;
 
+import fr.martdel.rolecraft.Credentials;
+
 public abstract class DBCredentials {
 	
 	public static final String HOST = "localhost";
 	public static final String USERNAME = "rolecraft";
-	public static final String PASSWORD = "Rxx^4i49!h#By5";
+	public static final String PASSWORD = Credentials.DB_PASSWORD;
 	public static final String DBNAME = "rolecraft";
 	public static final int PORT = 3306;
 	

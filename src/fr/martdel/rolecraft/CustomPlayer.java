@@ -10,8 +10,10 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import fr.martdel.rolecraft.database.DatabaseManager;
@@ -35,11 +37,11 @@ public class CustomPlayer {
 	private Integer house_id;
 	private Integer shop_id;
 	
-	private Location[] house;
-	private Location[] shop;
-	private Map<String, Location[]> farms;
-	private Map<String, Location[]> builds;
-	private Location[] admin_ground;
+	private Map<String, Integer> house;
+	private Map<String, Integer> shop;
+	private Map<String, Map<String, Integer>> farms;
+	private Map<String, Map<String, Integer>> builds;
+	private Map<String, Integer> admin_ground;
 
 	public CustomPlayer(Player player, RoleCraft rolecraft) {
 		this.player = player;
@@ -99,6 +101,19 @@ public class CustomPlayer {
 	@SuppressWarnings("deprecation")
 	public int getMaxHearts() { return (int) player.getMaxHealth() / 2; }
 	
+	public void removeBook(String name) {
+		for(ItemStack stack : player.getInventory().getStorageContents()) {
+			if(stack != null) {
+				ItemMeta meta = stack.getItemMeta();
+				if(meta instanceof BookMeta) {
+					BookMeta book_meta = (BookMeta) meta;
+					if(book_meta.getAuthor().equalsIgnoreCase("MartDel")
+					&& book_meta.getTitle().equalsIgnoreCase(name)) player.getInventory().remove(stack);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Load and get data from database
 	 * @return this (CustomPlayer)
@@ -117,121 +132,31 @@ public class CustomPlayer {
 				
 				// Get house
 				this.house_id = result.getInt("house");
-				if(house_id != null) {
-					PreparedStatement query0 = db.getConnection().prepareStatement("SELECT * FROM houses WHERE id=?");
-					query0.setInt(1, house_id);
-					ResultSet result0 = query0.executeQuery();
-					if(result0.next()) {
-						int x1 = result0.getInt("x1");
-						int y1 = result0.getInt("y1");
-						int z1 = result0.getInt("z1");
-						int x2 = result0.getInt("x2");
-						int y2 = result0.getInt("y2");
-						int z2 = result0.getInt("z2");
-						World world = plugin.getServer().getWorld("NORMAL");
-						System.out.println(world);
-						
-						Location l1 = new Location(world, x1, y1, z1);
-						Location l2 = new Location(world, x2, y2, z2);
-						Location[] locations = {l1, l2};
-						
-						this.house = locations;
-					}
-					query0.close();
-				}
+				if(house_id != null) this.house = loadGround("houses", house_id);
 				
 				// Get shop
 				this.shop_id = result.getInt("shop");
-				if(shop_id != null) {
-					PreparedStatement query3 = db.getConnection().prepareStatement("SELECT * FROM shops WHERE id=?");
-					query3.setInt(1, shop_id);
-					ResultSet result3 = query3.executeQuery();
-					if(result3.next()) {
-						int x1 = result3.getInt("x1");
-						int y1 = result3.getInt("y1");
-						int z1 = result3.getInt("z1");
-						int x2 = result3.getInt("x2");
-						int y2 = result3.getInt("y2");
-						int z2 = result3.getInt("z2");
-						World world = plugin.getServer().getWorld("NORMAL");
-						System.out.println(world);
-						
-						Location l1 = new Location(world, x1, y1, z1);
-						Location l2 = new Location(world, x2, y2, z2);
-						Location[] locations = {l1, l2};
-						
-						this.shop = locations;
-					}
-					query3.close();
-				}
+				if(shop_id != null) this.shop = loadGround("shops", shop_id);
 				
 				// Get farms
-				farms.clear();
-				PreparedStatement query1 = db.getConnection().prepareStatement("SELECT * FROM farms WHERE owner_uuid=?");
-				query1.setString(1, uuid.toString());
-				ResultSet result1 = query1.executeQuery();
-				while(result1.next()) {
-					String name = result1.getString("name");
-					int x1 = result1.getInt("x1");
-					int y1 = result1.getInt("y1");
-					int z1 = result1.getInt("z1");
-					int x2 = result1.getInt("x2");
-					int y2 = result1.getInt("y2");
-					int z2 = result1.getInt("z2");
-					World world = plugin.getServer().getWorld("NORMAL");
-					
-					Location l1 = new Location(world, x1, y1, z1);
-					Location l2 = new Location(world, x2, y2, z2);
-					Location[] locations = {l1, l2};
-					
-					farms.put(name, locations);
-				}
-				query1.close();
+				this.farms = loadMultipleGrounds("farms");
 				
 				// Get builds
-				builds.clear();
-				PreparedStatement query2 = db.getConnection().prepareStatement("SELECT * FROM builds WHERE owner_uuid=?");
-				query2.setString(1, uuid.toString());
-				ResultSet result2 = query2.executeQuery();
-				while(result2.next()) {
-					String name = result2.getString("name");
-					int x1 = result2.getInt("x1");
-					int y1 = result2.getInt("y1");
-					int z1 = result2.getInt("z1");
-					int x2 = result2.getInt("x2");
-					int y2 = result2.getInt("y2");
-					int z2 = result2.getInt("z2");
-					World world = plugin.getServer().getWorld("NORMAL");
-					
-					Location l1 = new Location(world, x1, y1, z1);
-					Location l2 = new Location(world, x2, y2, z2);
-					Location[] locations = {l1, l2};
-					
-					builds.put(name, locations);
-				}
-				query2.close();
+				this.builds = loadMultipleGrounds("farms");
 				
 				// Get admin_ground
 				if(is_admin) {
-					PreparedStatement query3 = db.getConnection().prepareStatement("SELECT * FROM admin_grounds WHERE owner_uuid=?");
-					query3.setString(1, uuid.toString());
-					ResultSet result3 = query3.executeQuery();
-					if(result3.next()) {
-						int x1 = result3.getInt("x1");
-						int y1 = result3.getInt("y1");
-						int z1 = result3.getInt("z1");
-						int x2 = result3.getInt("x2");
-						int y2 = result3.getInt("y2");
-						int z2 = result3.getInt("z2");
-						World world = plugin.getServer().getWorld("NORMAL");
-						
-						Location l1 = new Location(world, x1, y1, z1);
-						Location l2 = new Location(world, x2, y2, z2);
-						Location[] locations = {l1, l2};
-						
-						this.admin_ground = locations;
+					PreparedStatement query_admin = db.getConnection().prepareStatement("SELECT * FROM admin_grounds WHERE owner_uuid=?");
+					query_admin.setString(1, uuid.toString());
+					ResultSet result_admin = query_admin.executeQuery();
+					if(result_admin.next()) {
+						admin_ground.clear();
+						admin_ground.put("x1", result_admin.getInt("x1"));
+						admin_ground.put("z1", result_admin.getInt("z1"));
+						admin_ground.put("x2", result_admin.getInt("x2"));
+						admin_ground.put("z2", result_admin.getInt("z2"));
 					}
-					query3.close();
+					query_admin.close();
 				}
 			}
 			query.close();
@@ -240,116 +165,115 @@ public class CustomPlayer {
 		}
 		return this;
 	}
+	private Map<String, Integer> loadGround(String table, int id) throws SQLException{
+		Map<String, Integer> locations = new HashMap<>();
+		PreparedStatement query = db.getConnection().prepareStatement("SELECT * FROM " + table + " WHERE id=?");
+		query.setInt(1, id);
+		ResultSet result = query.executeQuery();
+		if(result.next()) {
+			locations.put("x1", result.getInt("x1"));
+			locations.put("z1", result.getInt("z1"));
+			locations.put("x2", result.getInt("x2"));
+			locations.put("z2", result.getInt("z2"));
+		}
+		query.close();
+		return locations;
+	}
+	private Map<String, Map<String, Integer>> loadMultipleGrounds(String table) throws SQLException{
+		Map<String, Map<String, Integer>> grounds = new HashMap<>();
+		PreparedStatement query = db.getConnection().prepareStatement("SELECT * FROM " + table + " WHERE owner_uuid=?");
+		query.setString(1, uuid.toString());
+		ResultSet result = query.executeQuery();
+		while(result.next()) {
+			Map<String, Integer> current_ground = new HashMap<>();
+			current_ground.put("x1", result.getInt("x1"));
+			current_ground.put("z1", result.getInt("z1"));
+			current_ground.put("x2", result.getInt("x2"));
+			current_ground.put("z2", result.getInt("z2"));
+			grounds.put(result.getString("name"), current_ground);
+		}
+		query.close();
+		return grounds;
+	}
 	
 	/**
 	 * Update the player row in the database
 	 */
 	public void save() {
 		try {
-			PreparedStatement update0 = db.getConnection().prepareStatement("UPDATE players SET admin=?, level=?, score=?, job=?, spe=? WHERE uuid=?");
-			update0.setByte(1, (byte) (is_admin ? 1 : 0));
-			update0.setInt(2, level);
-			update0.setInt(3, score);
-			update0.setInt(4, job);
-			update0.setByte(5, (byte) (has_spe ? 1 : 0));
-			update0.setString(6, uuid.toString());
-			update0.executeUpdate();
-			update0.close();
+			PreparedStatement update_player = db.getConnection().prepareStatement("UPDATE players SET admin=?, level=?, score=?, job=?, spe=? WHERE uuid=?");
+			update_player.setByte(1, (byte) (is_admin ? 1 : 0));
+			update_player.setInt(2, level);
+			update_player.setInt(3, score);
+			update_player.setInt(4, job);
+			update_player.setByte(5, (byte) (has_spe ? 1 : 0));
+			update_player.setString(6, uuid.toString());
+			update_player.executeUpdate();
+			update_player.close();
 			
-			// Update house table
-			if(house != null) {
-				PreparedStatement update1 = db.getConnection().prepareStatement("UPDATE houses SET x1=?, y1=?, z1=?, x2=?, y2=?, z2=? WHERE id=?");
-				for(int i = 0; i < house.length; i++) {
-					Location loc = house[i];
-					update1.setInt(1 + (i*3), loc.getBlockX());
-					update1.setInt(2 + (i*3), loc.getBlockY());
-					update1.setInt(3 + (i*3), loc.getBlockZ());
-				}
-				update1.setInt(7, house_id);
-				update1.executeUpdate();
-				update1.close();
-			}
+			// Update house
+			if(house_id != null) updateGround("houses", house_id, house);
 			
-			// Update shop table
-			if(shop != null) {
-				PreparedStatement update1 = db.getConnection().prepareStatement("UPDATE shops SET x1=?, y1=?, z1=?, x2=?, y2=?, z2=? WHERE id=?");
-				for(int i = 0; i < shop.length; i++) {
-					Location loc = shop[i];
-					update1.setInt(1 + (i*3), loc.getBlockX());
-					update1.setInt(2 + (i*3), loc.getBlockY());
-					update1.setInt(3 + (i*3), loc.getBlockZ());
-				}
-				update1.setInt(7, shop_id);
-				update1.executeUpdate();
-				update1.close();
-			}
+			// Update shop
+			if(shop_id != null) updateGround("shops", shop_id, shop);
 			
 			// Update farm table
-			if(!farms.isEmpty()) {
-				// Delete old farms
-				PreparedStatement delete1 = db.getConnection().prepareStatement("DELETE FROM farms WHERE owner_uuid=?");
-				delete1.setString(1, uuid.toString());
-				delete1.executeUpdate();
-				delete1.close();
-				
-				// Insert new farms
-				for (String farm_name : farms.keySet()) {
-					Location[] locations = farms.get(farm_name);
-					PreparedStatement insert1 = db.getConnection().prepareStatement("INSERT INTO farms(name, owner_uuid, x1, y1, z1, x2, y2, z2) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-					insert1.setString(1, farm_name);
-					insert1.setString(2, uuid.toString());
-					for(int i = 0; i < locations.length; i++) {
-						Location loc = locations[i];
-						insert1.setInt(3 + (i*3), loc.getBlockX());
-						insert1.setInt(4 + (i*3), loc.getBlockY());
-						insert1.setInt(5 + (i*3), loc.getBlockZ());
-					}
-					insert1.executeUpdate();
-					insert1.close();
-		        }
-			}
+			if(!farms.isEmpty()) updateMultipleGrounds("farms", farms);
 			
 			// Update build table
-			if(!builds.isEmpty()) {
-				// Delete old builds
-				PreparedStatement delete2 = db.getConnection().prepareStatement("DELETE FROM builds WHERE owner_uuid=?");
-				delete2.setString(1, uuid.toString());
-				delete2.executeUpdate();
-				delete2.close();
-				
-				// Insert new builds
-				for (String build_name : builds.keySet()) {
-					Location[] locations = builds.get(build_name);
-					PreparedStatement insert2 = db.getConnection().prepareStatement("INSERT INTO builds(name, owner_uuid, x1, y1, z1, x2, y2, z2) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-					insert2.setString(1, build_name);
-					insert2.setString(2, uuid.toString());
-					for(int i = 0; i < locations.length; i++) {
-						Location loc = locations[i];
-						insert2.setInt(3 + (i*3), loc.getBlockX());
-						insert2.setInt(4 + (i*3), loc.getBlockY());
-						insert2.setInt(5 + (i*3), loc.getBlockZ());
-					}
-					insert2.executeUpdate();
-					insert2.close();
-		        }
-			}
+			if(!builds.isEmpty()) updateMultipleGrounds("builds", builds);
 			
 			// Update admin_grounds table
 			if(is_admin && admin_ground != null) {
-				PreparedStatement update1 = db.getConnection().prepareStatement("UPDATE admin_grounds SET x1=?, y1=?, z1=?, x2=?, y2=?, z2=? WHERE owner_uuid=?");
-				for(int i = 0; i < admin_ground.length; i++) {
-					Location loc = admin_ground[i];
-					update1.setInt(1 + (i*3), loc.getBlockX());
-					update1.setInt(2 + (i*3), loc.getBlockY());
-					update1.setInt(3 + (i*3), loc.getBlockZ());
+				PreparedStatement update_admin = db.getConnection().prepareStatement("UPDATE admin_grounds SET x1=?, z1=?, x2=?, z2=? WHERE owner_uuid=?");
+				for (int i = 0; i < admin_ground.size(); i++) {
+					Integer coord = (Integer) admin_ground.values().toArray()[i];
+					update_admin.setInt(i+1, coord);
 				}
-				update1.setString(7, uuid.toString());
-				update1.executeUpdate();
-				update1.close();
+				update_admin.setString(7, uuid.toString());
+				update_admin.executeUpdate();
+				update_admin.close();
 			}
 		} catch (SQLException e) {
 			DatabaseManager.error(e);
 		}
+	}
+	private void updateGround(String table, int id, Map<String, Integer> data) throws SQLException {
+		PreparedStatement update;
+		if(data != null) {
+			update = db.getConnection().prepareStatement("UPDATE " + table + " SET x1=?, z1=?, x2=?, z2=? WHERE id=?");
+			for (int i = 0; i < data.size(); i++) {
+				Integer coord = (Integer) data.values().toArray()[i];
+				update.setInt(i+1, coord);
+			}
+			update.setInt(5, id);
+		} else {
+			update = db.getConnection().prepareStatement("UPDATE " + table + " SET x1=NULL, z1=NULL, x2=NULL, z2=NULL WHERE id=?");
+			update.setInt(1, id);
+		}
+		update.executeUpdate();
+		update.close();
+	}
+	private void updateMultipleGrounds(String table, Map<String, Map<String, Integer>> data) throws SQLException {
+		// Delete old grounds
+		PreparedStatement delete = db.getConnection().prepareStatement("DELETE FROM " + table + " WHERE owner_uuid=?");
+		delete.setString(1, uuid.toString());
+		delete.executeUpdate();
+		delete.close();
+		
+		// Insert new grounds
+		for (String ground_name : farms.keySet()) {
+			Map<String, Integer> locations = farms.get(ground_name);
+			PreparedStatement insert = db.getConnection().prepareStatement("INSERT INTO " + table + "(x1, z1, x2, z2, name, owner_uuid) VALUES(?, ?, ?, ?, ?, ?)");
+			for (int i = 0; i < locations.size(); i++) {
+				Integer coord = (Integer) locations.values().toArray()[i];
+				insert.setInt(i+1, coord);
+			}
+			insert.setString(5, ground_name);
+			insert.setString(6, uuid.toString());
+			insert.executeUpdate();
+			insert.close();
+        }
 	}
 	
 	/**
@@ -424,13 +348,11 @@ public class CustomPlayer {
 		 */
 		int spe_limit = RoleCraft.config.getInt("spe_limit");
 		if(new_lvl >= spe_limit && !has_spe) {
-			String spe_color = RoleCraft.config.getString("spe." + job + ".color");
-			String spe_str = RoleCraft.config.getString("spe." + job + ".fr");
-			String spe_en = RoleCraft.config.getString("spe." + job + ".en");
-			
 			has_spe = true;
+			String spe_str = getStringJob("fr");
+			getTeam().move(player, RoleCraft.firstLetterToUpperCase(spe_str));
+			String spe_color = getTeam().getColor();
 			
-			getTeam().move(player, spe_en);
 			switch (job) {
 			case 0:
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "give " + player.getDisplayName() + " written_book{pages:['[\"\",{\"text\":\"Bravo ! Tu es officiellement un joueur expérimenté de ce serveur, on espère sincèrement que cette aventure te plait et qu\\'elle va continuer à te plaire, c\\'est pour cela que dès à présent, au vu de ton niveau, tu deviens un \"},{\"text\":\"Éleveur \",\"color\":\"green\"},{\"text\":\"!\",\"color\":\"reset\"}]','{\"text\":\"Tu as donc le droit de faire des élevages d\\'animaux, de crafter des épées, de pêcher, de tuer des poissons, de traire des vaches, etc...\"}','{\"text\":\"Il est peut-être temps pour toi si ce n\\'est pas déjà fait de t\\'acheter une plus grande maison ou une boutique plus attrayante ou mieux placée en centre ville et aussi bien sur de profiter de tes nouvelles habilitées de travailleur expérimenté.\"}'],title:Eleveur,author:MartDel}");
@@ -472,36 +394,21 @@ public class CustomPlayer {
 	public Boolean hasSpe() { return this.has_spe; }
 	public void setSpe(Boolean spe) { this.has_spe = spe; }
 	
-	public Location[] getHouse() { return house; }
-	public void setHouse(Location l1, Location l2) {
-		Location[] locations = {l1, l2};
-		this.house = locations;
-	}
+	public Map<String, Integer> getHouse() { return house; }
+	public void setHouse(Map<String, Integer> house) { this.house = house; }
 
-	public Location[] getShop() { return shop; }
-	public void setShop(Location l1, Location l2) {
-		Location[] locations = {l1, l2};
-		this.shop = locations;
-	}
+	public Map<String, Integer> getShop() { return shop; }
+	public void setShop(Map<String, Integer> shop) { this.shop = shop; }
 
-	public Location[] getAdmin_ground() { return admin_ground; }
-	public void setAdminGround(Location l1, Location l2) {
-		Location[] locations = {l1, l2};
-		this.admin_ground = locations;
-	}
+	public Map<String, Integer> getAdmin_ground() { return admin_ground; }
+	public void setAdminGround(Map<String, Integer> admin_ground) { this.admin_ground = admin_ground; }
 	
-	public Map<String, Location[]> getBuilds() { return builds; }
-	public void addBuild(String name, Location l1, Location l2) {
-		Location[] locations = {l1, l2};
-		builds.put(name, locations);
-	}
+	public Map<String, Map<String, Integer>> getBuilds() { return builds; }
+	public void addBuild(String name, Map<String, Integer> build) { builds.put(name, build); }
 	public void removeBuild(String name) { builds.remove(name); }
 
-	public Map<String, Location[]> getFarms() { return farms; }
-	public void addFarm(String name, Location l1, Location l2) {
-		Location[] locations = {l1, l2};
-		farms.put(name, locations);
-	}
+	public Map<String, Map<String, Integer>> getFarms() { return farms; }
+	public void addFarm(String name, Map<String, Integer> farm) { farms.put(name, farm); }
 	public void removeFarm(String name) { farms.remove(name); }
 	
 	public void setPlayer(Player player) { this.player = player; }

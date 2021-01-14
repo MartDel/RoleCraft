@@ -18,8 +18,6 @@ commands:
     description: Envoi un message a tous les builders
   admin:
     description: Envoi un message a tous les admins
-  level:
-    description: Affiche le score du joueur
   invite:
     description: Invite un joueur a rejoindre le Discord
   ginfo:
