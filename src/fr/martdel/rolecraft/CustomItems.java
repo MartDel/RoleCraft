@@ -18,6 +18,7 @@ public enum CustomItems {
 	LETTERBOX("custom_items.letterbox"),
 	RUBIS("custom_items.rubis"),
 	SAPHIR("custom_items.saphir"),
+	COMPASS("custom_items.compass"),
 	
 	// Private items
 	DELIMITER("custom_items.delimiter");

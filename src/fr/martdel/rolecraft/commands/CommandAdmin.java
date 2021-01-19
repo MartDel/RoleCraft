@@ -1,6 +1,5 @@
 package fr.martdel.rolecraft.commands;
 
-import java.util.Arrays;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -8,8 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
+import fr.martdel.rolecraft.CustomItems;
 import fr.martdel.rolecraft.CustomPlayer;
 import fr.martdel.rolecraft.RoleCraft;
 import fr.martdel.rolecraft.Wallet;
@@ -32,13 +30,8 @@ public class CommandAdmin implements CommandExecutor {
 				/*
 				 * GIVE THE GROUND DELIMITER STICK ("délimiteur de terrain")
 				 */
-				ItemStack item1 = new ItemStack(Material.STICK);
-				ItemMeta itemmeta1 = item1.getItemMeta();
-				itemmeta1.setDisplayName("Délimiter un terrain");
-				itemmeta1.setLore(Arrays.asList("Cliquez sur un bloc du sol pour fixer le premier point"));
-				itemmeta1.setCustomModelData(1);
-				item1.setItemMeta(itemmeta1);
-				player.getInventory().addItem(item1);
+				ItemStack delimiter = CustomItems.DELIMITER.getItem();
+				player.getInventory().addItem(delimiter);
 				player.sendMessage("Don d'un délimiteur de terrain");
 			} else if(cmd.getName().equalsIgnoreCase("path")) {
 				/*

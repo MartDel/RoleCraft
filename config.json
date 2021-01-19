@@ -76,6 +76,17 @@
         "z2": 194
     },
 
+    "starter_pack": {
+        "food": {
+            "type": "BREAD",
+            "amount": 15
+        },
+        "rubis": {
+            "builder": 50,
+            "else": 20
+        }
+    },
+
     "prices": {
         "letterbox": 5
     },
@@ -115,6 +126,16 @@
                 {"name": "LOOT_BONUS_BLOCKS", "level": 10}
             ]
         },
+        "compass": {
+            "type": "COMPASS",
+            "name": "§9Choisir son métier",
+            "lore": [
+                "Choisissez votre métier",
+                "parmi les 4 proposés."
+            ],
+            "metadata": 4,
+            "enchantments": []
+        },
 
         "delimiter": {
             "type": "STICK",
@@ -123,9 +144,13 @@
                 "Cliquez sur un bloc du sol",
                 "pour fixer le premier point."
             ],
-            "metadata": 4,
+            "metadata": 10,
             "enchantments": []
         } 
+    },
+
+    "controled_items": {
+        "weapons": ["DIAMOND_AXE", "GOLDEN_AXE", "IRON_AXE", "STONE_AXE", "WOODEN_AXE", "DIAMOND_HOE", "GOLDEN_HOE", "IRON_HOE", "STONE_HOE", "WOODEN_HOE", "DIAMOND_PICKAXE", "GOLDEN_PICKAXE", "IRON_PICKAXE", "STONE_PICKAXE", "WOODEN_PICKAXE", "DIAMOND_SHOVEL", "GOLDEN_SHOVEL", "IRON_SHOVEL", "STONE_SHOVEL", "WOODEN_SHOVEL"]
     },
 
     "powers": {
