@@ -70,9 +70,11 @@ public enum LocationInMap {
 	 * @return LocationInMap
 	 */
 	public static LocationInMap getPlayerPlace(RoleCraft plugin, Player player) {		
+		return getBlocPlace(plugin, player, player.getLocation());
+	}
+	public static LocationInMap getBlocPlace(RoleCraft plugin, Player player, Location location) {		
 		try {
 			Connection db = plugin.getDB().getConnection();
-			Location location = player.getLocation();
 			
 			// Check grounds
 			LocationInMap[] to_check = {HOUSE, SHOP, BUILD, FARM};
@@ -99,7 +101,12 @@ public enum LocationInMap {
 	 * @return boolean
 	 */
 	public static boolean isInProtectedPlace(RoleCraft plugin, Player player) {
-		return getPlayerPlace(plugin, player) != null;
+		LocationInMap player_place = getPlayerPlace(plugin, player);
+		return player_place != OWNED && player_place != FREE_PLACE;
+	}
+	public static boolean isInProtectedPlace(RoleCraft plugin, Player player, Location location) {
+		LocationInMap player_place = getBlocPlace(plugin, player, location);
+		return player_place != OWNED && player_place != FREE_PLACE;
 	}
 	
 	// Private methods

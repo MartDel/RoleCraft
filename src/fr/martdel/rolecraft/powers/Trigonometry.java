@@ -1,4 +1,4 @@
-package fr.martdel.rolecraft;
+package fr.martdel.rolecraft.powers;
 
 public class Trigonometry {
 

@@ -101,6 +101,10 @@ public class CustomPlayer {
 	@SuppressWarnings("deprecation")
 	public int getMaxHearts() { return (int) player.getMaxHealth() / 2; }
 	
+	/**
+	 * Remove a specific book found with a given name in the player inventory
+	 * @param name The book name
+	 */
 	public void removeBook(String name) {
 		for(ItemStack stack : player.getInventory().getStorageContents()) {
 			if(stack != null) {
@@ -390,6 +394,8 @@ public class CustomPlayer {
 		} else return "Nouveau";
 	}
 	public void setJob(Integer job) { this.job = job; }
+	
+	public Boolean isNew() { return this.job == null; }
 	
 	public Boolean hasSpe() { return this.has_spe; }
 	public void setSpe(Boolean spe) { this.has_spe = spe; }

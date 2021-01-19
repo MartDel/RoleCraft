@@ -13,6 +13,7 @@ import fr.martdel.rolecraft.commands.CommandAdmin;
 import fr.martdel.rolecraft.commands.CommandPublic;
 import fr.martdel.rolecraft.commands.CommandTest;
 import fr.martdel.rolecraft.database.DatabaseManager;
+import fr.martdel.rolecraft.listeners.MapProtectListener;
 import fr.martdel.rolecraft.listeners.PluginListener;
 import fr.martdel.rolecraft.listeners.PowerListener;
 
@@ -49,6 +50,7 @@ public class RoleCraft extends JavaPlugin {
 		
 		// Listeners
 		getServer().getPluginManager().registerEvents(new PluginListener(this), this);
+		getServer().getPluginManager().registerEvents(new MapProtectListener(this), this);
 		getServer().getPluginManager().registerEvents(new PowerListener(this), this);
 		
 		// Announcements
