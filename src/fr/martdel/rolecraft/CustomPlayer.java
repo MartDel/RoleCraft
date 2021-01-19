@@ -65,7 +65,7 @@ public class CustomPlayer {
 		this.builds = new HashMap<>();
 		this.admin_ground = null;
 	}
-	
+
 	/**
 	 * Start a cinematic for the player
 	 * Tp every tic the player at a specific location

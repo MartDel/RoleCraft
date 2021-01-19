@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import fr.martdel.rolecraft.database.DatabaseManager;
@@ -107,6 +108,34 @@ public enum LocationInMap {
 	public static boolean isInProtectedPlace(RoleCraft plugin, Player player, Location location) {
 		LocationInMap player_place = getBlocPlace(plugin, player, location);
 		return player_place != OWNED && player_place != FREE_PLACE;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static OfflinePlayer getPlayerOwner(RoleCraft plugin, Player searchingPlayer, Location location) {
+		LocationInMap ground_type = getBlocPlace(plugin, searchingPlayer, location);
+		if(ground_type.equals(FREE_PLACE) || ground_type.equals(OWNED) || ground_type.equals(PROTECTED_MAP)) return null;
+		String table = ground_type.toString().toLowerCase();
+		
+		Connection db;
+		try {
+			db = plugin.getDB().getConnection();
+			PreparedStatement search = db.prepareStatement("SELECT * FROM " + table + "s");
+			ResultSet result = search.executeQuery();
+			while(result.next()) {
+				Integer[] ground = {
+						result.getInt("x1"),
+						result.getInt("x2"),
+						result.getInt("z1"),
+						result.getInt("z2")
+				};
+				if(isIn(location, ground)) return plugin.getServer().getOfflinePlayer(result.getString("uuid"));
+			}
+			search.close();
+		} catch (SQLException e) {
+			DatabaseManager.error(e);
+		}
+
+		return null;
 	}
 	
 	// Private methods

@@ -50,6 +50,8 @@ nether:
   z1: 184
   x2: -45
   z2: 194
+prices:
+  letterbox: 5
 powers:
   shockwave:
     item_name: "§5Onde de choc"

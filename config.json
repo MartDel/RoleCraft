@@ -76,6 +76,58 @@
         "z2": 194
     },
 
+    "prices": {
+        "letterbox": 5
+    },
+
+    "custom_items": {
+        "letterbox": {
+            "type": "CHEST",
+            "name": "§8Boite aux lettres",
+            "lore": [
+                "Coffre faisant office de boite aux lettres.",
+                "Tenez l'item que vous voulez y glisser dans votre main",
+                "puis faites un clique gauche sur le coffre."
+            ],
+            "metadata": 1,
+            "enchantments": []
+        },
+        "rubis": {
+            "type": "EMERALD",
+            "name": "Rubis",
+            "lore": [
+                "Monnaie officielle de RoleCraft"
+            ],
+            "metadata": 2,
+            "enchantments": [
+                {"name": "LOOT_BONUS_BLOCKS", "level": 10}
+            ]
+        },
+        "saphir": {
+            "type": "PRISMARINE_SHARD",
+            "name": "Saphir",
+            "lore": [
+                "La monnaie la plus précieuse",
+                "de RoleCraft"
+            ],
+            "metadata": 3,
+            "enchantments": [
+                {"name": "LOOT_BONUS_BLOCKS", "level": 10}
+            ]
+        },
+
+        "delimiter": {
+            "type": "STICK",
+            "name": "delimiter",
+            "lore": [
+                "Cliquez sur un bloc du sol",
+                "pour fixer le premier point."
+            ],
+            "metadata": 4,
+            "enchantments": []
+        } 
+    },
+
     "powers": {
         "shockwave": {
             "item_name": "§5Onde de choc",
