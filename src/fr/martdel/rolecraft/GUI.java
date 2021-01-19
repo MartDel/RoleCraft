@@ -12,6 +12,16 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class GUI {
 	
+	private String name;
+	private int size;
+	private Inventory inventory;
+
+	public GUI(String name, int size) {
+		this.name = name;
+		this.size = size;
+		this.inventory = Bukkit.createInventory(null, size, name);
+	}
+	
 	/**
 	 * Create the GUI for the job selector (compass)
 	 * @return Inventory The GUI to show

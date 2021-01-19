@@ -1,19 +1,11 @@
 package fr.martdel.rolecraft;
 
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class Wallet {
-
-	public static final String RUBYNAME = "Rubis";
-	public static final Material RUBYTYPE = Material.EMERALD;
-	
-	public static final String SAPHIRNAME = "Saphir";
-	public static final Material SAPHIRTYPE = Material.PRISMARINE_SHARD;
 	
 	private Player player;
 	private Inventory inv;
@@ -32,7 +24,7 @@ public class Wallet {
 		for(ItemStack stack : inv.getStorageContents()) {
 			if(stack != null) {
 				ItemMeta meta = stack.getItemMeta();
-				if(meta.equals(getRubyMeta())) {
+				if(meta.equals(CustomItems.RUBIS.getItemMeta())) {
 					nb += stack.getAmount();
 				}
 			}
@@ -44,9 +36,9 @@ public class Wallet {
 	 * Give ruby to the player
 	 * @param nb
 	 */
-	public void give(int nb) {		
-		ItemStack ruby = new ItemStack(Material.EMERALD, nb);
-		ruby.setItemMeta(getRubyMeta());
+	public void give(int nb) {
+		ItemStack ruby = new ItemStack(CustomItems.RUBIS.getType(), nb);
+		ruby.setItemMeta(CustomItems.RUBIS.getItemMeta());
 		player.getInventory().addItem(ruby);
 		player.updateInventory();
 	}
@@ -59,7 +51,7 @@ public class Wallet {
 		for(ItemStack stack : inv.getStorageContents()) {
 			if(stack != null && nb != 0) {
 				ItemMeta meta = stack.getItemMeta();
-				if(meta.equals(getRubyMeta())) {
+				if(meta.equals(CustomItems.RUBIS.getItemMeta())) {
 					if(stack.getAmount() < nb) {
 						nb -= stack.getAmount();
 						stack.setAmount(0);
@@ -79,30 +71,6 @@ public class Wallet {
 	 */
 	public boolean has(int value) {
 		return count() >= value;
-	}
-	
-	/**
-	 * Get the ruby item meta
-	 * @return ItemMeta
-	 */
-	public static ItemMeta getRubyMeta() {
-		ItemStack ruby = new ItemStack(RUBYTYPE);
-		ItemMeta rubymeta = ruby.getItemMeta();
-		rubymeta.setDisplayName(RUBYNAME);
-		rubymeta.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, 10, true);
-		return rubymeta;
-	}
-	
-	/**
-	 * Get the ruby item meta
-	 * @return ItemMeta
-	 */
-	public static ItemMeta getSaphirMeta() {
-		ItemStack saphir = new ItemStack(SAPHIRTYPE);
-		ItemMeta saphirmeta = saphir.getItemMeta();
-		saphirmeta.setDisplayName(SAPHIRNAME);
-		saphirmeta.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, 10, true);
-		return saphirmeta;
 	}
 
 }
