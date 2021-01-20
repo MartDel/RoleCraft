@@ -59,6 +59,212 @@ starter_pack:
     else: 20
 prices:
   letterbox: 5
+PNJ:
+- PNJ_name: "- Fermier -"
+  inventory_name: Marchand - §2Fermier
+  required_job: 0
+  items:
+  - type: WHEAT
+    amount: 10
+    price: 1
+  - type: SWEET_BERRIES
+    amount: 5
+    price: 1
+  - type: APPLE
+    amount: 4
+    price: 1
+  - type: DRIED_KELP
+    amount: 5
+    price: 1
+  - type: MELON_SLICE
+    amount: 25
+    price: 2
+  - type: HONEY_BOTTLE
+    amount: 5
+    price: 3
+  - type: POTATO
+    amount: 10
+    price: 1
+  - type: CARROT
+    amount: 15
+    price: 1
+  - type: BEETROOT
+    amount: 10
+    price: 1
+  - type: RED_MUSHROOM
+    amount: 5
+    price: 2
+  - type: BROWN_MUSHROOM
+    amount: 5
+    price: 2
+- PNJ_name: "- Charlatan -"
+  inventory_name: Marchand - §9Charlatan
+  required_job:
+  items:
+  - type: COOKIE
+    amount: 5
+    price: 1
+  - type: SWEET_BERRIES
+    amount: 3
+    price: 1
+  - type: CARROT
+    amount: 4
+    price: 1
+  - type: BEETROOT
+    amount: 4
+    price: 1
+  - type: MELON_SLICE
+    amount: 5
+    price: 1
+  - type: DRIED_KELP
+    amount: 3
+    price: 1
+- PNJ_name: "- Bucheron -"
+  inventory_name: Marchand - §9Bucheron
+  required_job: 0
+  items:
+  - type: OAK_LOG
+    amount: 10
+    price: 1
+  - type: SPRUCE_LOG
+    amount: 10
+    price: 1
+  - type: BIRCH_LOG
+    amount: 10
+    price: 1
+  - type: ACACIA_LOG
+    amount: 10
+    price: 1
+  - type: JUNGLE_LOG
+    amount: 10
+    price: 1
+  - type: DARK_OAK_LOG
+    amount: 10
+    price: 1
+  - type: CHARCOAL
+    amount: 6
+    price: 1
+- PNJ_name: "- Boucher -"
+  inventory_name: Marchand - §9Boucher
+  required_job: 0
+  items:
+  - type: SALMON
+    amount: 10
+    price: 3
+  - type: COD
+    amount: 20
+    price: 3
+  - type: TROPICAL_FISH
+    amount: 10
+    price: 1
+  - type: CHICKEN
+    amount: 20
+    price: 3
+  - type: BEEF
+    amount: 10
+    price: 3
+  - type: PORKCHOP
+    amount: 10
+    price: 3
+  - type: MUTTON
+    amount: 10
+    price: 3
+  - type: RABBIT
+    amount: 20
+    price: 3
+- PNJ_name: "- Mineur -"
+  inventory_name: Marchand - §9Mineur
+  required_job: 1
+  items:
+  - type: COAL
+    amount: 25
+    price: 1
+  - type: IRON_INGOT
+    amount: 25
+    price: 2
+  - type: REDSTONE
+    amount: 10
+    price: 1
+  - type: LAPIS_LAZULI
+    amount: 10
+    price: 6
+  - type: GOLD_INGOT
+    amount: 5
+    price: 4
+  - type: DIAMOND
+    amount: 5
+    price: 16
+  - type: OBSIDIAN
+    amount: 5
+    price: 1
+  - type: EMERALD
+    amount: 1
+    price: 6
+- PNJ_name: "- Aventurier -"
+  inventory_name: Marchand - §9Aventurier
+  required_job: 2
+  items:
+  - type: ENDER_PEARL
+    amount: 5
+    price: 2
+  - type: BLAZE_ROD
+    amount: 5
+    price: 4
+  - type: BONE
+    amount: 32
+    price: 2
+  - type: ROTTEN_FLESH
+    amount: 32
+    price: 2
+  - type: GUNPOWDER
+    amount: 16
+    price: 2
+  - type: STRING
+    amount: 32
+    price: 2
+  - type: CHORUS_FRUIT
+    amount: 32
+    price: 1
+  - type: QUARTZ
+    amount: 32
+    price: 1
+  - type: SHULKER_SHELL
+    amount: 1
+    price: 1
+  - type: WITHER_SKELETON_SKULL
+    amount: 1
+    price: 25
+- PNJ_name: "- Débutant -"
+  inventory_name: Marchand - §9Débutant
+  required_job:
+  items:
+  - type: OAK_PLANKS
+    amount: 20
+    price: 1
+  - type: STICK
+    amount: 40
+    price: 1
+  - type: COBBLESTONE
+    amount: 35
+    price: 1
+  - type: BUCKET
+    amount: 1
+    price: 1
+  - type: CRAFTING_TABLE
+    amount: 6
+    price: 1
+  - type: LEATHER_HELMET
+    amount: 1
+    price: 1
+  - type: LEATHER_CHESTPLATE
+    amount: 1
+    price: 1
+  - type: LEATHER_LEGGINGS
+    amount: 1
+    price: 1
+  - type: LEATHER_BOOTS
+    amount: 1
+    price: 1
 custom_items:
   letterbox:
     type: CHEST

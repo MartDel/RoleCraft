@@ -14,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import fr.martdel.rolecraft.ConditionBuilder;
 import fr.martdel.rolecraft.RoleCraft;
 
 public class Telekinesis {
@@ -109,9 +108,9 @@ public class Telekinesis {
 	}
 	
 	private boolean locationEquals(Location loc1, Location loc2) {
-		ConditionBuilder condition = new ConditionBuilder(loc1.getBlockX() == loc2.getBlockX());
-		condition.and(loc1.getBlockZ() == loc2.getBlockZ());
-		return condition.result();
+		boolean condition = loc1.getBlockX() == loc2.getBlockX();
+		condition = condition && loc1.getBlockZ() == loc2.getBlockZ();
+		return condition;
 	}
 
 	private List<Block> getEmptyBlocsAround(Block center_bloc) {

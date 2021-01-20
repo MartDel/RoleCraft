@@ -1,7 +1,9 @@
 package fr.martdel.rolecraft;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -15,11 +17,65 @@ public class GUI {
 	private String name;
 	private int size;
 	private Inventory inventory;
+	private Map<String, String> rules;
 
 	public GUI(String name, int size) {
 		this.name = name;
-		this.size = size;
+		this.size = roundSize(size);
 		this.inventory = Bukkit.createInventory(null, size, name);
+		
+		this.rules = new HashMap<>();
+		rules.put("fill", "no");
+		rules.put("fill_type", "BARRIER");
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public int getSize() {
+		return size;
+	}
+	
+	public String getRule(String name) {
+		return rules.get(name);
+	}
+	
+	public void setRule(String name, String value) {
+		rules.replace(name, value);
+	}
+	
+	public void addItem(ItemStack item) {
+		inventory.addItem(item);
+	}
+	
+	public void setItem(int i, ItemStack item) {
+		inventory.setItem(i, item);
+	}
+
+	public Inventory getInventory() {
+		if(rules.get("fill").equalsIgnoreCase("yes")) {
+			fillInventory(Material.getMaterial(rules.get("fill_type")));
+		}
+		return inventory;
+	}
+	
+	/**
+	 * Fill empty stacks with a given item
+	 * @param type The item type
+	 */
+	private void fillInventory(Material type) {
+		int size = inventory.getSize();
+		for (int i = 0; i < size; i++) {
+			ItemStack stack = inventory.getItem(i);
+			if(stack == null) inventory.setItem(i, new ItemStack(type));
+		}
+	}
+	
+	private int roundSize(int size) {
+		if(size % 9 == 0) return size;
+		size += 9 - (size % 9);
+		return size;
 	}
 	
 	/**
