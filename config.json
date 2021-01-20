@@ -265,6 +265,39 @@
         "weapons": ["DIAMOND_AXE", "GOLDEN_AXE", "IRON_AXE", "STONE_AXE", "WOODEN_AXE", "DIAMOND_HOE", "GOLDEN_HOE", "IRON_HOE", "STONE_HOE", "WOODEN_HOE", "DIAMOND_PICKAXE", "GOLDEN_PICKAXE", "IRON_PICKAXE", "STONE_PICKAXE", "WOODEN_PICKAXE", "DIAMOND_SHOVEL", "GOLDEN_SHOVEL", "IRON_SHOVEL", "STONE_SHOVEL", "WOODEN_SHOVEL"]
     },
 
+    "score": {
+        "kill": [
+            {"entity": "ZOMBIE", "score": 1},
+            {"entity": "ZOMBIE_VILLAGER", "score": 1},
+            {"entity": "CREEPER", "score": 3},
+            {"entity": "HUSK", "score": 1},
+            {"entity": "DROWNED", "score": 4},
+            {"entity": "PILLAGER", "score": 3},
+            {"entity": "EVOKER", "score": 7},
+            {"entity": "VEX", "score": 3},
+            {"entity": "VINDICATOR", "score": 3},
+            {"entity": "RAVAGER", "score": 12},
+            {"entity": "SKELETON", "score": 2},
+            {"entity": "STRAY", "score": 4},
+            {"entity": "WITCH", "score": 5},
+            {"entity": "ENDERMAN", "score": 5},
+            {"entity": "SPIDER", "score": 1},
+            {"entity": "CAVE_SPIDER", "score": 4},
+            {"entity": "GHAST", "score": 8},
+            {"entity": "BLAZE", "score": 6},
+            {"entity": "MAGMA_CUBE", "score": 2},
+            {"entity": "WITHER_SKELETON", "score": 6},
+            {"entity": "WITHER", "score": 120},
+            {"entity": "SHULKER", "score": 10},
+            {"entity": "SILVERFISH", "score": 2},
+            {"entity": "ENDERMITE", "score": 6},
+            {"entity": "GUARDIAN", "score": 10},
+            {"entity": "ELDER_GUARDIAN", "score": 15},
+            {"entity": "SLIME", "score": 2},
+            {"entity": "PHANTOM", "score": 5}
+        ]
+    },
+
     "powers": {
         "shockwave": {
             "item_name": "§5Onde de choc",
