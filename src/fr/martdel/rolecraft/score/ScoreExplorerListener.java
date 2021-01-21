@@ -26,7 +26,7 @@ public class ScoreExplorerListener implements Listener {
 		
 		// Kill XP
 		kill = new HashMap<>();
-		List<Map<?, ?>> kills_config = RoleCraft.config.getMapList("score.kill");
+		List<Map<?, ?>> kills_config = RoleCraft.config.getMapList("score.explorer.kill");
 		for (Map<?, ?> el : kills_config) {
 			@SuppressWarnings("unchecked")
 			Map<String, ?> kill_config = (Map<String, ?>) el;

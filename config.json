@@ -266,36 +266,150 @@
     },
 
     "score": {
-        "kill": [
-            {"entity": "ZOMBIE", "score": 1},
-            {"entity": "ZOMBIE_VILLAGER", "score": 1},
-            {"entity": "CREEPER", "score": 3},
-            {"entity": "HUSK", "score": 1},
-            {"entity": "DROWNED", "score": 4},
-            {"entity": "PILLAGER", "score": 3},
-            {"entity": "EVOKER", "score": 7},
-            {"entity": "VEX", "score": 3},
-            {"entity": "VINDICATOR", "score": 3},
-            {"entity": "RAVAGER", "score": 12},
-            {"entity": "SKELETON", "score": 2},
-            {"entity": "STRAY", "score": 4},
-            {"entity": "WITCH", "score": 5},
-            {"entity": "ENDERMAN", "score": 5},
-            {"entity": "SPIDER", "score": 1},
-            {"entity": "CAVE_SPIDER", "score": 4},
-            {"entity": "GHAST", "score": 8},
-            {"entity": "BLAZE", "score": 6},
-            {"entity": "MAGMA_CUBE", "score": 2},
-            {"entity": "WITHER_SKELETON", "score": 6},
-            {"entity": "WITHER", "score": 120},
-            {"entity": "SHULKER", "score": 10},
-            {"entity": "SILVERFISH", "score": 2},
-            {"entity": "ENDERMITE", "score": 6},
-            {"entity": "GUARDIAN", "score": 10},
-            {"entity": "ELDER_GUARDIAN", "score": 15},
-            {"entity": "SLIME", "score": 2},
-            {"entity": "PHANTOM", "score": 5}
-        ]
+        "farmer": {
+            "use": [
+                {"type": "STONE_HOE", "score": 5},
+                {"type": "IRON_HOE", "score": 10},
+                {"type": "DIAMOND_HOE", "score": 15},
+                {"type": "STONE_AXE", "score": 5},
+                {"type": "IRON_AXE", "score": 10},
+                {"type": "DIAMOND_AXE", "score": 15}
+            ],
+            "break": [
+                {"type": "MELON", "score": 2},
+                {"type": "BROWN_MUSHROOM", "score": 3},
+                {"type": "RED_MUSHROOM", "score": 3}
+            ],
+            "craft": [
+                {"type": "ACACIA_PLANKS", "score": 1},
+                {"type": "BIRCH_PLANKS", "score": 1},
+                {"type": "DARK_OAK_PLANKS", "score": 1},
+                {"type": "JUNGLE_PLANKS", "score": 1},
+                {"type": "OAK_PLANKS", "score": 1},
+                {"type": "SPRUCE_PLANKS", "score": 1},
+                {"type": "MUSHROOM_STEW", "score": 3},
+                {"type": "CAKE", "score": 3},
+                {"type": "COOKIE", "score": 3},
+                {"type": "PUMPKIN_PIE", "score": 3},
+                {"type": "RABBIT_STEW", "score": 3},
+                {"type": "BEETROOT_SOUP", "score": 3}
+            ],
+            "cook": [
+                {"type": "BAKED_POTATO", "score": 1}
+            ],
+            "spe_use": [
+                {"type": "STONE_SWORD", "score": 4},
+                {"type": "IRON_SWORD", "score": 8},
+                {"type": "GOLDEN_SWORD", "score": 6},
+                {"type": "DIAMOND_SWORD", "score": 12}
+            ],
+            "spe_cook": [
+                {"type": "COOKED_PORKCHOP", "score": 1},
+                {"type": "COOKED_COD", "score": 1},
+                {"type": "COOKED_SALMON", "score": 1},
+                {"type": "COOKED_RABBIT", "score": 1},
+                {"type": "COOKED_MUTTON", "score": 1},
+                {"type": "COOKED_BEEF", "score": 1},
+                {"type": "COOKED_CHICKEN", "score": 1},
+                {"type": "BAKED_POTATO", "score": 1}
+            ],
+            "spe_kill": [
+                {"entity": "CHICKEN", "score": 1},
+                {"entity": "COD", "score": 1},
+                {"entity": "COW", "score": 1},
+                {"entity": "DOLPHIN", "score": 3}
+                {"entity": "DONKEY", "score": 2},
+                {"entity": "PANDA", "score": 4},
+                {"entity": "PARROT", "score": 3},
+                {"entity": "FOX", "score": 4},
+                {"entity": "HORSE", "score": 2},
+                {"entity": "LLAMA", "score": 3},
+                {"entity": "MUSHROOM_COW", "score": 3},
+                {"entity": "MULE", "score": 2},
+                {"entity": "PIG", "score": 1},
+                {"entity": "POLAR_BEAR", "score": 5},
+                {"entity": "PUFFERFISH", "score": 3},
+                {"entity": "RABBIT", "score": 2},
+                {"entity": "SALMON", "score": 1},
+                {"entity": "SHEEP", "score": 1},
+                {"entity": "TURTLE", "score": 3},
+                {"entity": "TROPICAL_FISH", "score": 1}
+            ]
+        },
+        "miner": {
+            "cook": [
+                {"type": "GOLD_INGOT", "score": 3}
+            ],
+            "break":[
+                {"type": "LAPIS_ORE", "score": 2},
+                {"type": "DIAMOND_ORE", "score": 5},
+                {"type": "EMERALD_ORE", "score": 7}
+            ],
+            "craft": [
+                {"type": "IRON_PICKAXE", "score": 8},
+                {"type": "DIAMOND_PICKAXE", "score": 20},
+                {"type": "IRON_SHOVEL", "score": 4}
+            ],
+            "spe_cook": [
+                {"type": "GOLD_INGOT", "score": 2}
+            ],
+            "spe_break": [
+                {"type": "REDSTONE_ORE", "score": 1},
+                {"type": "LAPIS_ORE", "score": 2},
+                {"type": "DIAMOND_ORE", "score": 4},
+                {"type": "EMERALD_ORE", "score": 6}
+            ],
+            "spe_craft": [
+                {"type": "DIAMOND_PICKAXE", "score": 12},
+                {"type": "DIAMOND_SHOVEL", "score": 6},
+                {"type": "IRON_SWORD", "score": 1},
+                {"type": "DIAMOND_SWORD", "score": 8},
+                {"type": "IRON_HELMET", "score": 3},
+                {"type": "IRON_CHESTPLATE", "score": 5},
+                {"type": "IRON_LEGGINGS", "score": 4},
+                {"type": "IRON_BOOTS", "score": 2},
+                {"type": "DIAMOND_HELMET", "score": 6},
+                {"type": "DIAMOND_CHESTPLATE", "score": 10},
+                {"type": "DIAMOND_LEGGINGS", "score": 8},
+                {"type": "DIAMOND_BOOTS", "score": 5},
+                {"type": "TURTLE_HELMET", "score": 10},
+                {"type": "BOW", "score": 2},
+                {"type": "CROSSBOW", "score": 3},
+                {"type": "SHIELD", "score": 3}
+            ]
+        },
+        "explorer": {
+            "kill": [
+                {"entity": "ZOMBIE", "score": 1},
+                {"entity": "ZOMBIE_VILLAGER", "score": 1},
+                {"entity": "CREEPER", "score": 3},
+                {"entity": "HUSK", "score": 1},
+                {"entity": "DROWNED", "score": 4},
+                {"entity": "PILLAGER", "score": 3},
+                {"entity": "EVOKER", "score": 7},
+                {"entity": "VEX", "score": 3},
+                {"entity": "VINDICATOR", "score": 3},
+                {"entity": "RAVAGER", "score": 12},
+                {"entity": "SKELETON", "score": 2},
+                {"entity": "STRAY", "score": 4},
+                {"entity": "WITCH", "score": 5},
+                {"entity": "ENDERMAN", "score": 5},
+                {"entity": "SPIDER", "score": 1},
+                {"entity": "CAVE_SPIDER", "score": 4},
+                {"entity": "GHAST", "score": 8},
+                {"entity": "BLAZE", "score": 6},
+                {"entity": "MAGMA_CUBE", "score": 2},
+                {"entity": "WITHER_SKELETON", "score": 6},
+                {"entity": "WITHER", "score": 120},
+                {"entity": "SHULKER", "score": 10},
+                {"entity": "SILVERFISH", "score": 2},
+                {"entity": "ENDERMITE", "score": 6},
+                {"entity": "GUARDIAN", "score": 10},
+                {"entity": "ELDER_GUARDIAN", "score": 15},
+                {"entity": "SLIME", "score": 2},
+                {"entity": "PHANTOM", "score": 5}
+            ]
+        }
     },
 
     "powers": {

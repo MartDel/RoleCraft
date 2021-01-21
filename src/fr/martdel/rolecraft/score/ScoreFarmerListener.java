@@ -1,6 +1,8 @@
 package fr.martdel.rolecraft.score;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
@@ -19,11 +21,12 @@ import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import fr.martdel.serverrp.ServerRP;
+import fr.martdel.rolecraft.CustomPlayer;
+import fr.martdel.rolecraft.RoleCraft;
 
 public class ScoreFarmerListener implements Listener {
 
-	private ServerRP main;
+	private RoleCraft plugin;
 	
 	private Map<Material, Integer> use;
 	private Map<Material, Integer> broke;
@@ -34,168 +37,92 @@ public class ScoreFarmerListener implements Listener {
 	private Map<EntityType, Integer> spe_kill;
 	private Map<Material, Integer> spe_cook;
 	
-	public ScoreFarmerListener(ServerRP serverRP) {
-		main = serverRP;
-		
-		// Use XP
-		use = new HashMap<>();
-		use.put(Material.STONE_HOE, 5);
-		use.put(Material.IRON_HOE, 10);
-		use.put(Material.DIAMOND_HOE, 15);
-		use.put(Material.STONE_AXE, 5);
-		use.put(Material.IRON_AXE, 10);
-		use.put(Material.DIAMOND_AXE, 15);
-		
-		// Spe use XP
-		spe_use = new HashMap<>();
-		spe_use.put(Material.STONE_SWORD, 4);
-		spe_use.put(Material.IRON_SWORD, 8);
-		spe_use.put(Material.GOLDEN_SWORD, 6);
-		spe_use.put(Material.DIAMOND_SWORD, 12);
-
-		// Break XP
-		broke = new HashMap<>();
-		broke.put(Material.MELON, 2);
-		broke.put(Material.BROWN_MUSHROOM, 3);
-		broke.put(Material.RED_MUSHROOM, 3);
-
-		// Craft XP
-		craft = new HashMap<>();
-		craft.put(Material.ACACIA_PLANKS, 1);
-		craft.put(Material.BIRCH_PLANKS, 1);
-		craft.put(Material.DARK_OAK_PLANKS, 1);
-		craft.put(Material.JUNGLE_PLANKS, 1);
-		craft.put(Material.OAK_PLANKS, 1);
-		craft.put(Material.SPRUCE_PLANKS, 1);
-		craft.put(Material.MUSHROOM_STEW, 3);
-		craft.put(Material.CAKE, 3);
-		craft.put(Material.COOKIE, 3);
-		craft.put(Material.PUMPKIN_PIE, 3);
-		craft.put(Material.RABBIT_STEW, 3);
-		craft.put(Material.BEETROOT_SOUP, 3);
-
-		// Cook XP
-		cook = new HashMap<>();
-		cook.put(Material.BAKED_POTATO, 1);
-
-		// Spe cook XP
-		spe_cook = new HashMap<>();
-		spe_cook.put(Material.COOKED_PORKCHOP, 1);
-		spe_cook.put(Material.COOKED_COD, 1);
-		spe_cook.put(Material.COOKED_SALMON, 1);
-		spe_cook.put(Material.COOKED_RABBIT, 1);
-		spe_cook.put(Material.COOKED_MUTTON, 1);
-		spe_cook.put(Material.COOKED_BEEF, 1);
-		spe_cook.put(Material.COOKED_CHICKEN, 1);
-		spe_cook.put(Material.BAKED_POTATO, 1);
-		
-		// Spe kill XP
-		spe_kill = new HashMap<>();
-		spe_kill.put(EntityType.CHICKEN, 1);
-		spe_kill.put(EntityType.COD, 1);
-		spe_kill.put(EntityType.COW, 1);
-		spe_kill.put(EntityType.DOLPHIN, 3);
-		spe_kill.put(EntityType.DONKEY, 2);
-		spe_kill.put(EntityType.PANDA, 4);
-		spe_kill.put(EntityType.PARROT, 3);
-		spe_kill.put(EntityType.FOX, 4);
-		spe_kill.put(EntityType.HORSE, 2);
-		spe_kill.put(EntityType.LLAMA, 3);
-		spe_kill.put(EntityType.MUSHROOM_COW, 3);
-		spe_kill.put(EntityType.MULE, 2);
-		spe_kill.put(EntityType.PIG, 1);
-		spe_kill.put(EntityType.POLAR_BEAR, 5);
-		spe_kill.put(EntityType.PUFFERFISH, 3);
-		spe_kill.put(EntityType.RABBIT, 2);
-		spe_kill.put(EntityType.SALMON, 1);
-		spe_kill.put(EntityType.SHEEP, 1);
-		spe_kill.put(EntityType.TURTLE, 3);
-		spe_kill.put(EntityType.TROPICAL_FISH, 1);
+	public ScoreFarmerListener(RoleCraft rolecraft) {
+		this.plugin = rolecraft;
+		use = getMaterialConfigData("score.farmer.use", "type", "score");
+		broke = getMaterialConfigData("score.farmer.broke", "type", "score");		
+		craft = getMaterialConfigData("score.farmer.craft", "type", "score");
+		cook = getMaterialConfigData("score.farmer.cook", "type", "score");
+		spe_use = getMaterialConfigData("score.farmer.spe_use", "type", "score");
+		spe_cook = getMaterialConfigData("score.farmer.spe_cook", "type", "score");
+		spe_kill = getEntityConfigData("score.farmer.spe_kill", "entity", "score");
 	}
 	
 	@EventHandler
 	public void onUsed(PlayerItemBreakEvent event) {
 		Player player = event.getPlayer();
-		int score = main.getScore().getScore(player);
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
+		int score = customPlayer.getScore();
 		Material itemtype = event.getBrokenItem().getType();
-		if(main.getJobs().getScore(player) != 0) return;
-		
+		if(customPlayer.getJob() != 0) return;
 		/*
 		 * A BREEDER BREAK A TOOL
 		 */
-		if(main.getSpe().getScore(player) == 1) {
+		if(customPlayer.hasSpe()) {
 			if(spe_use.containsKey(itemtype) && !player.isOp()) {
-				main.getScore().setScore(player, score + spe_use.get(itemtype));				
+				customPlayer.setScore(score + spe_use.get(itemtype));
 			}
 			return;
 		}
-		
 		/*
 		 * A FARMER BREAK A TOOL
 		 */
 		if(use.containsKey(itemtype) && !player.isOp()) {
-			main.getScore().setScore(player, score + use.get(itemtype));
+			customPlayer.setScore(score + use.get(itemtype));
 		}
 	}
 	
 	@EventHandler
 	public void onBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
-		int score = main.getScore().getScore(player);
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
+		int score = customPlayer.getScore();
 		Material blocktype = event.getBlock().getType();
-		if(main.getJobs().getScore(player) != 0) return;
+		Collection<ItemStack> drops = event.getBlock().getDrops();
+		if(customPlayer.getJob() != 0) return;
 		
 		/*
 		 * A FERMER BREAK A BLOCK
 		 */
 		if(blocktype.equals(Material.WHEAT)) {
 			ItemStack wheat = new ItemStack(Material.WHEAT);
-			if(event.getBlock().getDrops().contains(wheat)) {
-				main.getScore().setScore(player, score + 1);
-			}
+			if(drops.contains(wheat)) customPlayer.setScore(score + 1);
 			return;
 		}
 		
 		if(blocktype.equals(Material.CARROTS) || blocktype.equals(Material.POTATOES)) {
-			if(event.getBlock().getDrops().size() > 1) {
-				main.getScore().setScore(player, score + 1);
-			}
+			if(drops.size() > 1) customPlayer.setScore(score + 1);
 			return;
 		}
 		
 		if(blocktype.equals(Material.BEETROOTS)) {
 			ItemStack root = new ItemStack(Material.BEETROOT);
-			if(event.getBlock().getDrops().contains(root)) {
-				main.getScore().setScore(player, score + 1);
-			}
+			if(drops.contains(root)) customPlayer.setScore(score + 1);
 			return;
 		}
 		
 		if(blocktype.equals(Material.COCOA)) {
 			ItemStack beans = new ItemStack(Material.COCOA_BEANS, 3);
-			if(event.getBlock().getDrops().contains(beans)) {
-				main.getScore().setScore(player, score + 5);
-			}
+			if(drops.contains(beans)) customPlayer.setScore(score + 5);
 			return;
 		}
 		
 		if(blocktype.equals(Material.NETHER_WART)) {
 			ItemStack warts = new ItemStack(Material.NETHER_WART, 2);
-			if(event.getBlock().getDrops().contains(warts)) {
-				main.getScore().setScore(player, score + 3);
-			}
+			if(drops.contains(warts)) customPlayer.setScore(score + 3);
 			return;
 		}
 		
 		if(broke.containsKey(blocktype) && !player.isOp()) {
-			main.getScore().setScore(player, score + broke.get(blocktype));
+			customPlayer.setScore(score + broke.get(blocktype));
 		}
 	}
 	
 	@EventHandler
 	public void onCraft(CraftItemEvent event) {
 		Player player = (Player) event.getWhoClicked();
-		int score = main.getScore().getScore(player);
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
+		int score = customPlayer.getScore();
 		ItemStack item = event.getCurrentItem();
 		Material itemtype = item.getType();
 		int nb = item.getAmount();
@@ -204,8 +131,8 @@ public class ScoreFarmerListener implements Listener {
 		
 		int nb_crafted = 0;
 		int add = 0;
-		
-		if(main.getJobs().getScore(player) != 0) return;
+
+		if(customPlayer.getJob() != 0) return;
 		
 		/*
 		 * A FARMER CRAFT AN ITEM
@@ -246,25 +173,26 @@ public class ScoreFarmerListener implements Listener {
 				}
 			}
 			
-			main.getScore().setScore(player, score + add);
+			customPlayer.setScore(score + add);
 		}
 	}
 	
 	@EventHandler
 	public void onCook(FurnaceExtractEvent event) {
 		Player player = event.getPlayer();
-		int score = main.getScore().getScore(player);
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
+		int score = customPlayer.getScore();
 		Material itemtype = event.getItemType();
 		int nb = event.getItemAmount();
-		if(main.getJobs().getScore(player) != 0) return;
+		if(customPlayer.getJob() != 0) return;
 		
 		/*
 		 * A BREEDER COOK AN ITEM
 		 */
-		if(main.getSpe().getScore(player) == 1) {
+		if(customPlayer.hasSpe()) {
 			if(!player.isOp() && spe_cook.containsKey(itemtype)) {
 				int add = spe_cook.get(itemtype) * nb;
-				main.getScore().setScore(player, score + add);
+				customPlayer.setScore(score + add);
 			}
 			return;
 		}
@@ -274,7 +202,7 @@ public class ScoreFarmerListener implements Listener {
 		 */
 		if(cook.containsKey(itemtype) && !player.isOp()) {
 			int add = cook.get(itemtype) * nb;
-			main.getScore().setScore(player, score + add);
+			customPlayer.setScore(score + add);
 		}
 	}
 	
@@ -285,16 +213,17 @@ public class ScoreFarmerListener implements Listener {
 		
 		if((damager instanceof Player) && (entity instanceof Damageable)) {
 			Player player = (Player) damager;
-			int score = main.getScore().getScore(player);
+			CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
+			int score = customPlayer.getScore();
 			Damageable victim = (Damageable) entity;
 			EntityType entitytype = entity.getType();
-			if(main.getJobs().getScore(player) != 0) return;
+			if(customPlayer.getJob() != 0) return;
 			
 			/*
 			 * A BREEDER KILL AN ENTITY
 			 */
-			if(main.getSpe().getScore(player) == 1 && !player.isOp() && spe_kill.containsKey(entitytype) && (victim.getHealth() - event.getDamage()) <= 0) {
-				main.getScore().setScore(player, score + spe_kill.get(entitytype));
+			if(customPlayer.hasSpe() && !player.isOp() && spe_kill.containsKey(entitytype) && (victim.getHealth() - event.getDamage()) <= 0) {
+				customPlayer.setScore(score + spe_kill.get(entitytype));
 			}
 		}
 	}
@@ -304,7 +233,7 @@ public class ScoreFarmerListener implements Listener {
 	 * @param inv Inventory
 	 * @return Number of filled stacks
 	 */
-	public int nbFillStack(Inventory inv) {
+	private int nbFillStack(Inventory inv) {
 		int nb = 0;
 		int it = 0;
 		for(ItemStack i : inv.getStorageContents()) {
@@ -312,6 +241,37 @@ public class ScoreFarmerListener implements Listener {
 			if(i != null && !i.getType().equals(Material.AIR) && it < 9) nb++;
 		}
 		return nb;
+	}
+	
+	private Map<String, Integer> getConfigData(String path, String key_name, String value_name){
+		Map<String, Integer> result = new HashMap<>();
+		List<Map<?, ?>> config_list = RoleCraft.config.getMapList(path);
+		for (Map<?, ?> el : config_list) {
+			@SuppressWarnings("unchecked")
+			Map<String, ?> current_config = (Map<String, ?>) el;
+			String key = (String) current_config.get(key_name);
+			Integer value = Integer.getInteger((String) current_config.get(value_name));
+			result.put(key, value);
+		}
+		return result;
+	}
+	private Map<Material, Integer> getMaterialConfigData(String path, String key_name, String value_name){
+		Map<Material, Integer> result = new HashMap<>();
+		Map<String, Integer> start_map = getConfigData(path, key_name, value_name);
+		for (int i = 0; i < start_map.size(); i++) {
+			String key_start = (String) start_map.keySet().toArray()[i];
+			result.put(Material.getMaterial(key_start), start_map.get(key_start));
+		}
+		return result;
+	}
+	private Map<EntityType, Integer> getEntityConfigData(String path, String key_name, String value_name){
+		Map<EntityType, Integer> result = new HashMap<>();
+		Map<String, Integer> start_map = getConfigData(path, key_name, value_name);
+		for (int i = 0; i < start_map.size(); i++) {
+			String key_start = (String) start_map.keySet().toArray()[i];
+			result.put(EntityType.valueOf(key_start), start_map.get(key_start));
+		}
+		return result;
 	}
 
 }

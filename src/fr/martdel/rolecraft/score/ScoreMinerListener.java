@@ -1,6 +1,7 @@
 package fr.martdel.rolecraft.score;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
@@ -14,11 +15,12 @@ import org.bukkit.event.inventory.FurnaceExtractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import fr.martdel.serverrp.ServerRP;
+import fr.martdel.rolecraft.CustomPlayer;
+import fr.martdel.rolecraft.RoleCraft;
 
 public class ScoreMinerListener implements Listener {
 	
-	private ServerRP main;
+	private RoleCraft plugin;
 	
 	private Map<Material, Integer> cook;
 	private Map<Material, Integer> broke;
@@ -28,71 +30,33 @@ public class ScoreMinerListener implements Listener {
 	private Map<Material, Integer> spe_broke;
 	private Map<Material, Integer> spe_craft;
 
-	public ScoreMinerListener(ServerRP serverRP) {
-		main = serverRP;
+	public ScoreMinerListener(RoleCraft rolecraft) {
+		this.plugin = rolecraft;
 		
-		// Cook XP
-		cook = new HashMap<>();
-		cook.put(Material.GOLD_INGOT, 3);
-
-		// Spe cook XP
-		spe_cook = new HashMap<>();
-		spe_cook.put(Material.GOLD_INGOT, 2);
-		
-		// Break XP
-		broke = new HashMap<>();
-		broke.put(Material.LAPIS_ORE, 2);
-		broke.put(Material.DIAMOND_ORE, 5);
-		broke.put(Material.EMERALD_ORE, 7);
-
-		// Spe break XP
-		spe_broke = new HashMap<>();
-		spe_broke.put(Material.REDSTONE_ORE, 1);
-		spe_broke.put(Material.LAPIS_ORE, 2);
-		spe_broke.put(Material.DIAMOND_ORE, 4);
-		spe_broke.put(Material.EMERALD_ORE, 6);
-		
-		// Craft XP
-		craft = new HashMap<>();
-		craft.put(Material.IRON_PICKAXE, 8);
-		craft.put(Material.DIAMOND_PICKAXE, 20);
-		craft.put(Material.IRON_SHOVEL, 4);
-		
-		// Spe craft XP
-		spe_craft = new HashMap<>();
-		spe_craft.put(Material.DIAMOND_PICKAXE, 12);
-		spe_craft.put(Material.DIAMOND_SHOVEL, 6);
-		spe_craft.put(Material.IRON_SWORD, 1);
-		spe_craft.put(Material.DIAMOND_SWORD, 8);
-		spe_craft.put(Material.IRON_HELMET, 3);
-		spe_craft.put(Material.IRON_CHESTPLATE, 5);
-		spe_craft.put(Material.IRON_LEGGINGS, 4);
-		spe_craft.put(Material.IRON_BOOTS, 2);
-		spe_craft.put(Material.DIAMOND_HELMET, 6);
-		spe_craft.put(Material.DIAMOND_CHESTPLATE, 10);
-		spe_craft.put(Material.DIAMOND_LEGGINGS, 8);
-		spe_craft.put(Material.DIAMOND_BOOTS, 5);
-		spe_craft.put(Material.TURTLE_HELMET, 10);
-		spe_craft.put(Material.BOW, 2);
-		spe_craft.put(Material.CROSSBOW, 3);
-		spe_craft.put(Material.SHIELD, 3);
+		cook = getConfigData("score.miner.cook");
+		broke = getConfigData("score.miner.cook");
+		craft = getConfigData("score.miner.cook");
+		spe_cook = getConfigData("score.miner.cook");
+		spe_broke = getConfigData("score.miner.cook");
+		spe_craft = getConfigData("score.miner.cook");
 	}
 	
 	@EventHandler
 	public void onCook(FurnaceExtractEvent event) {
 		Player player = event.getPlayer();
-		int score = main.getScore().getScore(player);
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
+		int score = customPlayer.getScore();
 		Material itemtype = event.getItemType();
 		int nb = event.getItemAmount();
-		if(main.getJobs().getScore(player) != 1) return;
+		if(customPlayer.getJob() != 1) return;
 		
 		/*
 		 * A GUNSMITH COOK SOMETHING
 		 */
-		if(main.getSpe().getScore(player) == 1) {
+		if(customPlayer.hasSpe()) {
 			if(spe_cook.containsKey(itemtype) && !player.isOp()) {
 				int add = spe_cook.get(itemtype) * nb;
-				main.getScore().setScore(player, score + add);				
+				customPlayer.setScore(score + add);				
 			}
 			return;
 		}
@@ -101,23 +65,24 @@ public class ScoreMinerListener implements Listener {
 		 */
 		if(cook.containsKey(itemtype) && !player.isOp()) {
 			int add = cook.get(itemtype) * nb;
-			main.getScore().setScore(player, score + add);
+			customPlayer.setScore(score + add);
 		}
 	}
 	
 	@EventHandler
 	public void onBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
-		int score = main.getScore().getScore(player);
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
+		int score = customPlayer.getScore();
 		Material itemtype = event.getBlock().getType();
-		if(main.getJobs().getScore(player) != 1) return;
+		if(customPlayer.getJob() != 1) return;
 		/*
 		 * A GUNSMITH BREAK A BLOCK
 		 */
-		if(main.getSpe().getScore(player) == 1) {
+		if(customPlayer.hasSpe()) {
 			if(spe_broke.containsKey(itemtype) && !player.isOp()) {
 				int add = spe_broke.get(itemtype);
-				main.getScore().setScore(player, score + add);
+				customPlayer.setScore(score + add);
 			}
 			return;
 		}
@@ -126,14 +91,15 @@ public class ScoreMinerListener implements Listener {
 		 */
 		if(broke.containsKey(itemtype) && !player.isOp()) {
 			int add = broke.get(itemtype);
-			main.getScore().setScore(player, score + add);
+			customPlayer.setScore(score + add);
 		}
 	}
 	
 	@EventHandler
 	public void onCraft(CraftItemEvent event) {
 		Player player = (Player) event.getWhoClicked();
-		int score = main.getScore().getScore(player);
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
+		int score = customPlayer.getScore();
 		ItemStack item = event.getCurrentItem();
 		Material itemtype = item.getType();
 		int nb = item.getAmount();
@@ -143,11 +109,11 @@ public class ScoreMinerListener implements Listener {
 		int nb_crafted = 0;
 		int add = 0;
 		
-		if(main.getJobs().getScore(player) != 1) return;
+		if(customPlayer.getJob() != 1) return;
 		/*
 		 * A MINER CRAFT AN ITEM
 		 */
-		if((main.getSpe().getScore(player) == 0 && !player.isOp() && craft.containsKey(itemtype)) || (main.getSpe().getScore(player) == 1 && !player.isOp() && spe_craft.containsKey(itemtype))) {
+		if((!customPlayer.hasSpe() && !player.isOp() && craft.containsKey(itemtype)) || (customPlayer.hasSpe() && !player.isOp() && spe_craft.containsKey(itemtype))) {
 			// Control item quantity to count how many items are crafting
 			event.setCancelled(true);
 			
@@ -165,7 +131,7 @@ public class ScoreMinerListener implements Listener {
 						it++;
 					}
 				}
-				if(main.getSpe().getScore(player) == 0) {
+				if(!customPlayer.hasSpe()) {
 					add = craft.get(itemtype) * nb_crafted;
 				} else {
 					add = spe_craft.get(itemtype) * nb_crafted;
@@ -174,7 +140,7 @@ public class ScoreMinerListener implements Listener {
 			
 			if(click.equals(ClickType.LEFT) || click.equals(ClickType.RIGHT)) {
 				nb_crafted = nb;
-				if(main.getSpe().getScore(player) == 0) {
+				if(!customPlayer.hasSpe()) {
 					add = craft.get(itemtype) * nb;
 				} else {
 					add = spe_craft.get(itemtype) * nb;
@@ -191,7 +157,7 @@ public class ScoreMinerListener implements Listener {
 				}
 			}
 			
-			main.getScore().setScore(player, score + add);
+			customPlayer.setScore(score + add);
 		}
 	}
 	
@@ -208,6 +174,19 @@ public class ScoreMinerListener implements Listener {
 			if(i != null && !i.getType().equals(Material.AIR) && it < 9) nb++;
 		}
 		return nb;
+	}
+	
+	private Map<Material, Integer> getConfigData(String path){
+		Map<Material, Integer> result = new HashMap<>();
+		List<Map<?, ?>> config_list = RoleCraft.config.getMapList(path);
+		for (Map<?, ?> el : config_list) {
+			@SuppressWarnings("unchecked")
+			Map<String, ?> current_config = (Map<String, ?>) el;
+			Material type = Material.getMaterial((String) current_config.get("type"));
+			Integer score = Integer.getInteger((String) current_config.get("score"));
+			result.put(type, score);
+		}
+		return result;
 	}
 
 }
