@@ -47,9 +47,10 @@ public class ClickListener implements Listener {
 		/*
 		 * PLAYER USES START COMPASS
 		 */
-		if(item != null && (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR)) {
+		if(item != null && (action.equals(Action.RIGHT_CLICK_BLOCK) || action.equals(Action.RIGHT_CLICK_AIR))) {
 			ItemMeta itemMeta = item.getItemMeta();
-			if(item.getType().equals(Material.COMPASS) && itemMeta.getDisplayName().equalsIgnoreCase("§9Choisir son métier") && itemMeta.getCustomModelData() == 3) {
+			CustomItems compass = CustomItems.COMPASS;
+			if(item.getType().equals(compass.getType()) && itemMeta.equals(compass.getItemMeta())) {
 				Inventory inv = GUI.createCompassGUI();
 				player.openInventory(inv);
 				return;
@@ -156,6 +157,7 @@ public class ClickListener implements Listener {
 			} else if(action == Action.LEFT_CLICK_BLOCK && item != null) {
 				ItemMeta iMeta = item.getItemMeta();
 				String name = iMeta.getDisplayName();
+				if(!iMeta.hasCustomModelData()) return;
 				int metadata = iMeta.getCustomModelData();
 				Material type = item.getType();
 				

@@ -1,4 +1,4 @@
-package fr.martdel.rolecraft.listeners;
+package fr.martdel.rolecraft.PNJ;
 
 import java.util.Map;
 
@@ -19,7 +19,6 @@ import fr.martdel.rolecraft.CustomItems;
 import fr.martdel.rolecraft.CustomPlayer;
 import fr.martdel.rolecraft.RoleCraft;
 import fr.martdel.rolecraft.Wallet;
-import fr.martdel.rolecraft.PNJ.PNJ;
 
 public class PNJListener implements Listener {
 	
@@ -46,7 +45,7 @@ public class PNJListener implements Listener {
 			if(registered_pnj.containsKey(name)) {
 				event.setCancelled(true);
 				PNJ custom_pnj = registered_pnj.get(name);
-				if(customPlayer.loadData().getJob() != custom_pnj.getRequiredJob()) return;
+				if(custom_pnj.getRequiredJob() != null && customPlayer.loadData().getJob() != custom_pnj.getRequiredJob()) return;
 				Inventory inv = custom_pnj.getInventory();
 				player.openInventory(inv);
 			}

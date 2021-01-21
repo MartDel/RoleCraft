@@ -92,17 +92,13 @@ public class CommandPublic implements CommandExecutor {
 						
 						String team_str = customPlayer.getStringJob("fr");
 						team_str = RoleCraft.firstLetterToUpperCase(team_str);
-						System.out.println(team_str);
 						team.move(player, team_str);
 
 						player.sendMessage("Vous n'êtes plus OP");
 					} else {
 						player.setOp(true);
 						player.setGameMode(GameMode.CREATIVE);
-
-						System.out.println(new TeamManager(plugin, "Admin"));
 						team.move(player, "Admin");
-						
 						player.sendMessage("Vous êtes OP");
 					}
 				} else {

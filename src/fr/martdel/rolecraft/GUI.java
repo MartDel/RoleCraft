@@ -22,7 +22,7 @@ public class GUI {
 	public GUI(String name, int size) {
 		this.name = name;
 		this.size = roundSize(size);
-		this.inventory = Bukkit.createInventory(null, size, name);
+		this.inventory = Bukkit.createInventory(null, this.size, name);
 		
 		this.rules = new HashMap<>();
 		rules.put("fill", "no");
@@ -83,7 +83,7 @@ public class GUI {
 	 * @return Inventory The GUI to show
 	 */
 	public static Inventory createCompassGUI() {
-		Inventory inv = Bukkit.createInventory(null, 27, "§8Choisir son métier");
+		Inventory inv = Bukkit.createInventory(null, 27, "§9Choisir son métier");
 		
 		ItemStack farmer = createItem(Material.IRON_HOE, "§2Fermier", Arrays.asList("§3Cultive la terre,", "§3coupe les arbres", "§3pour les vendres.", "", "§fSpécialisation : §aEleveur", "§7Elève des animaux,", "§7pêche pour", "§7plus de ressources."), 0);
 		inv.setItem(3, farmer);

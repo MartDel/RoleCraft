@@ -251,7 +251,7 @@
 
         "delimiter": {
             "type": "STICK",
-            "name": "delimiter",
+            "name": "§9Delimiter",
             "lore": [
                 "Cliquez sur un bloc du sol",
                 "pour fixer le premier point."
@@ -262,7 +262,9 @@
     },
 
     "controled_items": {
-        "weapons": ["DIAMOND_AXE", "GOLDEN_AXE", "IRON_AXE", "STONE_AXE", "WOODEN_AXE", "DIAMOND_HOE", "GOLDEN_HOE", "IRON_HOE", "STONE_HOE", "WOODEN_HOE", "DIAMOND_PICKAXE", "GOLDEN_PICKAXE", "IRON_PICKAXE", "STONE_PICKAXE", "WOODEN_PICKAXE", "DIAMOND_SHOVEL", "GOLDEN_SHOVEL", "IRON_SHOVEL", "STONE_SHOVEL", "WOODEN_SHOVEL"]
+        "weapons": ["DIAMOND_AXE", "GOLDEN_AXE", "IRON_AXE", "STONE_AXE", "WOODEN_AXE", "DIAMOND_HOE", "GOLDEN_HOE", "IRON_HOE", "STONE_HOE", "WOODEN_HOE", "DIAMOND_PICKAXE", "GOLDEN_PICKAXE", "IRON_PICKAXE", "STONE_PICKAXE", "WOODEN_PICKAXE", "DIAMOND_SHOVEL", "GOLDEN_SHOVEL", "IRON_SHOVEL", "STONE_SHOVEL", "WOODEN_SHOVEL"],
+        "grounds": ["ACACIA_BUTTON", "BIRCH_BUTTON", "DARK_OAK_BUTTON", "JUNGLE_BUTTON", "OAK_BUTTON", "SPRUCE_BUTTON", "STONE_BUTTON", "LEVER", "ACACIA_DOOR", "ACACIA_TRAPDOOR", "BIRCH_DOOR", "BIRCH_TRAPDOOR", "DARK_OAK_DOOR", "DARK_OAK_TRAPDOOR", "IRON_DOOR", "IRON_TRAPDOOR", "JUNGLE_DOOR", "JUNGLE_TRAPDOOR", "OAK_DOOR", "OAK_TRAPDOOR", "SPRUCE_DOOR", "SPRUCE_TRAPDOOR", "ACACIA_FENCE_GATE", "BIRCH_FENCE_GATE", "DARK_OAK_FENCE_GATE", "JUNGLE_FENCE_GATE", "OAK_FENCE_GATE", "SPRUCE_FENCE_GATE"],
+        "city": ["CHEST", "ANVIL", "CHIPPED_ANVIL", "DAMAGED_ANVIL", "ITEM_FRAME", "BARREL", "FURNACE", "SMOKER", "BLAST_FURNACE", "ARMOR_STAND", "BLACK_BED", "BLUE_BED", "BROWN_BED", "CYAN_BED", "GRAY_BED", "GREEN_BED", "LIGHT_BLUE_BED", "LIGHT_GRAY_BED", "LIME_BED", "MAGENTA_BED", "ORANGE_BED", "PINK_BED", "PURPLE_BED", "RED_BED", "WHITE_BED", "YELLOW_BED", "ACACIA_DOOR", "ACACIA_TRAPDOOR", "BIRCH_DOOR", "BIRCH_TRAPDOOR", "DARK_OAK_DOOR", "DARK_OAK_TRAPDOOR", "IRON_DOOR", "IRON_TRAPDOOR", "JUNGLE_DOOR", "JUNGLE_TRAPDOOR", "OAK_DOOR", "OAK_TRAPDOOR", "SPRUCE_DOOR", "SPRUCE_TRAPDOOR", "ACACIA_FENCE_GATE", "BIRCH_FENCE_GATE", "DARK_OAK_FENCE_GATE", "JUNGLE_FENCE_GATE", "OAK_FENCE_GATE", "SPRUCE_FENCE_GATE"]
     },
 
     "score": {
@@ -317,7 +319,7 @@
                 {"entity": "CHICKEN", "score": 1},
                 {"entity": "COD", "score": 1},
                 {"entity": "COW", "score": 1},
-                {"entity": "DOLPHIN", "score": 3}
+                {"entity": "DOLPHIN", "score": 3},
                 {"entity": "DONKEY", "score": 2},
                 {"entity": "PANDA", "score": 4},
                 {"entity": "PARROT", "score": 3},

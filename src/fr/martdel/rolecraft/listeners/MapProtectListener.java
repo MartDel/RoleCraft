@@ -1,6 +1,6 @@
 package fr.martdel.rolecraft.listeners;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -29,13 +29,26 @@ import fr.martdel.rolecraft.RoleCraft;
 
 public class MapProtectListener implements Listener {
 	
-	private static final List<Material> FORBIDDEN_GROUNDS = Arrays.asList(Material.ACACIA_BUTTON, Material.BIRCH_BUTTON, Material.DARK_OAK_BUTTON, Material.JUNGLE_BUTTON, Material.OAK_BUTTON, Material.SPRUCE_BUTTON, Material.STONE_BUTTON, Material.LEVER, Material.ACACIA_DOOR, Material.ACACIA_TRAPDOOR, Material.BIRCH_DOOR, Material.BIRCH_TRAPDOOR, Material.DARK_OAK_DOOR, Material.DARK_OAK_TRAPDOOR, Material.IRON_DOOR, Material.IRON_TRAPDOOR, Material.JUNGLE_DOOR, Material.JUNGLE_TRAPDOOR, Material.OAK_DOOR, Material.OAK_TRAPDOOR, Material.SPRUCE_DOOR, Material.SPRUCE_TRAPDOOR, Material.ACACIA_FENCE_GATE, Material.BIRCH_FENCE_GATE, Material.DARK_OAK_FENCE_GATE, Material.JUNGLE_FENCE_GATE, Material.OAK_FENCE_GATE, Material.SPRUCE_FENCE_GATE);
-	private static final List<Material> FORBIDDEN_CITY = Arrays.asList(Material.CHEST, Material.ANVIL, Material.CHIPPED_ANVIL, Material.DAMAGED_ANVIL, Material.ITEM_FRAME, Material.BARREL, Material.FURNACE, Material.SMOKER, Material.BLAST_FURNACE, Material.ARMOR_STAND, Material.BLACK_BED, Material.BLUE_BED, Material.BROWN_BED, Material.CYAN_BED, Material.GRAY_BED, Material.GREEN_BED, Material.LIGHT_BLUE_BED, Material.LIGHT_GRAY_BED, Material.LIME_BED, Material.MAGENTA_BED, Material.ORANGE_BED, Material.PINK_BED, Material.PURPLE_BED, Material.RED_BED, Material.WHITE_BED, Material.YELLOW_BED);
+	private static final List<Material> FORBIDDEN_GROUNDS = new ArrayList<>();
+	private static final List<Material> FORBIDDEN_CITY = new ArrayList<>();
 	
 	private RoleCraft plugin;
 
 	public MapProtectListener(RoleCraft rolecraft) {
 		this.plugin = rolecraft;
+		
+		List<String> list;
+		// Get forbidden interactions on grounds
+		list = RoleCraft.config.getStringList("controled_items.grounds");
+		for (String name : list) {
+			FORBIDDEN_GROUNDS.add(Material.getMaterial(name));
+		}
+		
+		// Get forbidden interactions on grounds
+		list = RoleCraft.config.getStringList("controled_items.city");
+		for (String name : list) {
+			FORBIDDEN_CITY.add(Material.getMaterial(name));
+		}
 	}
 	
 	@EventHandler

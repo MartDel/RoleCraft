@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -131,15 +132,15 @@ public class CustomPlayer {
 				this.is_admin = result.getByte("admin") == 1;
 				this.level = result.getInt("level");
 				this.score = result.getInt("score");
-				this.job = result.getInt("job");
+				this.job = result.getInt("job") == 0 ? null : result.getInt("job") - 1;
 				this.has_spe = result.getByte("spe") == 1;
 				
 				// Get house
-				this.house_id = result.getInt("house");
+				this.house_id = result.getInt("house") == 0 ? null : result.getInt("house");
 				if(house_id != null) this.house = loadGround("houses", house_id);
 				
 				// Get shop
-				this.shop_id = result.getInt("shop");
+				this.shop_id = result.getInt("shop") == 0 ? null : result.getInt("shop");
 				if(shop_id != null) this.shop = loadGround("shops", shop_id);
 				
 				// Get farms
@@ -154,7 +155,7 @@ public class CustomPlayer {
 					query_admin.setString(1, uuid.toString());
 					ResultSet result_admin = query_admin.executeQuery();
 					if(result_admin.next()) {
-						admin_ground.clear();
+						admin_ground = new HashMap<>();
 						admin_ground.put("x1", result_admin.getInt("x1"));
 						admin_ground.put("z1", result_admin.getInt("z1"));
 						admin_ground.put("x2", result_admin.getInt("x2"));
@@ -209,7 +210,7 @@ public class CustomPlayer {
 			update_player.setByte(1, (byte) (is_admin ? 1 : 0));
 			update_player.setInt(2, level);
 			update_player.setInt(3, score);
-			update_player.setInt(4, job);
+			update_player.setInt(4, job + 1);
 			update_player.setByte(5, (byte) (has_spe ? 1 : 0));
 			update_player.setString(6, uuid.toString());
 			update_player.executeUpdate();
@@ -245,15 +246,22 @@ public class CustomPlayer {
 	private void updateGround(String table, int id, Map<String, Integer> data) throws SQLException {
 		PreparedStatement update;
 		if(data != null) {
-			update = db.getConnection().prepareStatement("UPDATE " + table + " SET x1=?, z1=?, x2=?, z2=? WHERE id=?");
-			for (int i = 0; i < data.size(); i++) {
-				Integer coord = (Integer) data.values().toArray()[i];
-				update.setInt(i+1, coord);
+			update = db.getConnection().prepareStatement("UPDATE " + table + " SET owner_uuid=?, x1=?, z1=?, x2=?, z2=? WHERE id=?");
+			update.setString(1, uuid.toString());
+			
+			Set<String> data_set = data.keySet();
+			int i = 0;
+			for (String c : data_set) {
+				Integer coord = data.get(c);
+				update.setInt(i + 2, coord);
+				i++;
 			}
-			update.setInt(5, id);
+			
+			update.setInt(6, id);
 		} else {
-			update = db.getConnection().prepareStatement("UPDATE " + table + " SET x1=NULL, z1=NULL, x2=NULL, z2=NULL WHERE id=?");
-			update.setInt(1, id);
+			update = db.getConnection().prepareStatement("UPDATE " + table + " SET owner_uuid=?, x1=NULL, z1=NULL, x2=NULL, z2=NULL WHERE id=?");
+			update.setString(1, uuid.toString());
+			update.setInt(2, id);
 		}
 		update.executeUpdate();
 		update.close();

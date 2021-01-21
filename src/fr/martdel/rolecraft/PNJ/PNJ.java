@@ -15,11 +15,11 @@ public class PNJ {
 	
 	private String name;
 	private String inventory_name;
-	private int required_job;
+	private Integer required_job;
 	private boolean sell;
 	private List<ItemForSale> items;
 	
-	public PNJ(String name, String inventory_name, int required_job, boolean sell, List<ItemForSale> items) {
+	public PNJ(String name, String inventory_name, Integer required_job, boolean sell, List<ItemForSale> items) {
 		this.name = name;
 		this.inventory_name = inventory_name;
 		this.required_job = required_job;
@@ -62,7 +62,7 @@ public class PNJ {
 				itemforsale.setToSell(!sell);
 				item_list.add(itemforsale);
 			}
-			
+
 			result.put(name, new PNJ(name, inventory_name, required_job, sell, item_list));
 		}
 		return result;
@@ -84,11 +84,11 @@ public class PNJ {
 		this.inventory_name = inventory_name;
 	}
 
-	public int getRequiredJob() {
+	public Integer getRequiredJob() {
 		return required_job;
 	}
 
-	public void setRequiredJob(int required_job) {
+	public void setRequiredJob(Integer required_job) {
 		this.required_job = required_job;
 	}
 
