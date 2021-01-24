@@ -59,7 +59,8 @@ public class CraftListener implements Listener {
 		Player player = event.getPlayer();
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
 		Action action = event.getAction();
-		
+		if(customPlayer.isNew()) return;
+
 		if(!player.isOp() && action == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null) {
 			Material itemtype = event.getClickedBlock().getType();
 			/*
