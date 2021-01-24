@@ -20,7 +20,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 import fr.martdel.rolecraft.database.DatabaseManager;
 
 public class CustomPlayer {
-	
 	public static final int DEFAULTHEARTS = 10;
 	
 	private Player player;

@@ -1,5 +1,9 @@
 Credentials.java
 
+# Idea files
+.idea/
+*.iml
+
 # Eclipse files
 .settings/
 *.classpath

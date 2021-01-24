@@ -1,24 +1,19 @@
 package fr.martdel.rolecraft;
 
-import java.util.List;
-import java.util.Random;
-
+import fr.martdel.rolecraft.PNJ.PNJListener;
+import fr.martdel.rolecraft.commands.CommandAdmin;
+import fr.martdel.rolecraft.commands.CommandPublic;
+import fr.martdel.rolecraft.commands.CommandTest;
+import fr.martdel.rolecraft.database.DatabaseManager;
+import fr.martdel.rolecraft.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import fr.martdel.rolecraft.PNJ.PNJListener;
-import fr.martdel.rolecraft.commands.CommandAdmin;
-import fr.martdel.rolecraft.commands.CommandPublic;
-import fr.martdel.rolecraft.commands.CommandTest;
-import fr.martdel.rolecraft.database.DatabaseManager;
-import fr.martdel.rolecraft.listeners.ClickListener;
-import fr.martdel.rolecraft.listeners.CraftListener;
-import fr.martdel.rolecraft.listeners.MapProtectListener;
-import fr.martdel.rolecraft.listeners.PluginListener;
-import fr.martdel.rolecraft.listeners.PowerListener;
+import java.util.List;
+import java.util.Random;
 
 public class RoleCraft extends JavaPlugin {
 	
