@@ -52,6 +52,7 @@ public class RoleCraft extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new MapProtectListener(this), this);
 		getServer().getPluginManager().registerEvents(new CraftListener(this), this);
 		getServer().getPluginManager().registerEvents(new PNJListener(this), this);
+		getServer().getPluginManager().registerEvents(new SellListener(this), this);
 		getServer().getPluginManager().registerEvents(new PowerListener(this), this);
 		
 		// Announcements

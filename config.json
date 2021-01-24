@@ -91,6 +91,12 @@
         "letterbox": 5
     },
 
+    "sell": {
+        "step1": {
+            "name": "§9Que voulez-vous faire?"
+        }
+    },
+
     "PNJ": [
         {
             "PNJ_name": "- Fermier -",
@@ -247,6 +253,19 @@
             ],
             "metadata": 4,
             "enchantments": []
+        },
+        "sell_paper": {
+            "type": "PAPER",
+            "name": "§9Papier de vente",
+            "lore": [
+                "Faites un clic droit",
+                "pour ouvrir le guide",
+                "de vente !"
+            ],
+            "metadata": 5,
+            "enchantments": [
+                {"name": "LOOT_BONUS_BLOCKS", "level": 10}
+            ]
         },
 
         "delimiter": {

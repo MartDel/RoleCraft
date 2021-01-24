@@ -14,6 +14,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class GUI {
 	
+	public static final String SELL_STEP1_NAME = RoleCraft.config.getString("sell.step1.name");
+	
 	private String name;
 	private int size;
 	private Inventory inventory;
@@ -101,6 +103,32 @@ public class GUI {
 	}
 	
 	/**
+	 * Create the GUI for the step 1 of sell command
+	 * @return
+	 */
+	public static Inventory createSellStep1() {
+		GUI step1 = new GUI(SELL_STEP1_NAME, 54);
+		step1.setRule("fill", "yes");
+		step1.setRule("fill_type", "BLACK_STAINED_GLASS_PANE");
+		
+		ItemStack[] items = {
+			createItem(Material.OAK_SIGN, "§aVendre un terrain §9(Admin)", Arrays.asList("Vendre un terrain de n'importe", "quel type à un joueur."), 0),
+			createItem(Material.POPPY, "§aDemander une décoration", Arrays.asList("Donner accès à son terrain", "pour qu'un builder", "le décore."), 1),
+			createItem(Material.OAK_DOOR, "§aVendre sa maison", Arrays.asList("Vendre sa maison", "à un admin", "ou à un joueur."), 2),
+			createItem(Material.CHEST, "§aVendre son magasin", Arrays.asList("Vendre son magasin", "à un admin", "ou à un joueur."), 3),
+			createItem(Material.HAY_BLOCK, "§aVendre son champ §2(Fermier)", Arrays.asList("Vendre son champ", "à un admin", "ou à un joueur."), 4),
+			createItem(Material.WHITE_GLAZED_TERRACOTTA, "§aVendre une construction §5(Builder)", Arrays.asList("Vendre une construction", "à un admin", "ou à un joueur."), 5),
+			createItem(Material.PEONY, "§aVendre une décoration §5(Builder)", Arrays.asList("Vendre un terrain décoré", "à un autre joueur."), 6)
+		};
+		int[] stacks = {19, 21, 23, 25, 29, 31, 33};
+		for (int i = 0; i < stacks.length; i++) {
+			step1.setItem(stacks[i], items[i]);
+		}
+		
+		return step1.getInventory();
+	}
+	
+	/**
 	 * Quick creating of an ItemStack
 	 * @param mat The item type
 	 * @param name The item name
@@ -108,11 +136,11 @@ public class GUI {
 	 * @param data The item metadata
 	 * @return ItemStack The created item
 	 */
-	public static ItemStack createItem(Material mat, String name, List<String> let, int data) {
+	public static ItemStack createItem(Material mat, String name, List<String> lore, int data) {
 		ItemStack item = new ItemStack(mat);
 		ItemMeta itemMeta = item.getItemMeta();
 		itemMeta.setDisplayName(name);
-		itemMeta.setLore(let);
+		itemMeta.setLore(lore);
 		itemMeta.setCustomModelData(data);
 		itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(itemMeta);
