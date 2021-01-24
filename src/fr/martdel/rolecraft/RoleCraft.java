@@ -19,6 +19,7 @@ import fr.martdel.rolecraft.listeners.CraftListener;
 import fr.martdel.rolecraft.listeners.MapProtectListener;
 import fr.martdel.rolecraft.listeners.PluginListener;
 import fr.martdel.rolecraft.listeners.PowerListener;
+import fr.martdel.rolecraft.listeners.SellListener;
 
 public class RoleCraft extends JavaPlugin {
 	
@@ -57,6 +58,7 @@ public class RoleCraft extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new MapProtectListener(this), this);
 		getServer().getPluginManager().registerEvents(new CraftListener(this), this);
 		getServer().getPluginManager().registerEvents(new PNJListener(this), this);
+		getServer().getPluginManager().registerEvents(new SellListener(this), this);
 		getServer().getPluginManager().registerEvents(new PowerListener(this), this);
 		
 		// Announcements

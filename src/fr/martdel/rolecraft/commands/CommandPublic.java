@@ -14,8 +14,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import fr.martdel.rolecraft.Credentials;
+import fr.martdel.rolecraft.CustomItems;
 import fr.martdel.rolecraft.CustomPlayer;
 import fr.martdel.rolecraft.LocationInMap;
 import fr.martdel.rolecraft.RoleCraft;
@@ -200,6 +202,8 @@ public class CommandPublic implements CommandExecutor {
 				/*
 				 * SELL COMMAND
 				 */
+				ItemStack paper = CustomItems.SELL_PAPER.getItem();
+				player.getInventory().addItem(paper);
 			} else if(cmd.getName().equalsIgnoreCase("confirm")) {
 				/*
 				 * CONFIRM A SELL BY AN OTHER PLAYER
