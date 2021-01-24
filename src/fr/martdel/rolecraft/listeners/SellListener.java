@@ -60,19 +60,24 @@ public class SellListener implements Listener {
 				ItemMeta iMeta = item.getItemMeta();
 				if(iMeta.hasCustomModelData()) {
 					int data = iMeta.getCustomModelData();
+					player.closeInventory();
 					switch(data) {
-					case 0:
-						player.closeInventory();
+					case 0:	// Sell an admin ground
 						if(!player.isOp()) {
 							player.sendMessage("§4Vous devez être admin pour accéder à ce type de vente.");
 							return;
 						}
-						addDataToPaper(player, "admin");
-						player.openInventory(GUI.createSellStep3());
+						if(plugin.getServer().getOnlinePlayers().size() == 1){
+							player.sendMessage("§4Aucun joueur n'est en ligne.");
+							return;
+						}
+						if(!addDataToPaper(player, "admin")) {
+							player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
+							return;
+						}
+						player.openInventory(GUI.createSellStep3(plugin));
 						return;
-					case 1:
-						player.closeInventory();
-						addDataToPaper(player, "buy_deco");
+					case 1:	// Delegate his ground to a builder for a decoration
 						customPlayer.loadData();
 						if(customPlayer.getHouse() == null && customPlayer.getShop() == null){
 							if((customPlayer.getJob() == 0 && customPlayer.getFarms().size() == 0) || (customPlayer.getJob() == 3 && customPlayer.getBuilds().size() == 0)){
@@ -80,8 +85,77 @@ public class SellListener implements Listener {
 								return;
 							}
 						}
+						if(!addDataToPaper(player, "buy_deco")) {
+							player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
+							return;
+						}
 						player.openInventory(GUI.createSellStep2(customPlayer, item.getType(), "all"));
 						return;
+					case 2:	// Sell a house
+						customPlayer.loadData();
+						if(customPlayer.getHouse() == null){
+							player.sendMessage("§4Vous n'avez actuellement pas de maison.");
+							return;
+						}
+						if(plugin.getServer().getOnlinePlayers().size() == 1){
+							player.sendMessage("§4Aucun joueur n'est en ligne.");
+							return;
+						}
+						if(!addDataToPaper(player, "house")) {
+							player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
+							return;
+						}
+						player.openInventory(GUI.createSellStep3(plugin));
+						return;
+					case 3:	// Sell a shop
+						customPlayer.loadData();
+						if(customPlayer.getShop() == null){
+							player.sendMessage("§4Vous n'avez actuellement pas de magasin.");
+							return;
+						}
+						if(plugin.getServer().getOnlinePlayers().size() == 1){
+							player.sendMessage("§4Aucun joueur n'est en ligne.");
+							return;
+						}
+						if(!addDataToPaper(player, "shop")) {
+							player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
+							return;
+						}
+						player.openInventory(GUI.createSellStep3(plugin));
+						return;
+					case 4:	// Sell a farm
+						customPlayer.loadData();
+						if(customPlayer.getJob() != 0){
+							player.sendMessage("§4Vous devez être fermier pour accéder à cette vente.");
+							return;
+						}
+						if(customPlayer.getFarms().size() == 0){
+							player.sendMessage("§4Vous n'avez actuellement aucune ferme.");
+							return;
+						}
+						if(!addDataToPaper(player, "farm")) {
+							player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
+							return;
+						}
+						player.openInventory(GUI.createSellStep2(customPlayer, item.getType(), "farm"));
+						return;
+					case 5:
+						case 6:
+							customPlayer.loadData();
+							if(customPlayer.getJob() != 3){
+								player.sendMessage("§4Vous devez être builder pour accéder à cette vente.");
+								return;
+							}
+							if(customPlayer.getBuilds().size() == 0){
+								player.sendMessage("§4Vous n'avez actuellement aucun terrain de construction.");
+								return;
+							}
+							if(!addDataToPaper(player, "build")) {
+								player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
+								return;
+							}
+							player.openInventory(GUI.createSellStep2(customPlayer, item.getType(), "build"));
+							return;
 					}
 				}
 				event.setCancelled(true);
@@ -96,6 +170,7 @@ public class SellListener implements Listener {
 	private boolean addDataToPaper(Player player, String data) {
 		// Find paper
 		ItemStack paper = null;
+		Integer paper_slot = null;
 		ItemStack[] content = player.getInventory().getContents();
 		CustomItems template_paper = CustomItems.SELL_PAPER;
 		for(int i = 0; i < content.length; i++) {
@@ -106,16 +181,20 @@ public class SellListener implements Listener {
 					ItemMeta stackMeta = stack.getItemMeta();
 					if(type.equals(template_paper.getType()) && stackMeta.hasLore()) {
 						paper = stack;
+						paper_slot = i;
 					}
 				}
 			}
 		}
-		if(paper == null) return false;
+		if(paper == null && paper_slot == null) return false;
 
 		ItemMeta paperMeta = paper.getItemMeta();
 		List<String> lore = paperMeta.getLore();
 		if(lore.equals(template_paper.getLore())) lore.clear();
 		lore.add(data);
+		paperMeta.setLore(lore);
+		paper.setItemMeta(paperMeta);
+		player.getInventory().setItem(paper_slot, paper);
 		return true;
 	}
 

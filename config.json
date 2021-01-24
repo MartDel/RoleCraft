@@ -99,6 +99,10 @@
         "step2": {
             "name": "§9Quel terrain?",
             "size": 54
+        },
+        "step3": {
+            "name": "§9À quel joueur?",
+            "size": 54
         }
     },
 

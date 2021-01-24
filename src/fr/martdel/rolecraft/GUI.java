@@ -4,10 +4,12 @@ import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 public class GUI {
 	
@@ -172,24 +174,23 @@ public class GUI {
 
 	/**
 	 * Create the GUI for the step 1 of sell command
+	 * @param plugin The current plugin
 	 * @return The inventory to show
 	 */
-	public static Inventory createSellStep3() {
+	public static Inventory createSellStep3(RoleCraft plugin) {
 		GUI step3 = new GUI(SELL_STEP3_NAME, SELL_STEP3_SIZE);
 
-//		ItemStack[] items = {
-//				createItem(Material.OAK_SIGN, "§aVendre un terrain §9(Admin)", Arrays.asList("Vendre un terrain de n'importe", "quel type à un joueur."), 0),
-//				createItem(Material.POPPY, "§aDemander une décoration", Arrays.asList("Donner accès à son terrain", "pour qu'un builder", "le décore."), 1),
-//				createItem(Material.OAK_DOOR, "§aVendre sa maison", Arrays.asList("Vendre sa maison", "à un admin", "ou à un joueur."), 2),
-//				createItem(Material.CHEST, "§aVendre son magasin", Arrays.asList("Vendre son magasin", "à un admin", "ou à un joueur."), 3),
-//				createItem(Material.HAY_BLOCK, "§aVendre son champ §2(Fermier)", Arrays.asList("Vendre son champ", "à un admin", "ou à un joueur."), 4),
-//				createItem(Material.WHITE_GLAZED_TERRACOTTA, "§aVendre une construction §5(Builder)", Arrays.asList("Vendre une construction", "à un admin", "ou à un joueur."), 5),
-//				createItem(Material.PEONY, "§aVendre une décoration §5(Builder)", Arrays.asList("Vendre un terrain décoré", "à un autre joueur."), 6)
-//		};
-//		int[] stacks = {19, 21, 23, 25, 29, 31, 33};
-//		for (int i = 0; i < stacks.length; i++) {
-//			step1.setItem(stacks[i], items[i]);
-//		}
+		for(Player p: plugin.getServer().getOnlinePlayers()){
+			CustomPlayer customP = new CustomPlayer(p, plugin);
+			String color = customP.getTeam().getColor();
+			// Create player's head (skull)
+			ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+			SkullMeta meta = (SkullMeta) skull.getItemMeta();
+			meta.setOwningPlayer(p);
+			meta.setDisplayName("§" + color + p.getName());
+			skull.setItemMeta(meta);
+			step3.addItem(skull);
+		}
 
 		return step3.getInventory();
 	}

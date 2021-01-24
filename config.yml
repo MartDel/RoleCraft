@@ -64,7 +64,10 @@ sell:
     name: "§9Que voulez-vous faire?"
     size: 54
   step2:
-    name: "§9Quel terrain voulez-vous vendre?"
+    name: "§9Quel terrain?"
+    size: 54
+  step3:
+    name: "§9À quel joueur?"
     size: 54
 PNJ:
 - PNJ_name: "- Fermier -"
