@@ -74,6 +74,9 @@ public enum CustomItems {
 		iMeta.setCustomModelData(getData());
 		iMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
+		// Customs
+		if(this.equals(SELL_PAPER)) iMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
 		// Manage enchantments
 		Set<Entry<Enchantment, Integer>> enchants = getEnchants().entrySet();
 		for (Entry<Enchantment, Integer> enchant : enchants) {

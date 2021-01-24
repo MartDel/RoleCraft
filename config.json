@@ -93,7 +93,12 @@
 
     "sell": {
         "step1": {
-            "name": "§9Que voulez-vous faire?"
+            "name": "§9Que voulez-vous faire?",
+            "size": 54
+        },
+        "step2": {
+            "name": "§9Quel terrain?",
+            "size": 54
         }
     },
 

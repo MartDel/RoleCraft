@@ -17,6 +17,8 @@ import fr.martdel.rolecraft.CustomPlayer;
 import fr.martdel.rolecraft.GUI;
 import fr.martdel.rolecraft.RoleCraft;
 
+import java.util.List;
+
 public class SellListener implements Listener {
 
 	private RoleCraft plugin;
@@ -60,13 +62,26 @@ public class SellListener implements Listener {
 					int data = iMeta.getCustomModelData();
 					switch(data) {
 					case 0:
-						if(player.isOp()) {
-							player.closeInventory();
+						player.closeInventory();
+						if(!player.isOp()) {
 							player.sendMessage("§4Vous devez être admin pour accéder à ce type de vente.");
 							return;
 						}
-						System.out.println(player.getInventory().getItem(getPaperSlot(player)).getItemMeta().getDisplayName());
-						break;
+						addDataToPaper(player, "admin");
+						player.openInventory(GUI.createSellStep3());
+						return;
+					case 1:
+						player.closeInventory();
+						addDataToPaper(player, "buy_deco");
+						customPlayer.loadData();
+						if(customPlayer.getHouse() == null && customPlayer.getShop() == null){
+							if((customPlayer.getJob() == 0 && customPlayer.getFarms().size() == 0) || (customPlayer.getJob() == 3 && customPlayer.getBuilds().size() == 0)){
+								player.sendMessage("§4Vous n'avez actuellement aucun terrain pour cette vente.");
+								return;
+							}
+						}
+						player.openInventory(GUI.createSellStep2(customPlayer, item.getType(), "all"));
+						return;
 					}
 				}
 				event.setCancelled(true);
@@ -78,22 +93,30 @@ public class SellListener implements Listener {
 		}
 	}
 	
-	private void addDataToPaper(Player player, String data) {
-		// Find paper slot
+	private boolean addDataToPaper(Player player, String data) {
+		// Find paper
+		ItemStack paper = null;
 		ItemStack[] content = player.getInventory().getContents();
-		CustomItems paper = CustomItems.SELL_PAPER;
+		CustomItems template_paper = CustomItems.SELL_PAPER;
 		for(int i = 0; i < content.length; i++) {
 			if(content[i] != null) {
 				ItemStack stack = content[i];
 				if(stack.hasItemMeta()) {
 					Material type = stack.getType();
 					ItemMeta stackMeta = stack.getItemMeta();
-					if(type.equals(stackMeta) && stackMeta.hasEnchant(paper.)) {
-						return i;
+					if(type.equals(template_paper.getType()) && stackMeta.hasLore()) {
+						paper = stack;
 					}
 				}
 			}
 		}
+		if(paper == null) return false;
+
+		ItemMeta paperMeta = paper.getItemMeta();
+		List<String> lore = paperMeta.getLore();
+		if(lore.equals(template_paper.getLore())) lore.clear();
+		lore.add(data);
+		return true;
 	}
 
 }

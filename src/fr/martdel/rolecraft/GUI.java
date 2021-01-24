@@ -1,9 +1,6 @@
 package fr.martdel.rolecraft;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -15,6 +12,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class GUI {
 	
 	public static final String SELL_STEP1_NAME = RoleCraft.config.getString("sell.step1.name");
+	public static final String SELL_STEP2_NAME = RoleCraft.config.getString("sell.step2.name");
+	public static final String SELL_STEP3_NAME = RoleCraft.config.getString("sell.step3.name");
+	public static final int SELL_STEP1_SIZE = RoleCraft.config.getInt("sell.step1.size");
+	public static final int SELL_STEP2_SIZE = RoleCraft.config.getInt("sell.step2.size");
+	public static final int SELL_STEP3_SIZE = RoleCraft.config.getInt("sell.step3.size");
 	
 	private String name;
 	private int size;
@@ -77,7 +79,7 @@ public class GUI {
 	private int roundSize(int size) {
 		if(size % 9 == 0) return size;
 		size += 9 - (size % 9);
-		return size;
+		return size > 54 ? 54 : size;
 	}
 	
 	/**
@@ -101,13 +103,17 @@ public class GUI {
 		
 		return inv;
 	}
+
+	/****************************
+	 		  SELL STEPS
+	****************************/
 	
 	/**
 	 * Create the GUI for the step 1 of sell command
-	 * @return
+	 * @return The inventory to show
 	 */
 	public static Inventory createSellStep1() {
-		GUI step1 = new GUI(SELL_STEP1_NAME, 54);
+		GUI step1 = new GUI(SELL_STEP1_NAME, SELL_STEP1_SIZE);
 		step1.setRule("fill", "yes");
 		step1.setRule("fill_type", "BLACK_STAINED_GLASS_PANE");
 		
@@ -127,12 +133,72 @@ public class GUI {
 		
 		return step1.getInventory();
 	}
+
+	/**
+	 * Create the GUI for the step 1 of sell command
+	 * @return The inventory to show
+	 */
+	public static Inventory createSellStep2(CustomPlayer player, Material itemtype, String type) {
+		GUI step2 = new GUI(SELL_STEP2_NAME, SELL_STEP2_SIZE);
+
+		ItemStack item = new ItemStack(itemtype);
+		ItemMeta itemmeta = item.getItemMeta();
+
+		// Get grounds
+		Map<String, Map<String, Integer>> grounds = new HashMap<>();
+		switch (type){
+			case "farm": grounds = player.getFarms(); break;
+			case "build": grounds = player.getBuilds(); break;
+			default:
+				if(player.getJob() == 0) grounds = player.getFarms();
+				else if(player.getJob() == 3) grounds = player.getBuilds();
+				grounds.put("Maison", player.getHouse());
+				grounds.put("shop", player.getShop());
+				break;
+		}
+
+		// Show grounds
+		Set<String> entries = grounds.keySet();
+		for (String key : entries) {
+			Map<String, Integer> ground = grounds.get(key);
+			itemmeta.setDisplayName(key);
+			itemmeta.setLore(Arrays.asList(ground.get("x1") + ";" + ground.get("z1"), ground.get("x2") + ";" + ground.get("z2")));
+			item.setItemMeta(itemmeta);
+			step2.addItem(item);
+		}
+
+		return step2.getInventory();
+	}
+
+	/**
+	 * Create the GUI for the step 1 of sell command
+	 * @return The inventory to show
+	 */
+	public static Inventory createSellStep3() {
+		GUI step3 = new GUI(SELL_STEP3_NAME, SELL_STEP3_SIZE);
+
+//		ItemStack[] items = {
+//				createItem(Material.OAK_SIGN, "§aVendre un terrain §9(Admin)", Arrays.asList("Vendre un terrain de n'importe", "quel type à un joueur."), 0),
+//				createItem(Material.POPPY, "§aDemander une décoration", Arrays.asList("Donner accès à son terrain", "pour qu'un builder", "le décore."), 1),
+//				createItem(Material.OAK_DOOR, "§aVendre sa maison", Arrays.asList("Vendre sa maison", "à un admin", "ou à un joueur."), 2),
+//				createItem(Material.CHEST, "§aVendre son magasin", Arrays.asList("Vendre son magasin", "à un admin", "ou à un joueur."), 3),
+//				createItem(Material.HAY_BLOCK, "§aVendre son champ §2(Fermier)", Arrays.asList("Vendre son champ", "à un admin", "ou à un joueur."), 4),
+//				createItem(Material.WHITE_GLAZED_TERRACOTTA, "§aVendre une construction §5(Builder)", Arrays.asList("Vendre une construction", "à un admin", "ou à un joueur."), 5),
+//				createItem(Material.PEONY, "§aVendre une décoration §5(Builder)", Arrays.asList("Vendre un terrain décoré", "à un autre joueur."), 6)
+//		};
+//		int[] stacks = {19, 21, 23, 25, 29, 31, 33};
+//		for (int i = 0; i < stacks.length; i++) {
+//			step1.setItem(stacks[i], items[i]);
+//		}
+
+		return step3.getInventory();
+	}
 	
 	/**
 	 * Quick creating of an ItemStack
 	 * @param mat The item type
 	 * @param name The item name
-	 * @param let The item description
+	 * @param lore The item description
 	 * @param data The item metadata
 	 * @return ItemStack The created item
 	 */

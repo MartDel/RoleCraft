@@ -59,6 +59,13 @@ starter_pack:
     else: 20
 prices:
   letterbox: 5
+sell:
+  step1:
+    name: "§9Que voulez-vous faire?"
+    size: 54
+  step2:
+    name: "§9Quel terrain voulez-vous vendre?"
+    size: 54
 PNJ:
 - PNJ_name: "- Fermier -"
   inventory_name: Marchand - §2Fermier
@@ -309,6 +316,17 @@ custom_items:
     - parmi les 4 proposés.
     metadata: 4
     enchantments: []
+  sell_paper:
+    type: PAPER
+    name: "§9Papier de vente"
+    lore:
+    - Faites un clic droit
+    - pour ouvrir le guide
+    - de vente !
+    metadata: 5
+    enchantments:
+    - name: LOOT_BONUS_BLOCKS
+      level: 10
   delimiter:
     type: STICK
     name: "§9Delimiter"
