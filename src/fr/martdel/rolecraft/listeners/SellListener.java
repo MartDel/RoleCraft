@@ -54,7 +54,8 @@ public class SellListener implements Listener {
 		InventoryView view = event.getView();
 		String title = view.getTitle();
 		if(item == null) return;
-		
+
+		// STEP 1
 		if(title.equalsIgnoreCase(GUI.SELL_STEP1_NAME)) {
 			try {
 				ItemMeta iMeta = item.getItemMeta();
@@ -140,7 +141,7 @@ public class SellListener implements Listener {
 						player.openInventory(GUI.createSellStep2(customPlayer, item.getType(), "farm"));
 						return;
 					case 5:
-						case 6:
+						case 6:	// Sell a build ground
 							customPlayer.loadData();
 							if(customPlayer.getJob() != 3){
 								player.sendMessage("§4Vous devez être builder pour accéder à cette vente.");
@@ -163,7 +164,38 @@ public class SellListener implements Listener {
 			} catch (Exception e) {
 				// Player clicks on his inventory
 			}
-			
+		}
+
+		// STEP 2
+		if(title.equalsIgnoreCase(GUI.SELL_STEP2_NAME)) {
+			try {
+				ItemMeta iMeta = item.getItemMeta();
+				if(iMeta.hasDisplayName() && iMeta.hasLore()){
+					player.closeInventory();
+					customPlayer.loadData();
+
+					String key = iMeta.getDisplayName();
+					String to_save = "ground";
+					if(key.equalsIgnoreCase("§3Maison")) {
+						to_save = "house:" + customPlayer.getHouseId();
+					} else if (key.equalsIgnoreCase("§6Magasin")) {
+						to_save = "shop:" + customPlayer.getShopId();
+					} else if(key.contains("§2")) {
+						to_save = "farm:" + key;
+					} else if (key.contains("§5")){
+						to_save = "build:" + key;
+					}
+					if(!addDataToPaper(player, to_save)) {
+						player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
+						return;
+					}
+
+					event.setCancelled(true);
+				}
+				return;
+			} catch (Exception e) {
+				// Player clicks on his inventory
+			}
 		}
 	}
 	

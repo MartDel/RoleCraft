@@ -408,9 +408,11 @@ public class CustomPlayer {
 	public void setSpe(Boolean spe) { this.has_spe = spe; }
 	
 	public Map<String, Integer> getHouse() { return house; }
+	public Integer getHouseId() { return house_id; }
 	public void setHouse(Map<String, Integer> house) { this.house = house; }
 
 	public Map<String, Integer> getShop() { return shop; }
+	public Integer getShopId() { return shop_id; }
 	public void setShop(Map<String, Integer> shop) { this.shop = shop; }
 
 	public Map<String, Integer> getAdmin_ground() { return admin_ground; }

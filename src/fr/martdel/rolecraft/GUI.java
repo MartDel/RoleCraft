@@ -155,7 +155,7 @@ public class GUI {
 				if(player.getJob() == 0) grounds = player.getFarms();
 				else if(player.getJob() == 3) grounds = player.getBuilds();
 				grounds.put("Maison", player.getHouse());
-				grounds.put("shop", player.getShop());
+				grounds.put("Magasin", player.getShop());
 				break;
 		}
 
@@ -163,7 +163,19 @@ public class GUI {
 		Set<String> entries = grounds.keySet();
 		for (String key : entries) {
 			Map<String, Integer> ground = grounds.get(key);
-			itemmeta.setDisplayName(key);
+
+			// Get color
+			String color;
+			switch (key){
+				case "Maison": color = "§3"; break;
+				case "Magasin": color = "§6"; break;
+				default:
+					if(type.equalsIgnoreCase("farm")) color = "§2";
+					else color = "§5";
+					break;
+			}
+
+			itemmeta.setDisplayName(color + key);
 			itemmeta.setLore(Arrays.asList(ground.get("x1") + ";" + ground.get("z1"), ground.get("x2") + ";" + ground.get("z2")));
 			item.setItemMeta(itemmeta);
 			step2.addItem(item);
