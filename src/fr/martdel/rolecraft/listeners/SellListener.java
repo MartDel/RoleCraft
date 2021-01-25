@@ -1,6 +1,7 @@
 package fr.martdel.rolecraft.listeners;
 
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,6 +17,7 @@ import fr.martdel.rolecraft.CustomItems;
 import fr.martdel.rolecraft.CustomPlayer;
 import fr.martdel.rolecraft.GUI;
 import fr.martdel.rolecraft.RoleCraft;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.List;
 
@@ -189,8 +191,39 @@ public class SellListener implements Listener {
 						player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
 						return;
 					}
+					player.openInventory(GUI.createSellStep3(plugin));
 
 					event.setCancelled(true);
+					return;
+				}
+				return;
+			} catch (Exception e) {
+				// Player clicks on his inventory
+			}
+		}
+
+		// STEP 3
+		if(title.equalsIgnoreCase(GUI.SELL_STEP3_NAME)) {
+			try {
+				ItemMeta iMeta = item.getItemMeta();
+				if(iMeta.hasDisplayName() && iMeta.hasLore()){
+					player.closeInventory();
+					customPlayer.loadData();
+
+					SkullMeta headmeta = (SkullMeta) item.getItemMeta();
+					OfflinePlayer clicked_player = headmeta.getOwningPlayer();
+					if(!clicked_player.isOnline()){
+						player.sendMessage("§4Le joueur sélectionné n'est plus en ligne.");
+						return;
+					}
+					if(!addDataToPaper(player, clicked_player.getName())) {
+						player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
+						return;
+					}
+					player.openInventory(GUI.createSellStep4());
+
+					event.setCancelled(true);
+					return;
 				}
 				return;
 			} catch (Exception e) {

@@ -16,9 +16,12 @@ public class GUI {
 	public static final String SELL_STEP1_NAME = RoleCraft.config.getString("sell.step1.name");
 	public static final String SELL_STEP2_NAME = RoleCraft.config.getString("sell.step2.name");
 	public static final String SELL_STEP3_NAME = RoleCraft.config.getString("sell.step3.name");
+	public static final String SELL_STEP4_NAME = RoleCraft.config.getString("sell.step4.name");
+
 	public static final int SELL_STEP1_SIZE = RoleCraft.config.getInt("sell.step1.size");
 	public static final int SELL_STEP2_SIZE = RoleCraft.config.getInt("sell.step2.size");
 	public static final int SELL_STEP3_SIZE = RoleCraft.config.getInt("sell.step3.size");
+	public static final int SELL_STEP4_SIZE = RoleCraft.config.getInt("sell.step4.size");
 	
 	private String name;
 	private int size;
@@ -34,7 +37,7 @@ public class GUI {
 		rules.put("fill", "no");
 		rules.put("fill_type", "BARRIER");
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -137,7 +140,7 @@ public class GUI {
 	}
 
 	/**
-	 * Create the GUI for the step 1 of sell command
+	 * Create the GUI for the step 2 of sell command
 	 * @return The inventory to show
 	 */
 	public static Inventory createSellStep2(CustomPlayer player, Material itemtype, String type) {
@@ -185,7 +188,7 @@ public class GUI {
 	}
 
 	/**
-	 * Create the GUI for the step 1 of sell command
+	 * Create the GUI for the step 3 of sell command
 	 * @param plugin The current plugin
 	 * @return The inventory to show
 	 */
@@ -205,6 +208,18 @@ public class GUI {
 		}
 
 		return step3.getInventory();
+	}
+
+	/**
+	 * Create the GUI for the step 4 of sell command
+	 * @return The inventory to show
+	 */
+	public static Inventory createSellStep4() {
+		GUI step4 = new GUI(SELL_STEP4_NAME, SELL_STEP4_SIZE);
+
+
+
+		return step4.getInventory();
 	}
 	
 	/**
