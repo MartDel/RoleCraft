@@ -98,7 +98,9 @@
         },
         "step2": {
             "name": "§9Quel terrain?",
-            "size": 54
+            "size": 54,
+            "admin_name": "§9Quel type de terrain?",
+            "admin_size": 9
         },
         "step3": {
             "name": "§9À quel joueur?",
@@ -106,7 +108,7 @@
         },
         "step4": {
             "name": "§9Pour quel prix?",
-            "size": 27
+            "size": 45
         },
         "step5": {
             "name": "§9Validez la vente !",

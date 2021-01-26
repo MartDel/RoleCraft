@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import fr.martdel.rolecraft.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -27,12 +28,6 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import fr.martdel.rolecraft.CustomItems;
-import fr.martdel.rolecraft.CustomPlayer;
-import fr.martdel.rolecraft.RoleCraft;
-import fr.martdel.rolecraft.TeamManager;
-import fr.martdel.rolecraft.Wallet;
 
 @SuppressWarnings("deprecation")
 public class PluginListener implements Listener {
@@ -250,6 +245,11 @@ public class PluginListener implements Listener {
 			Wallet wallet = customPlayer.getWallet();
 			if(selected_job == 3) wallet.give(rubis_builder);
 			else wallet.give(rubis_else);
+
+			// Set scoreboard
+			MainScoreboard sb = new MainScoreboard();
+			sb.setObjective(customPlayer);
+			player.setScoreboard(sb.getScoreboard());
 			
 			customPlayer.save();
 			event.setCancelled(true);

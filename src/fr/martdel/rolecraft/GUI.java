@@ -15,12 +15,14 @@ public class GUI {
 	
 	public static final String SELL_STEP1_NAME = RoleCraft.config.getString("sell.step1.name");
 	public static final String SELL_STEP2_NAME = RoleCraft.config.getString("sell.step2.name");
+	public static final String SELL_STEP2_ADMINNAME = RoleCraft.config.getString("sell.step2.admin_name");
 	public static final String SELL_STEP3_NAME = RoleCraft.config.getString("sell.step3.name");
 	public static final String SELL_STEP4_NAME = RoleCraft.config.getString("sell.step4.name");
 	public static final String SELL_STEP5_NAME = RoleCraft.config.getString("sell.step5.name");
 
 	public static final int SELL_STEP1_SIZE = RoleCraft.config.getInt("sell.step1.size");
 	public static final int SELL_STEP2_SIZE = RoleCraft.config.getInt("sell.step2.size");
+	public static final int SELL_STEP2_ADMINSIZE = RoleCraft.config.getInt("sell.step2.admin_size");
 	public static final int SELL_STEP3_SIZE = RoleCraft.config.getInt("sell.step3.size");
 	public static final int SELL_STEP4_SIZE = RoleCraft.config.getInt("sell.step4.size");
 	public static final int SELL_STEP5_SIZE = RoleCraft.config.getInt("sell.step5.size");
@@ -130,7 +132,7 @@ public class GUI {
 			createItem(Material.OAK_DOOR, "§aVendre sa maison", Arrays.asList("Vendre sa maison", "à un admin", "ou à un joueur."), 2),
 			createItem(Material.CHEST, "§aVendre son magasin", Arrays.asList("Vendre son magasin", "à un admin", "ou à un joueur."), 3),
 			createItem(Material.HAY_BLOCK, "§aVendre son champ §2(Fermier)", Arrays.asList("Vendre son champ", "à un admin", "ou à un joueur."), 4),
-			createItem(Material.WHITE_GLAZED_TERRACOTTA, "§aVendre une construction §5(Builder)", Arrays.asList("Vendre une construction", "à un admin", "ou à un joueur."), 5),
+			createItem(Material.WHITE_GLAZED_TERRACOTTA, "§aVendre une construction §5(Builder)", Arrays.asList("Vendre une construction", "à un admin"), 5),
 			createItem(Material.PEONY, "§aVendre une décoration §5(Builder)", Arrays.asList("Vendre un terrain décoré", "à un autre joueur."), 6)
 		};
 		int[] stacks = {19, 21, 23, 25, 29, 31, 33};
@@ -190,6 +192,27 @@ public class GUI {
 	}
 
 	/**
+	 * Create the GUI for the step 2 (admin version) of sell command
+	 * @return The inventory to show
+	 */
+	public static Inventory createSellStep2Admin() {
+		GUI step2 = new GUI(SELL_STEP2_ADMINNAME, SELL_STEP2_ADMINSIZE);
+
+		ItemStack[] items = {
+				createItem(Material.OAK_DOOR, "§aMaison", new ArrayList<>(), 1),
+				createItem(Material.CHEST, "§aMagasin", new ArrayList<>(), 2),
+				createItem(Material.HAY_BLOCK, "§aChamp", new ArrayList<>(), 3),
+				createItem(Material.WHITE_GLAZED_TERRACOTTA, "§aTerrain de construction", new ArrayList<>(), 4),
+		};
+		int[] stacks = {1, 3, 5, 7};
+		for (int i = 0; i < stacks.length; i++) {
+			step2.setItem(stacks[i], items[i]);
+		}
+
+		return step2.getInventory();
+	}
+
+	/**
 	 * Create the GUI for the step 3 of sell command
 	 * @param plugin The current plugin
 	 * @return The inventory to show
@@ -213,6 +236,34 @@ public class GUI {
 	}
 
 	/**
+	 * Create the GUI for the step 3 (farmer version) of sell command
+	 * @param plugin The current plugin
+	 * @return The inventory to show
+	 */
+	public static Inventory createSellStep3Farmer(RoleCraft plugin) throws Exception {
+		GUI step3 = new GUI(SELL_STEP3_NAME, SELL_STEP3_SIZE);
+
+		int nb_farmer = 0;
+		for(Player p: plugin.getServer().getOnlinePlayers()){
+			CustomPlayer customP = new CustomPlayer(p, plugin).loadData();
+			if(customP.getJob() == 0){
+				String color = customP.getTeam().getColor();
+				// Create player's head (skull)
+				ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+				SkullMeta meta = (SkullMeta) skull.getItemMeta();
+				meta.setOwningPlayer(p);
+				meta.setDisplayName("§" + color + p.getName());
+				skull.setItemMeta(meta);
+				step3.addItem(skull);
+				nb_farmer++;
+			}
+		}
+		if(nb_farmer == 0) throw new Exception("§4Aucun admin n'est en ligne.");
+
+		return step3.getInventory();
+	}
+
+	/**
 	 * Create the GUI for the step 3 (build version) of sell command
 	 * @param plugin The current plugin
 	 * @return The inventory to show
@@ -229,7 +280,7 @@ public class GUI {
 				ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
 				SkullMeta meta = (SkullMeta) skull.getItemMeta();
 				meta.setOwningPlayer(p);
-				meta.setDisplayName("§" + color + p.getName());
+				meta.setDisplayName("§9(Admin) §" + color + p.getName());
 				skull.setItemMeta(meta);
 				step3.addItem(skull);
 				nb_admin++;
@@ -283,7 +334,11 @@ public class GUI {
 		int i = 0;
 
 		switch (lore.get(i)){
-			case "admin": result.add("Vous vendez votre terrain admin"); break;
+			case "admin":
+				result.add("Vous vendez votre terrain admin");
+				i++;
+				result.add("Type du terrain : " + lore.get(i));
+				break;
 			case "buy_deco":
 				result.add("Vous donnez l'accés à votre terrain pour une déco");
 				i++;
