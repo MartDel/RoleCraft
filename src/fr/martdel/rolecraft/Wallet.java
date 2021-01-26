@@ -31,6 +31,23 @@ public class Wallet {
 		}
 		return nb;
 	}
+
+	/**
+	 * Count how many ruby the inventory contains
+	 * @return Number of ruby
+	 */
+	public static int count(Inventory inv) {
+		int nb = 0;
+		for(ItemStack stack : inv.getStorageContents()) {
+			if(stack != null) {
+				ItemMeta meta = stack.getItemMeta();
+				if(meta.equals(CustomItems.RUBIS.getItemMeta())) {
+					nb += stack.getAmount();
+				}
+			}
+		}
+		return nb;
+	}
 	
 	/**
 	 * Give ruby to the player
@@ -44,10 +61,32 @@ public class Wallet {
 	}
 	
 	/**
-	 * Remove ruby from the player's inventory
-	 * @param nb
+	 * Remove Rubis from the player's inventory
+	 * @param nb The nb of Rubis to remove
 	 */
 	public void remove(int nb) {
+		for(ItemStack stack : inv.getStorageContents()) {
+			if(stack != null && nb != 0) {
+				ItemMeta meta = stack.getItemMeta();
+				if(meta.equals(CustomItems.RUBIS.getItemMeta())) {
+					if(stack.getAmount() < nb) {
+						nb -= stack.getAmount();
+						stack.setAmount(0);
+					} else {
+						stack.setAmount(stack.getAmount() - nb);
+						nb = 0;
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Remove Rubis from the given inventory
+	 * @param inv The inventory to update
+	 * @param nb The nb of Rubis to remove
+	 */
+	public static void remove(Inventory inv, int nb) {
 		for(ItemStack stack : inv.getStorageContents()) {
 			if(stack != null && nb != 0) {
 				ItemMeta meta = stack.getItemMeta();

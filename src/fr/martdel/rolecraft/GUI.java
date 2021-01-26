@@ -17,11 +17,13 @@ public class GUI {
 	public static final String SELL_STEP2_NAME = RoleCraft.config.getString("sell.step2.name");
 	public static final String SELL_STEP3_NAME = RoleCraft.config.getString("sell.step3.name");
 	public static final String SELL_STEP4_NAME = RoleCraft.config.getString("sell.step4.name");
+	public static final String SELL_STEP5_NAME = RoleCraft.config.getString("sell.step5.name");
 
 	public static final int SELL_STEP1_SIZE = RoleCraft.config.getInt("sell.step1.size");
 	public static final int SELL_STEP2_SIZE = RoleCraft.config.getInt("sell.step2.size");
 	public static final int SELL_STEP3_SIZE = RoleCraft.config.getInt("sell.step3.size");
 	public static final int SELL_STEP4_SIZE = RoleCraft.config.getInt("sell.step4.size");
+	public static final int SELL_STEP5_SIZE = RoleCraft.config.getInt("sell.step5.size");
 	
 	private String name;
 	private int size;
@@ -211,15 +213,111 @@ public class GUI {
 	}
 
 	/**
+	 * Create the GUI for the step 3 (build version) of sell command
+	 * @param plugin The current plugin
+	 * @return The inventory to show
+	 */
+	public static Inventory createSellStep3Admin(RoleCraft plugin) throws Exception {
+		GUI step3 = new GUI(SELL_STEP3_NAME, SELL_STEP3_SIZE);
+
+		int nb_admin = 0;
+		for(Player p: plugin.getServer().getOnlinePlayers()){
+			CustomPlayer customP = new CustomPlayer(p, plugin).loadData();
+			if(customP.isAdmin()){
+				String color = customP.getTeam().getColor();
+				// Create player's head (skull)
+				ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+				SkullMeta meta = (SkullMeta) skull.getItemMeta();
+				meta.setOwningPlayer(p);
+				meta.setDisplayName("§" + color + p.getName());
+				skull.setItemMeta(meta);
+				step3.addItem(skull);
+				nb_admin++;
+			}
+		}
+		if(nb_admin == 0) throw new Exception("§4Aucun admin n'est en ligne.");
+
+		return step3.getInventory();
+	}
+
+	/**
 	 * Create the GUI for the step 4 of sell command
 	 * @return The inventory to show
 	 */
 	public static Inventory createSellStep4() {
 		GUI step4 = new GUI(SELL_STEP4_NAME, SELL_STEP4_SIZE);
 
+		ItemStack rubis = new ItemStack(CustomItems.RUBIS.getType(), 30);
+		rubis.setItemMeta(CustomItems.RUBIS.getItemMeta());
+		step4.setItem(0, rubis);
 
+		ItemStack[] items = {
+				createItem(Material.REDSTONE, 64, "§c-64", new ArrayList<>(), 64),
+				createItem(Material.REDSTONE, 10, "§c-10", new ArrayList<>(), 10),
+				createItem(Material.REDSTONE, 1, "§c-1", new ArrayList<>(), 1),
+				createItem(Material.LIME_STAINED_GLASS_PANE, "§2Valider le prix", new ArrayList<>(), 2),
+				createItem(Material.EMERALD, 1, "§a+1", new ArrayList<>(), 1),
+				createItem(Material.EMERALD, 10, "§a+10", new ArrayList<>(), 10),
+				createItem(Material.EMERALD, 64, "§a+64", new ArrayList<>(), 64),
+		};
+		int[] stacks = {19,20,21,22,23,24,25};
+		for (int i = 0; i < stacks.length; i++) {
+			step4.setItem(stacks[i], items[i]);
+		}
 
 		return step4.getInventory();
+	}
+
+	/**
+	 * Create the GUI for the step 5 of sell command
+	 * @param papermeta The paper meta
+	 * @return The inventory to show
+	 */
+	public static Inventory createSellStep5(ItemMeta papermeta) {
+		GUI step5 = new GUI(SELL_STEP5_NAME, SELL_STEP5_SIZE);
+		step5.setRule("fill", "yes");
+		step5.setRule("fill_type", "BLACK_STAINED_GLASS_PANE");
+
+		List<String> lore = papermeta.getLore();
+		List<String> result = new ArrayList<>();
+		int i = 0;
+
+		switch (lore.get(i)){
+			case "admin": result.add("Vous vendez votre terrain admin"); break;
+			case "buy_deco":
+				result.add("Vous donnez l'accés à votre terrain pour une déco");
+				i++;
+				result.add("Nom du terrain :" + lore.get(i));
+				break;
+			case "house": result.add("Vous vendez votre maison"); break;
+			case "shop": result.add("Vous vendez votre magasin"); break;
+			case "farm": result.add("Vous vendez votre ferme");
+				i++;
+				result.add("Nom du terrain :" + lore.get(i));
+				break;
+			case "build":
+				result.add("Vous vendez votre terrain de construction");
+				i++;
+				result.add("Nom du terrain :" + lore.get(i));
+				break;
+			case "sell_deco":
+				result.add("Vous vendez une décoration");
+				i++;
+				result.add("Nom du terrain :" + lore.get(i));
+				break;
+		}
+		i++;
+
+		result.add("Vous vendez à " + lore.get(i)); i++;
+		result.add("au prix de " + lore.get(i) + " rubis.");
+
+		ItemStack paper = new ItemStack(CustomItems.SELL_PAPER.getType());
+		papermeta.setDisplayName("§2Valider la vente");
+		papermeta.setLore(result);
+		paper.setItemMeta(papermeta);
+		step5.setItem(13, paper);
+
+		return step5.getInventory();
 	}
 	
 	/**
@@ -230,8 +328,8 @@ public class GUI {
 	 * @param data The item metadata
 	 * @return ItemStack The created item
 	 */
-	public static ItemStack createItem(Material mat, String name, List<String> lore, int data) {
-		ItemStack item = new ItemStack(mat);
+	public static ItemStack createItem(Material mat, int amount, String name, List<String> lore, int data) {
+		ItemStack item = new ItemStack(mat, amount);
 		ItemMeta itemMeta = item.getItemMeta();
 		itemMeta.setDisplayName(name);
 		itemMeta.setLore(lore);
@@ -239,6 +337,9 @@ public class GUI {
 		itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		item.setItemMeta(itemMeta);
 		return item;
+	}
+	public static ItemStack createItem(Material mat, String name, List<String> lore, int data) {
+		return createItem(mat, 1, name, lore, data);
 	}
 
 }

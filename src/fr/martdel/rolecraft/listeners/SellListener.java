@@ -1,7 +1,9 @@
 package fr.martdel.rolecraft.listeners;
 
+import fr.martdel.rolecraft.*;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,13 +15,11 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import fr.martdel.rolecraft.CustomItems;
-import fr.martdel.rolecraft.CustomPlayer;
-import fr.martdel.rolecraft.GUI;
-import fr.martdel.rolecraft.RoleCraft;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SellListener implements Listener {
 
@@ -96,14 +96,14 @@ public class SellListener implements Listener {
 						return;
 					case 2:	// Sell a house
 						customPlayer.loadData();
-						if(customPlayer.getHouse() == null){
-							player.sendMessage("§4Vous n'avez actuellement pas de maison.");
-							return;
-						}
-						if(plugin.getServer().getOnlinePlayers().size() == 1){
-							player.sendMessage("§4Aucun joueur n'est en ligne.");
-							return;
-						}
+//						if(customPlayer.getHouse() == null){
+//							player.sendMessage("§4Vous n'avez actuellement pas de maison.");
+//							return;
+//						}
+//						if(plugin.getServer().getOnlinePlayers().size() == 1){
+//							player.sendMessage("§4Aucun joueur n'est en ligne.");
+//							return;
+//						}
 						if(!addDataToPaper(player, "house")) {
 							player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
 							return;
@@ -153,7 +153,7 @@ public class SellListener implements Listener {
 								player.sendMessage("§4Vous n'avez actuellement aucun terrain de construction.");
 								return;
 							}
-							if(!addDataToPaper(player, "build")) {
+							if(!addDataToPaper(player, data == 5 ? "build" : "sell_deco")) {
 								player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
 								return;
 							}
@@ -187,11 +187,25 @@ public class SellListener implements Listener {
 					} else if (key.contains("§5")){
 						to_save = "build:" + key;
 					}
-					if(!addDataToPaper(player, to_save)) {
+					if(addDataToPaper(player, to_save)) {
+						if(getDataFromPaper(player).get(0).equalsIgnoreCase("build")){
+							try{
+								player.openInventory(GUI.createSellStep3Admin(plugin));
+							} catch(Exception e){
+								player.sendMessage(e.getMessage());
+								return;
+							}
+						} else {
+							if(plugin.getServer().getOnlinePlayers().size() == 1){
+								player.sendMessage("§4Aucun joueur n'est en ligne.");
+								return;
+							}
+							player.openInventory(GUI.createSellStep3(plugin));
+						}
+					} else {
 						player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
 						return;
 					}
-					player.openInventory(GUI.createSellStep3(plugin));
 
 					event.setCancelled(true);
 					return;
@@ -206,9 +220,8 @@ public class SellListener implements Listener {
 		if(title.equalsIgnoreCase(GUI.SELL_STEP3_NAME)) {
 			try {
 				ItemMeta iMeta = item.getItemMeta();
-				if(iMeta.hasDisplayName() && iMeta.hasLore()){
+				if(iMeta.hasDisplayName()){
 					player.closeInventory();
-					customPlayer.loadData();
 
 					SkullMeta headmeta = (SkullMeta) item.getItemMeta();
 					OfflinePlayer clicked_player = headmeta.getOwningPlayer();
@@ -230,13 +243,106 @@ public class SellListener implements Listener {
 				// Player clicks on his inventory
 			}
 		}
+
+		// STEP 4
+		if(title.equalsIgnoreCase(GUI.SELL_STEP4_NAME)) {
+			try{
+				ItemMeta iMeta = item.getItemMeta();
+				if(iMeta.hasDisplayName()){
+					if(!iMeta.equals(CustomItems.RUBIS.getItemMeta())){
+						// Validate the price
+						if(iMeta.getDisplayName().equalsIgnoreCase("§2Valider le prix")){
+							Integer nb_rubis = Wallet.count(event.getInventory());
+							if(!addDataToPaper(player, nb_rubis.toString())) {
+								player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
+								return;
+							}
+							player.closeInventory();
+							Map<Integer, ItemStack> paper_info = getPaper(player.getInventory());
+							ItemStack paper = (ItemStack) paper_info.values().toArray()[0];
+							player.openInventory(GUI.createSellStep5(paper.getItemMeta()));
+							return;
+						}
+
+						// Change nb of Rubis
+						ItemStack rubis = new ItemStack(CustomItems.RUBIS.getType(), iMeta.getCustomModelData());
+						rubis.setItemMeta(CustomItems.RUBIS.getItemMeta());
+						if(iMeta.getDisplayName().contains("-")){
+							Wallet.remove(event.getInventory(), rubis.getAmount());
+						} else {
+							event.getInventory().addItem(rubis);
+						}
+					}
+					event.setCancelled(true);
+					return;
+				}
+				return;
+			} catch (Exception e) {
+				// Player clicks on his inventory
+//				e.printStackTrace();
+			}
+		}
+
+		// STEP 5
+		if(title.equalsIgnoreCase(GUI.SELL_STEP5_NAME)) {
+			try{
+				ItemMeta iMeta = item.getItemMeta();
+				if(iMeta.hasDisplayName()){
+					if(item.getType().equals(CustomItems.SELL_PAPER.getType())){
+						player.closeInventory();
+						player.sendMessage("Vente effectuée");
+					}
+					event.setCancelled(true);
+					return;
+				}
+				return;
+			} catch (Exception e) {
+				// Player clicks on his inventory
+			}
+		}
 	}
-	
+
+	/**
+	 * Search the sell paper in the player's inventory
+	 * Add data in its lore
+	 * Set its lore with data if the lore is equals to the default lore
+	 * @param player The player to check
+	 * @param data Data to set
+	 * @return boolean If everything is ok
+	 */
 	private boolean addDataToPaper(Player player, String data) {
+		Map<Integer, ItemStack> paper_info = getPaper(player.getInventory());
+		int paper_slot = (int) paper_info.keySet().toArray()[0];
+		ItemStack paper = paper_info.get(paper_slot);
+
+		ItemMeta paperMeta = paper.getItemMeta();
+		List<String> lore = paperMeta.getLore();
+		if(lore.equals(CustomItems.SELL_PAPER.getLore())) lore.clear();
+		lore.add(data);
+		paperMeta.setLore(lore);
+		paper.setItemMeta(paperMeta);
+		player.getInventory().setItem(paper_slot, paper);
+		return true;
+	}
+
+	/**
+	 * Get the paper lore
+	 * @param player The player to check
+	 * @return List<String> The paper lore
+	 */
+	private List<String> getDataFromPaper(Player player) {
+		Map<Integer, ItemStack> paper_info = getPaper(player.getInventory());
+		ItemStack paper = (ItemStack) paper_info.values().toArray()[0];
+		ItemMeta paperMeta = paper.getItemMeta();
+		List<String> lore = paperMeta.getLore();
+		return lore;
+	}
+
+	private Map<Integer, ItemStack> getPaper(Inventory inv){
 		// Find paper
 		ItemStack paper = null;
 		Integer paper_slot = null;
-		ItemStack[] content = player.getInventory().getContents();
+		ItemStack[] content = inv.getContents();
 		CustomItems template_paper = CustomItems.SELL_PAPER;
 		for(int i = 0; i < content.length; i++) {
 			if(content[i] != null) {
@@ -251,16 +357,11 @@ public class SellListener implements Listener {
 				}
 			}
 		}
-		if(paper == null && paper_slot == null) return false;
+		if(paper == null && paper_slot == null) return null;
 
-		ItemMeta paperMeta = paper.getItemMeta();
-		List<String> lore = paperMeta.getLore();
-		if(lore.equals(template_paper.getLore())) lore.clear();
-		lore.add(data);
-		paperMeta.setLore(lore);
-		paper.setItemMeta(paperMeta);
-		player.getInventory().setItem(paper_slot, paper);
-		return true;
+		Map<Integer, ItemStack> result = new HashMap<>();
+		result.put(paper_slot, paper);
+		return result;
 	}
 
 }

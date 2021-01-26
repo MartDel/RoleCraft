@@ -69,6 +69,12 @@ sell:
   step3:
     name: "§9À quel joueur?"
     size: 54
+  step4:
+    name: "§9Pour quel prix?"
+    size: 27
+  step5:
+    name: "§9Validez la vente !"
+    size: 27
 PNJ:
 - PNJ_name: "- Fermier -"
   inventory_name: Marchand - §2Fermier
@@ -321,7 +327,7 @@ custom_items:
     enchantments: []
   sell_paper:
     type: PAPER
-    name: "§9Papier de vente"
+    name: "§8Papier de vente"
     lore:
     - Faites un clic droit
     - pour ouvrir le guide
