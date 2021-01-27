@@ -94,25 +94,25 @@
 
     "sell": {
         "step1": {
-            "name": "§9Que voulez-vous faire?",
+            "name": "§91 - Que voulez-vous faire?",
             "size": 54
         },
         "step2": {
-            "name": "§9Quel terrain?",
+            "name": "§92 - Quel terrain?",
             "size": 54,
             "admin_name": "§9Quel type de terrain?",
             "admin_size": 9
         },
         "step3": {
-            "name": "§9À quel joueur?",
+            "name": "§93 - À quel joueur?",
             "size": 54
         },
         "step4": {
-            "name": "§9Pour quel prix?",
+            "name": "§94 - Pour quel prix?",
             "size": 45
         },
         "step5": {
-            "name": "§9Validez la vente !",
+            "name": "§95 - Validez la vente !",
             "size": 27
         }
     },

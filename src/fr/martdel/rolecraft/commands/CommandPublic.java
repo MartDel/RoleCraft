@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import fr.martdel.rolecraft.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
@@ -16,13 +17,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import fr.martdel.rolecraft.Credentials;
-import fr.martdel.rolecraft.CustomItems;
-import fr.martdel.rolecraft.CustomPlayer;
-import fr.martdel.rolecraft.LocationInMap;
-import fr.martdel.rolecraft.RoleCraft;
-import fr.martdel.rolecraft.TeamManager;
-import fr.martdel.rolecraft.Wallet;
 import fr.martdel.rolecraft.database.DatabaseManager;
 
 public class CommandPublic implements CommandExecutor {
@@ -204,6 +198,7 @@ public class CommandPublic implements CommandExecutor {
 				 */
 				ItemStack paper = CustomItems.SELL_PAPER.getItem();
 				player.getInventory().addItem(paper);
+				player.openInventory(GUI.createSellStep1());
 			} else if(cmd.getName().equalsIgnoreCase("confirm")) {
 				/*
 				 * CONFIRM A SELL BY AN OTHER PLAYER
