@@ -34,8 +34,6 @@ public class CustomPlayer {
 	private Integer score;
 	private Boolean has_spe;
 	private Integer job;
-	private Integer house_id;
-	private Integer shop_id;
 	
 	private Map<String, Integer> house;
 	private Map<String, Integer> shop;
@@ -56,8 +54,6 @@ public class CustomPlayer {
 		this.score = 0;
 		this.job = null;
 		this.has_spe = false;
-		this.house_id = null;
-		this.shop_id = null;
 		
 		this.house = null;
 		this.shop = null;
@@ -135,12 +131,10 @@ public class CustomPlayer {
 				this.has_spe = result.getByte("spe") == 1;
 				
 				// Get house
-				this.house_id = result.getInt("house") == 0 ? null : result.getInt("house");
-				if(house_id != null) this.house = loadGround("houses", house_id);
+				this.house = loadGround("houses");
 				
 				// Get shop
-				this.shop_id = result.getInt("shop") == 0 ? null : result.getInt("shop");
-				if(shop_id != null) this.shop = loadGround("shops", shop_id);
+				this.shop = loadGround("shops");
 				
 				// Get farms
 				this.farms = loadMultipleGrounds("farms");
@@ -169,10 +163,10 @@ public class CustomPlayer {
 		}
 		return this;
 	}
-	private Map<String, Integer> loadGround(String table, int id) throws SQLException{
+	private Map<String, Integer> loadGround(String table) throws SQLException{
 		Map<String, Integer> locations = new HashMap<>();
-		PreparedStatement query = db.getConnection().prepareStatement("SELECT * FROM " + table + " WHERE id=?");
-		query.setInt(1, id);
+		PreparedStatement query = db.getConnection().prepareStatement("SELECT * FROM " + table + " WHERE owner_uuid=?");
+		query.setString(1, uuid.toString());
 		ResultSet result = query.executeQuery();
 		if(result.next()) {
 			locations.put("x1", result.getInt("x1"));
@@ -181,7 +175,7 @@ public class CustomPlayer {
 			locations.put("z2", result.getInt("z2"));
 		}
 		query.close();
-		return locations;
+		return locations.isEmpty() ? null : locations;
 	}
 	private Map<String, Map<String, Integer>> loadMultipleGrounds(String table) throws SQLException{
 		Map<String, Map<String, Integer>> grounds = new HashMap<>();
@@ -216,25 +210,25 @@ public class CustomPlayer {
 			update_player.close();
 			
 			// Update house
-			if(house_id != null) updateGround("houses", house_id, house);
-			
+			updateGround("houses", house);
+
 			// Update shop
-			if(shop_id != null) updateGround("shops", shop_id, shop);
+			updateGround("shops", shop);
 			
 			// Update farm table
-			if(!farms.isEmpty()) updateMultipleGrounds("farms", farms);
+			updateMultipleGrounds("farms", farms);
 			
 			// Update build table
-			if(!builds.isEmpty()) updateMultipleGrounds("builds", builds);
+			updateMultipleGrounds("builds", builds);
 			
 			// Update admin_grounds table
 			if(is_admin && admin_ground != null) {
 				PreparedStatement update_admin = db.getConnection().prepareStatement("UPDATE admin_grounds SET x1=?, z1=?, x2=?, z2=? WHERE owner_uuid=?");
-				for (int i = 0; i < admin_ground.size(); i++) {
-					Integer coord = (Integer) admin_ground.values().toArray()[i];
-					update_admin.setInt(i+1, coord);
-				}
-				update_admin.setString(7, uuid.toString());
+				update_admin.setInt(1, admin_ground.get("x1"));
+				update_admin.setInt(2, admin_ground.get("z1"));
+				update_admin.setInt(3, admin_ground.get("x2"));
+				update_admin.setInt(4, admin_ground.get("z2"));
+				update_admin.setString(5, uuid.toString());
 				update_admin.executeUpdate();
 				update_admin.close();
 			}
@@ -242,49 +236,45 @@ public class CustomPlayer {
 			DatabaseManager.error(e);
 		}
 	}
-	private void updateGround(String table, int id, Map<String, Integer> data) throws SQLException {
-		PreparedStatement update;
-		if(data != null) {
-			update = db.getConnection().prepareStatement("UPDATE " + table + " SET owner_uuid=?, x1=?, z1=?, x2=?, z2=? WHERE id=?");
-			update.setString(1, uuid.toString());
-			
-			Set<String> data_set = data.keySet();
-			int i = 0;
-			for (String c : data_set) {
-				Integer coord = data.get(c);
-				update.setInt(i + 2, coord);
-				i++;
-			}
-			
-			update.setInt(6, id);
-		} else {
-			update = db.getConnection().prepareStatement("UPDATE " + table + " SET owner_uuid=?, x1=NULL, z1=NULL, x2=NULL, z2=NULL WHERE id=?");
-			update.setString(1, uuid.toString());
-			update.setInt(2, id);
-		}
-		update.executeUpdate();
-		update.close();
-	}
-	private void updateMultipleGrounds(String table, Map<String, Map<String, Integer>> data) throws SQLException {
-		// Delete old grounds
+	private void deleteGrounds(String table) throws SQLException {
 		PreparedStatement delete = db.getConnection().prepareStatement("DELETE FROM " + table + " WHERE owner_uuid=?");
 		delete.setString(1, uuid.toString());
 		delete.executeUpdate();
 		delete.close();
+	}
+	private void updateGround(String table, Map<String, Integer> data) throws SQLException {
+		// Delete old grounds
+		deleteGrounds(table);
+
+		if(data == null) return;
+		PreparedStatement insert;
+		insert = db.getConnection().prepareStatement("INSERT INTO " + table + "(owner_uuid, x1, z1, x2, z2) VALUES(?,?,?,?,?)");
+		insert.setString(1, uuid.toString());
+		insert.setInt(2, data.get("x1"));
+		insert.setInt(3, data.get("z1"));
+		insert.setInt(4, data.get("x2"));
+		insert.setInt(5, data.get("z2"));
+		insert.executeUpdate();
+		insert.close();
+	}
+	private void updateMultipleGrounds(String table, Map<String, Map<String, Integer>> data) throws SQLException {
+		// Delete old grounds
+		deleteGrounds(table);
 		
+		if(data.isEmpty()) return;
 		// Insert new grounds
 		for (String ground_name : farms.keySet()) {
 			Map<String, Integer> locations = farms.get(ground_name);
 			PreparedStatement insert = db.getConnection().prepareStatement("INSERT INTO " + table + "(x1, z1, x2, z2, name, owner_uuid) VALUES(?, ?, ?, ?, ?, ?)");
-			for (int i = 0; i < locations.size(); i++) {
-				Integer coord = (Integer) locations.values().toArray()[i];
-				insert.setInt(i+1, coord);
-			}
+			insert.setInt(1, locations.get("x1"));
+			insert.setInt(2, locations.get("z1"));
+			insert.setInt(3, locations.get("x2"));
+			insert.setInt(4, locations.get("z2"));
 			insert.setString(5, ground_name);
 			insert.setString(6, uuid.toString());
 			insert.executeUpdate();
 			insert.close();
-        }
+		}
 	}
 	
 	/**
@@ -408,11 +398,9 @@ public class CustomPlayer {
 	public void setSpe(Boolean spe) { this.has_spe = spe; }
 	
 	public Map<String, Integer> getHouse() { return house; }
-	public Integer getHouseId() { return house_id; }
 	public void setHouse(Map<String, Integer> house) { this.house = house; }
 
 	public Map<String, Integer> getShop() { return shop; }
-	public Integer getShopId() { return shop_id; }
 	public void setShop(Map<String, Integer> shop) { this.shop = shop; }
 
 	public Map<String, Integer> getAdmin_ground() { return admin_ground; }

@@ -3,6 +3,7 @@ package fr.martdel.rolecraft.listeners;
 import fr.martdel.rolecraft.*;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.data.type.Wall;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -176,43 +177,37 @@ public class SellListener implements Listener {
 					String key = iMeta.getDisplayName();
 					String to_save = "ground";
 					if(key.equalsIgnoreCase("§3Maison")) {
-						to_save = "house:" + customPlayer.getHouseId();
+						to_save = "house";
 					} else if (key.equalsIgnoreCase("§6Magasin")) {
-						to_save = "shop:" + customPlayer.getShopId();
+						to_save = "shop";
 					} else if(key.contains("§2")) {
-						to_save = "farm:" + key;
+						to_save = "f:" + key.substring(2, key.length());
 					} else if (key.contains("§5")){
-						to_save = "build:" + key;
+						to_save = "b:" + key.substring(2, key.length());
 					}
 					if(addDataToPaper(player, to_save)) {
-						if(getDataFromPaper(player).get(0).equalsIgnoreCase("build")){
-							try{
-								player.openInventory(GUI.createSellStep3Admin(plugin));
-							} catch(Exception e){
-								player.sendMessage(e.getMessage());
+						switch (getDataFromPaper(player).get(0)){
+							case "build":
+								try{ player.openInventory(GUI.createSellStep3Job(plugin, -1)); } // Search admins only
+								catch(Exception e){ player.sendMessage(e.getMessage()); }
 								return;
-							}
-						} else if(getDataFromPaper(player).get(0).equalsIgnoreCase("farm")){
-							try{
-								player.openInventory(GUI.createSellStep3Farmer(plugin));
-							} catch(Exception e){
-								player.sendMessage(e.getMessage());
+							case "farm":
+								try{ player.openInventory(GUI.createSellStep3Job(plugin, 0)); }
+								catch(Exception e){ player.sendMessage("§4Aucun fermier n'est en ligne."); }
 								return;
-							}
-						} else {
-							if(plugin.getServer().getOnlinePlayers().size() == 1){
-								player.sendMessage("§4Aucun joueur n'est en ligne.");
+							case "buy_deco":
+								try{ player.openInventory(GUI.createSellStep3Job(plugin, 3)); }
+								catch(Exception e){ player.sendMessage("§4Aucun builder n'est en ligne."); }
 								return;
-							}
-							player.openInventory(GUI.createSellStep3(plugin));
+							default:
+								if(plugin.getServer().getOnlinePlayers().size() == 1){
+									player.sendMessage("§4Aucun joueur n'est en ligne.");
+									return;
+								}
+								player.openInventory(GUI.createSellStep3(plugin));
+								return;
 						}
-					} else {
-						player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
-						return;
-					}
-
-					event.setCancelled(true);
-					return;
+					} else player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
 				}
 				return;
 			} catch (Exception e) {
@@ -228,22 +223,28 @@ public class SellListener implements Listener {
 					player.closeInventory();
 
 					String to_save = "house";
+					Integer required_job = null;
 					switch (iMeta.getCustomModelData()){
 						case 1: to_save = "house"; break;
 						case 2: to_save = "shop"; break;
-						case 3: to_save = "farm"; break;
-						case 4: to_save = "build"; break;
+						case 3: to_save = "farm"; required_job = 0; break;
+						case 4: to_save = "build"; required_job = 3; break;
 					}
 
-					if(plugin.getServer().getOnlinePlayers().size() == 1){
-						player.sendMessage("§4Aucun joueur n'est en ligne.");
-						return;
-					}
 					if(!addDataToPaper(player, to_save)) {
 						player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
 						return;
 					}
-					player.openInventory(GUI.createSellStep3(plugin));
+					if(required_job != null){
+						try{ player.openInventory(GUI.createSellStep3Job(plugin, required_job)); }
+						catch (Exception e){ player.sendMessage("§4Aucun joueur pouvant recevoir ce terrain n'est en ligne."); }
+					} else {
+						if(plugin.getServer().getOnlinePlayers().size() == 1){
+							player.sendMessage("§4Aucun joueur n'est en ligne.");
+							return;
+						}
+						player.openInventory(GUI.createSellStep3(plugin));
+					}
 
 					event.setCancelled(true);
 					return;
@@ -332,69 +333,11 @@ public class SellListener implements Listener {
 						ItemStack paper = (ItemStack) paper_info.values().toArray()[0];
 						List<String> lore = paper.getItemMeta().getLore();
 
-						// Sell a ground
-						customPlayer.loadData();
-						String sell_type = lore.get(0);
-						Player to;
-						Integer price;
-						Map<String, Integer> ground;
-
-						if(sell_type.equalsIgnoreCase("admin")){
-							String type_name = lore.get(1);
-							ground = customPlayer.getAdmin_ground();
-							to = plugin.getServer().getPlayer(lore.get(2));
-							if(to == null){
-								player.sendMessage("§4Le joueur sélectionné n'est plus en ligne.");
-								return;
-							}
-							CustomPlayer customTo = new CustomPlayer(to, plugin).loadData();
-							price = Integer.parseInt(lore.get(3));
-							switch (type_name){
-								case "house": customTo.setHouse(ground); break;
-								case "shop": customTo.setShop(ground); break;
-								case "farm": customTo.addFarm(player.getDisplayName() + UUID.randomUUID().toString().substring(0, 5), ground); break;
-								case "build": customTo.addBuild(player.getDisplayName() + UUID.randomUUID().toString().substring(0, 5), ground); break;
-							}
-						} else if(sell_type.equalsIgnoreCase("buy_deco")){
-							String name = lore.get(1);
-//							switch (name){
-//								case ""
-//							}
-							to = plugin.getServer().getPlayer(lore.get(2));
-							if(to == null){
-								player.sendMessage("§4Le joueur sélectionné n'est plus en ligne.");
-								return;
-							}
-							CustomPlayer customTo = new CustomPlayer(to, plugin).loadData();
-							price = Integer.parseInt(lore.get(3));
-//							customTo.addBuild("Terrain de " + player.getDisplayName(), ground);
-						} else if(sell_type.equalsIgnoreCase("house")){
-							String name = lore.get(1);
-							ground = customPlayer.getAdmin_ground();
-							to = plugin.getServer().getPlayer(lore.get(2));
-							if(to == null){
-								player.sendMessage("§4Le joueur sélectionné n'est plus en ligne.");
-								return;
-							}
-							CustomPlayer customTo = new CustomPlayer(to, plugin).loadData();
-							price = Integer.parseInt(lore.get(3));
-							customTo.setHouse(ground);
-						} else if(sell_type.equalsIgnoreCase("shop")){
-							String name = lore.get(1);
-							ground = customPlayer.getAdmin_ground();
-							to = plugin.getServer().getPlayer(lore.get(2));
-							if(to == null){
-								player.sendMessage("§4Le joueur sélectionné n'est plus en ligne.");
-								return;
-							}
-							CustomPlayer customTo = new CustomPlayer(to, plugin).loadData();
-							price = Integer.parseInt(lore.get(3));
-							customTo.setHouse(ground);
+						try{
+							sell(player, lore);
+						} catch (Exception e){
+							player.sendMessage(e.getMessage());
 						}
-
-						// Transaction
-
-						// Remove paper
 					}
 					event.setCancelled(true);
 					return;
@@ -466,6 +409,106 @@ public class SellListener implements Listener {
 		Map<Integer, ItemStack> result = new HashMap<>();
 		result.put(paper_slot, paper);
 		return result;
+	}
+
+	private void sell(Player sender, List<String> infos) throws Exception {
+		// Sell a ground
+		CustomPlayer customSender = new CustomPlayer(sender, plugin).loadData();
+		String sell_type = infos.get(0);
+		Player to = null;
+		CustomPlayer customTo = null;
+		Integer price = null;
+		Map<String, Integer> ground = null;
+
+		switch (sell_type){
+			case "admin":
+				System.out.println("house");
+				String type_name = infos.get(1);
+				ground = customSender.getAdmin_ground();
+				to = plugin.getServer().getPlayer(infos.get(2));
+				if(to == null) throw new Exception("§4Le joueur sélectionné n'est plus en ligne.");
+				customTo = new CustomPlayer(to, plugin).loadData();
+				price = Integer.parseInt(infos.get(3));
+
+				// Set addressees ground
+				switch (type_name){
+					case "house": customTo.setHouse(ground); break;
+					case "shop": customTo.setShop(ground); break;
+					case "farm": customTo.addFarm(sender.getDisplayName() + UUID.randomUUID().toString().substring(0, 5), ground); break;
+					case "build": customTo.addBuild(sender.getDisplayName() + UUID.randomUUID().toString().substring(0, 5), ground); break;
+				}
+				break;
+			case "buy_deco":
+				String name = infos.get(1);
+				if(name.equalsIgnoreCase("house")){
+					ground = customSender.getHouse();
+				} else if(name.equalsIgnoreCase("shop")){
+					ground = customSender.getShop();
+				} else if(name.contains("f:")){
+					ground = customSender.getFarms().get(name.substring(2, name.length()));
+				} else if(name.contains("g:")){
+					ground = customSender.getBuilds().get(name.substring(2, name.length()));
+				}
+				to = plugin.getServer().getPlayer(infos.get(2));
+				if(to == null) throw new Exception("§4Le joueur sélectionné n'est plus en ligne.");
+				customTo = new CustomPlayer(to, plugin).loadData();
+				price = Integer.parseInt(infos.get(3));
+				customTo.addBuild("Terrain de " + sender.getDisplayName(), ground);
+				break;
+			case "house":
+				ground = customSender.getHouse();
+				to = plugin.getServer().getPlayer(infos.get(1));
+				if(to == null) throw new Exception("§4Le joueur sélectionné n'est plus en ligne.");
+				customTo = new CustomPlayer(to, plugin).loadData();
+				price = Integer.parseInt(infos.get(2));
+				customTo.setHouse(ground);
+				break;
+			case "shop":
+				ground = customSender.getShop();
+				to = plugin.getServer().getPlayer(infos.get(1));
+				if(to == null) throw new Exception("§4Le joueur sélectionné n'est plus en ligne.");
+				customTo = new CustomPlayer(to, plugin).loadData();
+				price = Integer.parseInt(infos.get(2));
+				customTo.setShop(ground);
+				break;
+			case "farm":
+				ground = customSender.getFarms().get(infos.get(1));
+				to = plugin.getServer().getPlayer(infos.get(2));
+				if(to == null) throw new Exception("§4Le joueur sélectionné n'est plus en ligne.");
+				customTo = new CustomPlayer(to, plugin).loadData();
+				price = Integer.parseInt(infos.get(3));
+				customTo.addFarm(to.getDisplayName() + UUID.randomUUID().toString().substring(0, 5), ground);
+				break;
+			case "build":
+				ground = customSender.getBuilds().get(infos.get(1));
+				to = plugin.getServer().getPlayer(infos.get(2));
+				if(to == null) throw new Exception("§4Le joueur sélectionné n'est plus en ligne.");
+				customTo = new CustomPlayer(to, plugin).loadData();
+				price = Integer.parseInt(infos.get(3));
+				customTo.addBuild(to.getDisplayName() + UUID.randomUUID().toString().substring(0, 5), ground);
+				break;
+			case "sell_deco":
+				to = plugin.getServer().getPlayer(infos.get(2));
+				if(to == null) throw new Exception("§4Le joueur sélectionné n'est plus en ligne.");
+				customTo = new CustomPlayer(to, plugin);
+				customSender.removeBuild(infos.get(1));
+				price = Integer.parseInt(infos.get(3));
+				break;
+		}
+
+		// Transaction
+		Wallet senderWallet = customSender.getWallet();
+		Wallet toWallet = customTo.getWallet();
+		if(!to.isOp()){
+			if(!toWallet.has(price)) throw new Exception("§4Le destinataire n'a pas assez de rubis");
+			toWallet.remove(price);
+		}
+		if(!sender.isOp()) senderWallet.give(price);
+
+		// Remove paper
+		sender.getInventory().remove(CustomItems.SELL_PAPER.getItem());
+
+		customTo.save();
 	}
 
 }

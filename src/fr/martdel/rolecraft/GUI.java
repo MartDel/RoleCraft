@@ -238,15 +238,16 @@ public class GUI {
 	/**
 	 * Create the GUI for the step 3 (farmer version) of sell command
 	 * @param plugin The current plugin
+	 * @param searched_job The job which we are looking for
 	 * @return The inventory to show
 	 */
-	public static Inventory createSellStep3Farmer(RoleCraft plugin) throws Exception {
+	public static Inventory createSellStep3Job(RoleCraft plugin, int searched_job) throws Exception {
 		GUI step3 = new GUI(SELL_STEP3_NAME, SELL_STEP3_SIZE);
 
-		int nb_farmer = 0;
+		int founds = 0;
 		for(Player p: plugin.getServer().getOnlinePlayers()){
 			CustomPlayer customP = new CustomPlayer(p, plugin).loadData();
-			if(customP.getJob() == 0){
+			if(customP.getJob() == searched_job || customP.isAdmin()){
 				String color = customP.getTeam().getColor();
 				// Create player's head (skull)
 				ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
@@ -255,38 +256,10 @@ public class GUI {
 				meta.setDisplayName("§" + color + p.getName());
 				skull.setItemMeta(meta);
 				step3.addItem(skull);
-				nb_farmer++;
+				founds++;
 			}
 		}
-		if(nb_farmer == 0) throw new Exception("§4Aucun admin n'est en ligne.");
-
-		return step3.getInventory();
-	}
-
-	/**
-	 * Create the GUI for the step 3 (build version) of sell command
-	 * @param plugin The current plugin
-	 * @return The inventory to show
-	 */
-	public static Inventory createSellStep3Admin(RoleCraft plugin) throws Exception {
-		GUI step3 = new GUI(SELL_STEP3_NAME, SELL_STEP3_SIZE);
-
-		int nb_admin = 0;
-		for(Player p: plugin.getServer().getOnlinePlayers()){
-			CustomPlayer customP = new CustomPlayer(p, plugin).loadData();
-			if(customP.isAdmin()){
-				String color = customP.getTeam().getColor();
-				// Create player's head (skull)
-				ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-				SkullMeta meta = (SkullMeta) skull.getItemMeta();
-				meta.setOwningPlayer(p);
-				meta.setDisplayName("§9(Admin) §" + color + p.getName());
-				skull.setItemMeta(meta);
-				step3.addItem(skull);
-				nb_admin++;
-			}
-		}
-		if(nb_admin == 0) throw new Exception("§4Aucun admin n'est en ligne.");
+		if(founds == 0) throw new Exception();
 
 		return step3.getInventory();
 	}

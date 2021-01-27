@@ -30,8 +30,9 @@ team_colors:
   Admin: '9'
   Nouveau: b
 ground:
-  underground: 15
-  floor: 30
+  underground: 50
+  floor: 80
+  map: 50
 spawn:
   x: -422.955
   y: 70

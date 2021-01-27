@@ -24,9 +24,9 @@ public enum LocationInMap {
 	PROTECTED_MAP("le village ou dans la périphérie"),
 	FREE_PLACE("une zone libre");
 	
-	public static final int MAP_YMIN = 50;
-	public static final int GROUND_YMIN = 50;
-	public static final int GROUND_YMAX = 50;
+	public static final int MAP_YMIN = RoleCraft.config.getInt("ground.map");
+	public static final int GROUND_YMIN = RoleCraft.config.getInt("ground.underground");
+	public static final int GROUND_YMAX = RoleCraft.config.getInt("ground.floor");
 	
 	private String description;
 	
@@ -109,13 +109,13 @@ public enum LocationInMap {
 		LocationInMap player_place = getBlocPlace(plugin, player, location);
 		return player_place != OWNED && player_place != FREE_PLACE;
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	public static OfflinePlayer getPlayerOwner(RoleCraft plugin, Player searchingPlayer, Location location) {
 		LocationInMap ground_type = getBlocPlace(plugin, searchingPlayer, location);
 		if(ground_type.equals(FREE_PLACE) || ground_type.equals(OWNED) || ground_type.equals(PROTECTED_MAP)) return null;
 		String table = ground_type.toString().toLowerCase();
-		
+
+		OfflinePlayer r = null;
 		Connection db;
 		try {
 			db = plugin.getDB().getConnection();
@@ -128,14 +128,14 @@ public enum LocationInMap {
 						result.getInt("z1"),
 						result.getInt("z2")
 				};
-				if(isIn(location, ground)) return plugin.getServer().getOfflinePlayer(result.getString("uuid"));
+				if(isIn(location, ground)) r = plugin.getServer().getOfflinePlayer(result.getString("uuid"));
 			}
 			search.close();
 		} catch (SQLException e) {
 			DatabaseManager.error(e);
 		}
 
-		return null;
+		return r;
 	}
 	
 	// Private methods
@@ -143,6 +143,7 @@ public enum LocationInMap {
 	private static LocationInMap checkGround(Location location, String uuid, Connection db, LocationInMap table) throws SQLException {
 		PreparedStatement search = db.prepareStatement("SELECT * FROM " + table.toString().toLowerCase() + "s");
 		ResultSet result = search.executeQuery();
+		LocationInMap r = null;
 		while(result.next()) {
 			Integer[] ground = {
 				result.getInt("x1"),
@@ -150,33 +151,34 @@ public enum LocationInMap {
 				result.getInt("z1"),
 				result.getInt("z2")
 			};
+			for(Integer i : ground){
+				System.out.println(i);
+			}
 			if(isIn(location, ground)) {
-				if(result.getString("uuid").equalsIgnoreCase(uuid)) {
-					return OWNED;
-				} else {
-					return table;
-				}
+				System.out.println("test2");
+				if(result.getString("owner_uuid").equalsIgnoreCase(uuid))  r = OWNED;
+				else r = table;
 			}
 		}
 		search.close();
-		return null;
+		return r;
 	}
 	private static boolean isIn(Location location, Integer[] ground) {
-		int xm = (ground[0] - ground[1]) / 2;
-		int zm = (ground[2] - ground[3]) / 2;
-		if(Math.abs(location.getBlockX() - xm) <= Math.abs(ground[0] - xm)
-		&& Math.abs(location.getBlockZ() - zm) <= Math.abs(ground[2] - zm)
-		&& location.getBlockY() > GROUND_YMIN && location.getBlockY() < GROUND_YMAX) {
+		int x = location.getBlockX(), y = location.getBlockY(), z = location.getBlockZ();
+		int x1 = Math.min(ground[0], ground[1]), x2 = Math.max(ground[0], ground[1]);
+		int z1 = Math.min(ground[2], ground[3]), z2 = Math.max(ground[2], ground[3]);
+		System.out.println(GROUND_YMIN);
+		System.out.println(GROUND_YMAX);
+		if( (x >= x1 && x <= x2) && (z >= z1 && z <= z2) && (y >= GROUND_YMIN && y <= GROUND_YMAX) ){
 			return true;
 		}
 		return false;
 	}
 	private static boolean isInMap(Location location, Integer[] ground) {
-		int xm = (ground[0] - ground[1]) / 2;
-		int zm = (ground[2] - ground[3]) / 2;
-		if(Math.abs(location.getBlockX() - xm) <= Math.abs(ground[0] - xm)
-		&& Math.abs(location.getBlockZ() - zm) <= Math.abs(ground[2] - zm)
-		&& location.getBlockY() > MAP_YMIN) {
+		int x = location.getBlockX(), y = location.getBlockY(), z = location.getBlockZ();
+		int x1 = Math.min(ground[0], ground[1]), x2 = Math.max(ground[0], ground[1]);
+		int z1 = Math.min(ground[2], ground[3]), z2 = Math.max(ground[2], ground[3]);
+		if( (x >= x1 && x <= x2) && (z >= z1 && z <= z2) && y >= MAP_YMIN ){
 			return true;
 		}
 		return false;

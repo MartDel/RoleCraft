@@ -31,7 +31,8 @@ public class RoleCraft extends JavaPlugin {
 		saveDefaultConfig();		
 		System.out.println("§b[RoleCraft]§r Server ON !");
 		RoleCraft.config = this.getConfig();
-		
+		System.out.println(config.getInt("ground.underground"));
+
 		this.db = new DatabaseManager();
 		this.lvl = new Score(this, "Niveau");
 		

@@ -91,7 +91,8 @@ public class ClickListener implements Listener {
 					Sign sign = (Sign) bs;
 					if(item != null) {
 						ItemMeta iMeta = item.getItemMeta();
-						if(player.isOp() && item.getType().equals(Material.STICK) && iMeta.getDisplayName().equalsIgnoreCase("Délimiter un terrain") && iMeta.getCustomModelData() == 1 && iMeta.getLore().get(0).equalsIgnoreCase("Cliquez sur un bloc du sol pour fixer le premier point") && sign.getLine(0).equalsIgnoreCase("Banque")) {
+						CustomItems delimiter = CustomItems.DELIMITER;
+						if(player.isOp() && item.getType().equals(Material.STICK) && iMeta.getDisplayName().equalsIgnoreCase(delimiter.getItemMeta().getDisplayName()) && sign.getLine(0).equalsIgnoreCase("Banque")) {
 							/*
 							 * RIGHT CLICK ON THE GROUND SIGN BY AN ADMIN
 							 */
@@ -102,7 +103,8 @@ public class ClickListener implements Listener {
 							ground.put("z2", Integer.parseInt(sign.getLine(2).split(";")[1]));
 							
 							// Save the ground
-							customPlayer.setAdminGround(ground);
+							System.out.println(ground);
+							customPlayer.loadData().setAdminGround(ground);
 							customPlayer.save();
 							
 							player.sendMessage("Ce terrain vous appartient");
@@ -175,7 +177,7 @@ public class ClickListener implements Listener {
 						Location coo2 = bs.getLocation();
 						
 						Integer x1 = Integer.parseInt(iMeta.getLore().get(1));
-						Integer z1 = Integer.parseInt(iMeta.getLore().get(3));
+						Integer z1 = Integer.parseInt(iMeta.getLore().get(2));
 						
 						Integer x2 = coo2.getBlockX();
 						Integer z2 = coo2.getBlockZ();
