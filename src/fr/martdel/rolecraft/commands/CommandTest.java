@@ -1,5 +1,12 @@
 package fr.martdel.rolecraft.commands;
 
+import fr.martdel.rolecraft.CustomPlayer;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Powerable;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,11 +34,12 @@ public class CommandTest implements CommandExecutor {
 
 		if(sender instanceof Player) {
 			Player player = (Player) sender;
-//			CustomPlayer customPlayer = new CustomPlayer(player, plugin);
+			CustomPlayer customPlayer = new CustomPlayer(player, plugin);
 			
 			if(cmd.getName().equalsIgnoreCase("test")) {
 				// Test command
-				plugin.getConfig();
+				World test = Bukkit.getWorld("world");
+				System.out.println(test);
 			} else if(cmd.getName().equalsIgnoreCase("power")) {
 				if(args.length != 0) {
 					if(args[0].equalsIgnoreCase("summoner")) {

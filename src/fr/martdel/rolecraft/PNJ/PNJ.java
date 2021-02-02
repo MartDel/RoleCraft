@@ -76,11 +76,11 @@ public class PNJ {
 		this.name = name;
 	}
 
-	public String getInventory_name() {
+	public String getInventoryName() {
 		return inventory_name;
 	}
 
-	public void setInventory_name(String inventory_name) {
+	public void setInventoryName(String inventory_name) {
 		this.inventory_name = inventory_name;
 	}
 

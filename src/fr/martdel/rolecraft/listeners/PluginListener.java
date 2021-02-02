@@ -58,8 +58,7 @@ public class PluginListener implements Listener {
 			
 			event.setJoinMessage("(§a+§r) §" + color + prefix + "§r" + player.getDisplayName());
 
-			// Set scoreboard
-//			customPlayer.
+			customPlayer.updateScoreboard();
 			
 			System.out.println(player.getDisplayName() + " vient de rejoindre le serveur.");
 			System.out.println("Il a choisi le metier de " + customPlayer.getStringJob("fr"));
@@ -89,6 +88,11 @@ public class PluginListener implements Listener {
 			ItemStack compass = CustomItems.COMPASS.getItem();
 			player.getInventory().clear();
 			player.getInventory().addItem(compass);
+		}
+
+		// Update scoreboards
+		for (Player p : Bukkit.getOnlinePlayers()){
+			new CustomPlayer(p,  plugin).loadData().updateScoreboard();
 		}
 	}
 	
@@ -181,22 +185,22 @@ public class PluginListener implements Listener {
 		/*
 		 * NEW PLAYER IS DAMAGED
 		 */
-		if(entity instanceof Player) {
+		if (entity instanceof Player) {
 			Player victim = (Player) entity;
 			CustomPlayer customVictim = new CustomPlayer(victim, plugin).loadData();
-			if(customVictim.isNew()) {
+			if (customVictim.isNew()) {
 				event.setCancelled(true);
 				return;
 			}
 		}
 
-		if(p instanceof Player) {
+		if (p instanceof Player) {
 			Player player = (Player) p;
 			/*
 			 * PLAYER MAKES DAMAGE WITH A TOOL
 			 */
-			Material weapon = player.getItemInHand().getType();			
-			if(cause.equals(DamageCause.ENTITY_ATTACK) && FORBIDDEN_WEAPONS.contains(weapon)) {
+			Material weapon = player.getItemInHand().getType();
+			if (cause.equals(DamageCause.ENTITY_ATTACK) && FORBIDDEN_WEAPONS.contains(weapon)) {
 				event.setDamage(0.5);
 			}
 		}

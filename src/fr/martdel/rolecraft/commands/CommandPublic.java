@@ -97,6 +97,7 @@ public class CommandPublic implements CommandExecutor {
 						team.move(player, "Admin");
 						player.sendMessage("Vous êtes OP");
 					}
+					customPlayer.updateScoreboard();
 				} else {
 					player.sendMessage("§4Vous ne pouvez pas exécuter cette commande :");
 					player.sendMessage("§6Vous n'avez pas les droits administrateurs de ce serveur.");

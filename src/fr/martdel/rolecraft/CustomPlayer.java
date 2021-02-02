@@ -3,13 +3,10 @@ package fr.martdel.rolecraft;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -70,6 +67,8 @@ public class CustomPlayer {
 	 */
 	public void playCinematic(Location to, int time) {
 		final int delay = 1;
+		final GameMode old_gamemode = player.getGameMode();
+		player.setGameMode(GameMode.SPECTATOR);
 		scheduler.runTaskLater(plugin, new Runnable() {
 			private int t = 0;
 			@Override
@@ -77,8 +76,23 @@ public class CustomPlayer {
 				player.teleport(to);
 				t++;
 				if(t < time) scheduler.runTaskLater(plugin, this, delay);
+				else player.setGameMode(old_gamemode);
 			}
 		}, delay);
+	}
+
+	public List<ItemStack> getItems(){
+		List<ItemStack> items = new ArrayList<>();
+		for(ItemStack i : player.getInventory().getStorageContents()){
+			if(i != null) items.add(i);
+		}
+		for(ItemStack i : player.getInventory().getArmorContents()){
+			if(i != null) items.add(i);
+		}
+		for(ItemStack i : player.getInventory().getExtraContents()){
+			if(i != null) items.add(i);
+		}
+		return items;
 	}
 	
 	/*
@@ -112,6 +126,21 @@ public class CustomPlayer {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Update the player's scoreboard
+	 */
+	public void updateScoreboard(){
+		MainScoreboard sb = new MainScoreboard();
+		sb.setObjective(this);
+	}
+
+	public void setWaiting(int score){
+		plugin.getWaiting().setScore(player, score);
+	}
+	public int getWaiting(){
+		return plugin.getWaiting().getScore(player);
 	}
 	
 	/**

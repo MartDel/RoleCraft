@@ -117,6 +117,13 @@
         }
     },
 
+    "deathrooms": [
+        {
+            "state_bloc": {"x": -215, "y": 70, "z": 1304},
+            "spawnpoint": {"x": -206, "y": 65, "z": 1304}
+        }
+    ],
+
     "PNJ": [
         {
             "PNJ_name": "- Fermier -",

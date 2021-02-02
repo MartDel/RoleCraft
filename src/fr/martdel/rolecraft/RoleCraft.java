@@ -8,16 +8,19 @@ import fr.martdel.rolecraft.database.DatabaseManager;
 import fr.martdel.rolecraft.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class RoleCraft extends JavaPlugin {
 	
 	public static FileConfiguration config;
+	public static final World OVERWORLD = Bukkit.getWorld("world");
 	
 	private static final String[] PUBLICCOMMANDS = {"switch", "mp", "farmer", "miner", "explorer", "builder", "admin", "invite", "ginfo", "sell"};
 	private static final String[] ADMINCOMMANDS = {"delimiter", "path", "spawn", "rubis"};
@@ -25,7 +28,8 @@ public class RoleCraft extends JavaPlugin {
 	
 	private DatabaseManager db;
 	private Score lvl;
-	
+	private Score waiting;
+
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();		
@@ -34,6 +38,7 @@ public class RoleCraft extends JavaPlugin {
 
 		this.db = new DatabaseManager();
 		this.lvl = new Score(this, "Niveau");
+		this.waiting = new Score(this, "waiting");
 		
 		// Commands
 		for (String command : PUBLICCOMMANDS) {
@@ -49,6 +54,7 @@ public class RoleCraft extends JavaPlugin {
 		// Listeners
 		getServer().getPluginManager().registerEvents(new PluginListener(this), this);
 		getServer().getPluginManager().registerEvents(new ClickListener(this), this);
+		getServer().getPluginManager().registerEvents(new DeathListener(this), this);
 		getServer().getPluginManager().registerEvents(new MapProtectListener(this), this);
 		getServer().getPluginManager().registerEvents(new CraftListener(this), this);
 		getServer().getPluginManager().registerEvents(new PNJListener(this), this);
@@ -90,5 +96,6 @@ public class RoleCraft extends JavaPlugin {
 	}
 
 	public Score getLvl() { return lvl; }
+	public Score getWaiting() { return waiting; }
 
 }

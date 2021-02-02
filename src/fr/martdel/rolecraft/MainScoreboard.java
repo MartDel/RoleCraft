@@ -34,6 +34,8 @@ public class MainScoreboard {
         obj.getScore("Admins: §9" + getNbAdmins(plugin)).setScore(3);
         obj.getScore("").setScore(2);
         obj.getScore("§5Rejoignez le Discord !").setScore(1);
+
+        player.getPlayer().setScoreboard(sb);
     }
 
     public Scoreboard getScoreboard(){ return sb; }

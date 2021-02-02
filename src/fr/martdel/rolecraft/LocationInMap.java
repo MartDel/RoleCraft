@@ -151,11 +151,7 @@ public enum LocationInMap {
 				result.getInt("z1"),
 				result.getInt("z2")
 			};
-			for(Integer i : ground){
-				System.out.println(i);
-			}
 			if(isIn(location, ground)) {
-				System.out.println("test2");
 				if(result.getString("owner_uuid").equalsIgnoreCase(uuid))  r = OWNED;
 				else r = table;
 			}
@@ -167,8 +163,6 @@ public enum LocationInMap {
 		int x = location.getBlockX(), y = location.getBlockY(), z = location.getBlockZ();
 		int x1 = Math.min(ground[0], ground[1]), x2 = Math.max(ground[0], ground[1]);
 		int z1 = Math.min(ground[2], ground[3]), z2 = Math.max(ground[2], ground[3]);
-		System.out.println(GROUND_YMIN);
-		System.out.println(GROUND_YMAX);
 		if( (x >= x1 && x <= x2) && (z >= z1 && z <= z2) && (y >= GROUND_YMIN && y <= GROUND_YMAX) ){
 			return true;
 		}

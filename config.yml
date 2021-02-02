@@ -78,6 +78,15 @@ sell:
   step5:
     name: "§95 - Validez la vente !"
     size: 27
+deathrooms:
+- state_bloc:
+    x: -215
+    y: 70
+    z: 1304
+  spawnpoint:
+    x: -206
+    y: 65
+    z: 1304
 PNJ:
 - PNJ_name: "- Fermier -"
   inventory_name: Marchand - §2Fermier
