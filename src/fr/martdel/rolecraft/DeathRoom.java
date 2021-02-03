@@ -36,8 +36,11 @@ public class DeathRoom {
     }
 
     public void spawnPlayer(CustomPlayer player, PlayerRespawnEvent event, RoleCraft plugin){
-        player.setWaiting(2);
         event.setRespawnLocation(spawnpoint);
+        spawnPlayer(player, plugin);
+    }
+    public void spawnPlayer(CustomPlayer player, RoleCraft plugin){
+        player.setWaiting(2);
         player.playCinematic(spawnpoint, 60);
         setCurrentlyUsed(true);
 
@@ -64,7 +67,7 @@ public class DeathRoom {
                     stop = false;
                 }
 
-                if(!stop) scheduler.runTaskLater(plugin, this, 20);
+                if(!stop && isCurrentlyUsed()) scheduler.runTaskLater(plugin, this, 20);
                 i++;
             }
         }, 20);
@@ -82,27 +85,17 @@ public class DeathRoom {
             Location state_bloc = new Location(RoleCraft.OVERWORLD, state_bloc_info.get("x"), state_bloc_info.get("y"), state_bloc_info.get("z"));
 
             // Get room spawn
-            Map<String, Integer> spawnpoint_info = (Map<String, Integer>) room_config.get("spawnpoint");
+            Location spawnpoint = RoleCraft.getConfigLocation(room_config.get("spawnpoint"));
             Map<String, Integer> orientation = (Map<String, Integer>) room_config.get("cinematic_view");
-            Location spawnpoint = new Location(
-                RoleCraft.OVERWORLD,
-                spawnpoint_info.get("x"),
-                spawnpoint_info.get("y"),
-                spawnpoint_info.get("z"),
-                orientation.get("yaw").floatValue(),
-                orientation.get("pitch").floatValue()
-            );
+            spawnpoint.setYaw(orientation.get("yaw").floatValue());
+            spawnpoint.setPitch(orientation.get("pitch").floatValue());
 
             // Get items spawns
-            Map<String, Integer> weaponspawn_info = (Map<String, Integer>) room_config.get("weapons_spawnpoint");
-            Map<String, Integer> items_spawnpoint1 = (Map<String, Integer>) ((Map<String, ?>) room_config.get("items_spawnpoints")).get("1");
-            Map<String, Integer> items_spawnpoint2 = (Map<String, Integer>) ((Map<String, ?>) room_config.get("items_spawnpoints")).get("2");
-            Location weaponspawn = new Location(RoleCraft.OVERWORLD, weaponspawn_info.get("x"), weaponspawn_info.get("y"), weaponspawn_info.get("z"));
+            Location weaponspawn = RoleCraft.getConfigLocation(room_config.get("weapons_spawnpoint"));
             Location[] itemspawns = {
-                new Location(RoleCraft.OVERWORLD, items_spawnpoint1.get("x"), items_spawnpoint1.get("y"), items_spawnpoint1.get("z")),
-                new Location(RoleCraft.OVERWORLD, items_spawnpoint2.get("x"), items_spawnpoint2.get("y"), items_spawnpoint2.get("z"))
+                RoleCraft.getConfigLocation(((Map<String, ?>) room_config.get("items_spawnpoints")).get("1")),
+                RoleCraft.getConfigLocation(((Map<String, ?>) room_config.get("items_spawnpoints")).get("2"))
             };
-
 
             result.add(new DeathRoom(state_bloc, spawnpoint, itemspawns, weaponspawn));
         }

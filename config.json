@@ -120,7 +120,7 @@
     "deathrooms": [
         {
             "state_bloc": {"x": -215, "y": 70, "z": 1304},
-            "spawnpoint": {"x": -206, "y": 65, "z": 1307},
+            "spawnpoint": {"x": -205.5, "y": 65, "z": 1307},
             "cinematic_view": {"yaw": 180, "pitch": 8},
             "weapons_spawnpoint": {"x": -206, "y": 66, "z": 1304},
             "items_spawnpoints": {
@@ -129,6 +129,9 @@
             }
         }
     ],
+    "waiting_room": {
+        "spawn": {"x": -200, "y": 69, "z": 1304}
+    },
 
     "PNJ": [
         {

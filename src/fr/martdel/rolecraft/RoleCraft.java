@@ -9,6 +9,7 @@ import fr.martdel.rolecraft.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -86,6 +87,19 @@ public class RoleCraft extends JavaPlugin {
 	 */
 	public static String firstLetterToUpperCase(String str) {
 		return str.substring(0, 1).toUpperCase() + str.substring(1);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Location getConfigLocation(MemorySection data){
+		return new Location(OVERWORLD, Double.parseDouble(data.getString("x")), Double.parseDouble(data.getString("y")), Double.parseDouble(data.getString("z")));
+	}
+	@SuppressWarnings("unchecked")
+	public static Location getConfigLocation(Object config_object) {
+		Map<String, ?> data = (Map<String, ?>) config_object;
+		Double x = data.get("x") instanceof Double ? (Double) data.get("x") : ((Integer) data.get("x"));
+		Double y = data.get("y") instanceof Double ? (Double) data.get("y") : ((Integer) data.get("y"));
+		Double z = data.get("z") instanceof Double ? (Double) data.get("z") : ((Integer) data.get("z"));
+		return new Location(OVERWORLD, x, y, z);
 	}
 	
 	public static void printLocation(Location l) {
