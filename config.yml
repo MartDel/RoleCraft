@@ -86,7 +86,23 @@ deathrooms:
   spawnpoint:
     x: -206
     y: 65
+    z: 1307
+  cinematic_view:
+    yaw: 180
+    pitch: 8
+  weapons_spawnpoint:
+    x: -206
+    y: 66
     z: 1304
+  items_spawnpoints:
+    '1':
+      x: -212
+      y: 66
+      z: 1304
+    '2':
+      x: -200
+      y: 66
+      z: 1304
 PNJ:
 - PNJ_name: "- Fermier -"
   inventory_name: Marchand - §2Fermier

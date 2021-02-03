@@ -8,6 +8,8 @@ import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -81,18 +83,55 @@ public class CustomPlayer {
 		}, delay);
 	}
 
-	public List<ItemStack> getItems(){
+	/**
+	 * Get all of items contains in the player's inventory
+	 * @return List<ItemStack> A list of not null ItemStack
+	 */
+	public List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
-		for(ItemStack i : player.getInventory().getStorageContents()){
-			if(i != null) items.add(i);
+		for (ItemStack i : player.getInventory().getStorageContents()) {
+			if (i != null) items.add(i);
 		}
-		for(ItemStack i : player.getInventory().getArmorContents()){
-			if(i != null) items.add(i);
+		for (ItemStack i : player.getInventory().getArmorContents()) {
+			if (i != null) items.add(i);
 		}
-		for(ItemStack i : player.getInventory().getExtraContents()){
-			if(i != null) items.add(i);
+		for (ItemStack i : player.getInventory().getExtraContents()) {
+			if (i != null) items.add(i);
 		}
 		return items;
+	}
+	/**
+	 * Get all of weapons and armor contains in the player's inventory
+	 * @return List<ItemStack> A list of not null ItemStack
+	 */
+	public List<ItemStack> getWeaponsAndArmor() {
+		List<ItemStack> items = new ArrayList<>();
+		for (ItemStack i : player.getInventory().getStorageContents()) {
+			if (i != null){
+				String type = i.getType().toString();
+				if(type.contains("SWORD") || type.contains("BOW") || type.contains("ARROW")) items.add(i);
+			}
+		}
+		for (ItemStack i : player.getInventory().getArmorContents()) {
+			if (i != null) items.add(i);
+		}
+		for (ItemStack i : player.getInventory().getExtraContents()) {
+			if (i != null) items.add(i);
+		}
+		return items;
+	}
+	/**
+	 * Get all of items contains in the player's inventory (weapons and armor are excluded)
+	 * @return List<ItemStack> A list of not null ItemStack
+	 */
+	public List<ItemStack> getMiscellaneousItems() {
+		List<ItemStack> items = getItems();
+		List<ItemStack> excludes = getWeaponsAndArmor();
+		List<ItemStack> result = new ArrayList<>();
+		for(ItemStack i : items){
+			if(!excludes.contains(i)) result.add(i);
+		}
+		return result;
 	}
 	
 	/*

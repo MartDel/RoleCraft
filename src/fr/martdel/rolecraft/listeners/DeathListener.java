@@ -45,14 +45,10 @@ public class DeathListener implements Listener {
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
 
 		DeathRoom room = getFreeRespawnRoom();
-		if(room == null){
+		if(room == null) {
 			// Waiting room
 			return;
-		}
-
-		customPlayer.setWaiting(2);
-		event.setRespawnLocation(room.getSpawnpoint());
-
+		} else room.spawnPlayer(customPlayer, event, plugin);
 	}
 
 	@EventHandler
