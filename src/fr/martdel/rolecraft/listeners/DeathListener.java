@@ -60,7 +60,7 @@ public class DeathListener implements Listener {
 			BlockState bs = bloc.getState();
 			// Respawn btn is pressed
 			if(bloc.getType().equals(Material.STONE_BUTTON) && plugin.getWaiting().getScore(player) == 2) {
-//				player.teleport(player.getBedSpawnLocation());
+				player.teleport(player.getBedSpawnLocation());
 				customPlayer.setWaiting(0);
 
 				// Clear all of entities in the room (Items and Mobs)
