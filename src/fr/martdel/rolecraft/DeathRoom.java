@@ -32,7 +32,6 @@ public class DeathRoom {
     public boolean isCurrentlyUsed(){
         Block bloc = state_bloc.getWorld().getBlockAt(state_bloc);
         Material type = bloc.getType();
-        System.out.println(type.equals(Material.REDSTONE_BLOCK));
         return type.equals(Material.REDSTONE_BLOCK);
     }
 
@@ -40,6 +39,7 @@ public class DeathRoom {
         player.setWaiting(2);
         event.setRespawnLocation(spawnpoint);
         player.playCinematic(spawnpoint, 60);
+        setCurrentlyUsed(true);
 
         List<ItemStack> items = player.getMiscellaneousItems();
         List<ItemStack> weapons = player.getWeaponsAndArmor();
