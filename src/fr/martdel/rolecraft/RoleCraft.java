@@ -5,6 +5,7 @@ import fr.martdel.rolecraft.commands.CommandAdmin;
 import fr.martdel.rolecraft.commands.CommandPublic;
 import fr.martdel.rolecraft.commands.CommandTest;
 import fr.martdel.rolecraft.database.DatabaseManager;
+import fr.martdel.rolecraft.deathroom.DeathListener;
 import fr.martdel.rolecraft.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -14,7 +15,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;

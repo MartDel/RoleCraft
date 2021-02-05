@@ -135,6 +135,43 @@
     "waiting_room": {
         "spawn": {"x": -200, "y": 69, "z": 1304}
     },
+    "deathkeys": {
+        "A1": {
+            "id": 0,
+            "lost": 20,
+            "room": 30,
+            "drop": 50,
+            "price": 10
+        },
+        "A2": {
+            "id": 1,
+            "lost": 10,
+            "room": 40,
+            "drop": 50,
+            "price": 20
+        },
+        "B1": {
+            "id": 2,
+            "lost": 30,
+            "room": 30,
+            "drop": 40,
+            "price": 10
+        },
+        "B2": {
+            "id": 3,
+            "lost": 40,
+            "room": 40,
+            "drop": 20,
+            "price": 20
+        },
+        "C1": {
+            "id": 4,
+            "lost": 20,
+            "room": 60,
+            "drop": 20,
+            "price": 30
+        }
+    },
 
     "PNJ": [
         {
@@ -306,6 +343,51 @@
                 {"name": "LOOT_BONUS_BLOCKS", "level": 10}
             ]
         },
+        "deathkeyA1": {
+            "type": "PRISMARINE_CRYSTALS",
+            "name": "§aClé A1",
+            "lore": [],
+            "metadata": 0,
+            "enchantments": [
+                {"name": "LOOT_BONUS_BLOCKS", "level": 10}
+            ]
+        },
+        "deathkeyA2": {
+            "type": "PRISMARINE_CRYSTALS",
+            "name": "§aClé A2",
+            "lore": [],
+            "metadata": 1,
+            "enchantments": [
+                {"name": "LOOT_BONUS_BLOCKS", "level": 10}
+            ]
+        },
+        "deathkeyB1": {
+            "type": "PRISMARINE_SHARD",
+            "name": "§aClé B1",
+            "lore": [],
+            "metadata": 2,
+            "enchantments": [
+                {"name": "LOOT_BONUS_BLOCKS", "level": 10}
+            ]
+        },
+        "deathkeyB2": {
+            "type": "PRISMARINE_SHARD",
+            "name": "§aClé B2",
+            "lore": [],
+            "metadata": 3,
+            "enchantments": [
+                {"name": "LOOT_BONUS_BLOCKS", "level": 10}
+            ]
+        },
+        "deathkeyC1": {
+            "type": "NETHERITE_INGOT",
+            "name": "§aClé C1",
+            "lore": [],
+            "metadata": 4,
+            "enchantments": [
+                {"name": "LOOT_BONUS_BLOCKS", "level": 10}
+            ]
+        },
 
         "delimiter": {
             "type": "STICK",
@@ -314,7 +396,7 @@
                 "Cliquez sur un bloc du sol",
                 "pour fixer le premier point."
             ],
-            "metadata": 10,
+            "metadata": 6,
             "enchantments": []
         } 
     },

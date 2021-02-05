@@ -15,19 +15,24 @@ import org.bukkit.inventory.meta.ItemMeta;
 public enum CustomItems {
 	
 	// Public items
-	LETTERBOX("custom_items.letterbox"),
-	RUBIS("custom_items.rubis"),
-	SAPHIR("custom_items.saphir"),
-	COMPASS("custom_items.compass"),
-	SELL_PAPER("custom_items.sell_paper"),
+	LETTERBOX("letterbox"),
+	RUBIS("rubis"),
+	SAPHIR("saphir"),
+	COMPASS("compass"),
+	SELL_PAPER("sell_paper"),
+	DEATHKEYA1("deathkeyA1"),
+	DEATHKEYA2("deathkeyA2"),
+	DEATHKEYB1("deathkeyB1"),
+	DEATHKEYB2("deathkeyB2"),
+	DEATHKEYC1("deathkeyC1"),
 	
 	// Private items
-	DELIMITER("custom_items.delimiter");
+	DELIMITER("delimiter");
 
 	private String config_name;
 
-	private CustomItems(String config_name) {
-		this.config_name = config_name;
+	CustomItems(String config_name) {
+		this.config_name = "custom_items." + config_name;
 	}
 
 	public Material getType() {

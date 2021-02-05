@@ -1,6 +1,7 @@
 package fr.martdel.rolecraft;
 
 import fr.martdel.rolecraft.database.DatabaseManager;
+import fr.martdel.rolecraft.deathroom.DeathKeys;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -17,10 +18,10 @@ import java.util.*;
 
 public class CustomPlayer {
 	public static final int DEFAULTHEARTS = 10;
-	
+
 	private Player player;
 	private UUID uuid;
-	
+
 	private RoleCraft plugin;
 	private BukkitScheduler scheduler;
 	private DatabaseManager db;
@@ -30,32 +31,38 @@ public class CustomPlayer {
 	private Integer score;
 	private Boolean has_spe;
 	private Integer job;
-	
+
 	private Map<String, Integer> house;
 	private Map<String, Integer> shop;
 	private Map<String, Map<String, Integer>> farms;
 	private Map<String, Map<String, Integer>> builds;
 	private Map<String, Integer> admin_ground;
 
+	private List<DeathKeys> keys;
+
 	public CustomPlayer(Player player, RoleCraft rolecraft) {
 		this.player = player;
 		this.uuid = player.getUniqueId();
-		
+
 		this.plugin = rolecraft;
 		this.db = rolecraft.getDB();
 		this.scheduler = rolecraft.getServer().getScheduler();
-		
+
 		this.is_admin = false;
 		this.level = 1;
 		this.score = 0;
 		this.job = null;
 		this.has_spe = false;
-		
+
+		// Grounds
 		this.house = null;
 		this.shop = null;
 		this.farms = new HashMap<>();
 		this.builds = new HashMap<>();
 		this.admin_ground = null;
+
+		// Keys
+		this.keys = new ArrayList<>();
 	}
 
 	/**
@@ -247,6 +254,16 @@ public class CustomPlayer {
 					}
 					query_admin.close();
 				}
+
+				// Get keys
+				PreparedStatement query_keys = db.getConnection().prepareStatement("SELECT * FROM death_keys WHERE owner_uuid=?");
+				query_keys.setString(1, uuid.toString());
+				ResultSet result_keys = query_keys.executeQuery();
+				while(result_keys.next()) {
+					DeathKeys key = DeathKeys.getKeyById(result_keys.getInt("key_id"));
+					keys.add(key);
+				}
+				query_keys.close();
 			}
 			query.close();
 		} catch (SQLException e) {
@@ -322,6 +339,22 @@ public class CustomPlayer {
 				update_admin.setString(5, uuid.toString());
 				update_admin.executeUpdate();
 				update_admin.close();
+			}
+
+			// Delete all owned keys
+			PreparedStatement delete_keys = db.getConnection().prepareStatement("DELETE FROM death_keys WHERE owner_uuid=?");
+			delete_keys.setString(1, uuid.toString());
+			delete_keys.executeUpdate();
+			delete_keys.close();
+			if(!keys.isEmpty()) {
+				// Insert keys
+				for (DeathKeys key : keys) {
+					PreparedStatement insert_keys = db.getConnection().prepareStatement("INSERT INTO death_keys(key_id, owner_uuid) VALUES(?, ?)");
+					insert_keys.setInt(1, key.getId());
+					insert_keys.setString(2, uuid.toString());
+					insert_keys.executeUpdate();
+					insert_keys.close();
+				}
 			}
 		} catch (SQLException e) {
 			DatabaseManager.error(e);
@@ -504,7 +537,18 @@ public class CustomPlayer {
 	public Map<String, Map<String, Integer>> getFarms() { return farms; }
 	public void addFarm(String name, Map<String, Integer> farm) { farms.put(name, farm); }
 	public void removeFarm(String name) { farms.remove(name); }
-	
+
+	public List<DeathKeys> getKeys() { return keys; }
+	public void addKey(DeathKeys key) { keys.add(key); }
+	public void removeKey(DeathKeys key) {
+		for (int i = 0; i < keys.size(); i++){
+			if(keys.get(i).equals(key)) {
+				keys.remove(i);
+				return;
+			}
+		}
+	}
+
 	public void setPlayer(Player player) { this.player = player; }
 	public Player getPlayer() { return player; }
 
