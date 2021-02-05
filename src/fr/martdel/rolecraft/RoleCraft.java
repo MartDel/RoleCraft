@@ -89,17 +89,34 @@ public class RoleCraft extends JavaPlugin {
 		return str.substring(0, 1).toUpperCase() + str.substring(1);
 	}
 
+	/**
+	 * Get a location from the config file
+	 * @param data The config file raw
+	 * @param orientation If the raw contains orientations data
+	 * @return Location The found location
+	 */
 	@SuppressWarnings("unchecked")
-	public static Location getConfigLocation(MemorySection data){
-		return new Location(OVERWORLD, Double.parseDouble(data.getString("x")), Double.parseDouble(data.getString("y")), Double.parseDouble(data.getString("z")));
+	public static Location getConfigLocation(MemorySection data, boolean orientation){
+		double x = Double.parseDouble(data.getString("x"));
+		double y = Double.parseDouble(data.getString("x"));
+		double z = Double.parseDouble(data.getString("z"));
+		if(orientation){
+			float yaw = Float.parseFloat(data.getString("yaw"));
+			float pitch = Float.parseFloat(data.getString("pitch"));
+			return new Location(OVERWORLD, x, y, z, yaw, pitch);
+		} else return new Location(OVERWORLD, x, y, z);
 	}
 	@SuppressWarnings("unchecked")
-	public static Location getConfigLocation(Object config_object) {
+	public static Location getConfigLocation(Object config_object, boolean orientation) {
 		Map<String, ?> data = (Map<String, ?>) config_object;
-		Double x = data.get("x") instanceof Double ? (Double) data.get("x") : ((Integer) data.get("x"));
-		Double y = data.get("y") instanceof Double ? (Double) data.get("y") : ((Integer) data.get("y"));
-		Double z = data.get("z") instanceof Double ? (Double) data.get("z") : ((Integer) data.get("z"));
-		return new Location(OVERWORLD, x, y, z);
+		double x = data.get("x") instanceof Double ? (Double) data.get("x") : (Integer) data.get("x");
+		double y = data.get("y") instanceof Double ? (Double) data.get("y") : (Integer) data.get("y");
+		double z = data.get("z") instanceof Double ? (Double) data.get("z") : (Integer) data.get("z");
+		if(orientation){
+			float yaw = data.get("yaw") instanceof Float ? (Float) data.get("yaw") : (Integer) data.get("yaw");
+			float pitch = data.get("pitch") instanceof Float ? (Float) data.get("pitch") : (Integer) data.get("pitch");
+			return new Location(OVERWORLD, x, y, z, yaw, pitch);
+		} else return new Location(OVERWORLD, x, y, z);
 	}
 	
 	public static void printLocation(Location l) {

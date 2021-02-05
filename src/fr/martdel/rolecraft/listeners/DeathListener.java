@@ -31,7 +31,7 @@ public class DeathListener implements Listener {
 	private RoleCraft plugin;
 	private BukkitScheduler scheduler;
 	private static final List<DeathRoom> DEATH_ROOMS = DeathRoom.getAllRooms();
-	private static final Location WAITING_ROOM = RoleCraft.getConfigLocation((MemorySection) RoleCraft.config.get("waiting_room.spawn"));
+	private static final Location WAITING_ROOM = RoleCraft.getConfigLocation((MemorySection) RoleCraft.config.get("waiting_room.spawn"), false);
 
 	public DeathListener(RoleCraft rolecraft) {
 		this.plugin = rolecraft;

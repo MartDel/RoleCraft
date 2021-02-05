@@ -15,14 +15,16 @@ public class DeathRoom {
 
     private Location state_bloc;
     private Location spawnpoint;
-    private Location[] itemsspawns;
-    private Location weaponspawn;
+    private Location itemsspawn;
+    private Cinematic cinematic1;
+    private Cinematic cinematic2;
 
-    public DeathRoom(Location state_bloc, Location spawnpoint, Location[] itemsspawns, Location weaponspawn){
+    public DeathRoom(Location state_bloc, Location spawnpoint, Location itemsspawn, Cinematic c1, Cinematic c2){
         this.state_bloc = state_bloc;
         this.spawnpoint = spawnpoint;
-        this.itemsspawns = itemsspawns;
-        this.weaponspawn = weaponspawn;
+        this.itemsspawn = itemsspawn;
+        this.cinematic1 = c1;
+        this.cinematic2 = c2;
     }
 
     public void setCurrentlyUsed(boolean used){
@@ -41,36 +43,11 @@ public class DeathRoom {
     }
     public void spawnPlayer(CustomPlayer player, RoleCraft plugin){
         player.setWaiting(2);
-        player.playCinematic(spawnpoint, 60);
+        player.playCinematic(spawnpoint, 60, null);
         setCurrentlyUsed(true);
 
-        List<ItemStack> items = player.getMiscellaneousItems();
-        List<ItemStack> weapons = player.getWeaponsAndArmor();
+        List<ItemStack> items = player.getItems();
         player.getPlayer().getInventory().clear();
-
-        BukkitScheduler scheduler = plugin.getServer().getScheduler();
-        scheduler.runTaskLater(plugin, new Runnable() {
-            private int i = 0;
-            @Override
-            public void run() {
-                boolean stop = true;
-
-                if(i < items.size()){
-                    // Spawn miscellaneous items
-                    if(i % 2 == 0) RoleCraft.OVERWORLD.dropItem(itemsspawns[0], items.get(i));
-                    else RoleCraft.OVERWORLD.dropItem(itemsspawns[1], items.get(i));
-                    stop = false;
-                }
-                if(i < weapons.size()){
-                    // Spawn weapons and armor
-                    RoleCraft.OVERWORLD.dropItem(weaponspawn, weapons.get(i));
-                    stop = false;
-                }
-
-                if(!stop && isCurrentlyUsed()) scheduler.runTaskLater(plugin, this, 20);
-                i++;
-            }
-        }, 20);
     }
 
     @SuppressWarnings("unchecked")
@@ -81,23 +58,26 @@ public class DeathRoom {
             Map<String, ?> room_config = (Map<String, ?>) el;
 
             // Get room_state
-            Map<String, Integer> state_bloc_info = (Map<String, Integer>) room_config.get("state_bloc");
-            Location state_bloc = new Location(RoleCraft.OVERWORLD, state_bloc_info.get("x"), state_bloc_info.get("y"), state_bloc_info.get("z"));
+            Location state_bloc = RoleCraft.getConfigLocation(room_config.get("state_bloc"), false);
 
             // Get room spawn
-            Location spawnpoint = RoleCraft.getConfigLocation(room_config.get("spawnpoint"));
-            Map<String, Integer> orientation = (Map<String, Integer>) room_config.get("cinematic_view");
-            spawnpoint.setYaw(orientation.get("yaw").floatValue());
-            spawnpoint.setPitch(orientation.get("pitch").floatValue());
+            Location spawnpoint = RoleCraft.getConfigLocation(room_config.get("spawnpoint"), true);
 
-            // Get items spawns
-            Location weaponspawn = RoleCraft.getConfigLocation(room_config.get("weapons_spawnpoint"));
-            Location[] itemspawns = {
-                RoleCraft.getConfigLocation(((Map<String, ?>) room_config.get("items_spawnpoints")).get("1")),
-                RoleCraft.getConfigLocation(((Map<String, ?>) room_config.get("items_spawnpoints")).get("2"))
-            };
+            // Get items spawn
+            Location itemspawn = RoleCraft.getConfigLocation(room_config.get("items_spawnpoint"), false);
 
-            result.add(new DeathRoom(state_bloc, spawnpoint, itemspawns, weaponspawn));
+            // Get cinematics
+            Map<String, ?> cinematic1_config = (Map<String, ?>) room_config.get("cinematic1");
+            Location cinematic1_loc = RoleCraft.getConfigLocation(cinematic1_config.get("location"), true);
+            Integer cinematic1_time = (Integer) cinematic1_config.get("duration");
+            Cinematic cinematic1 = new Cinematic(cinematic1_loc, cinematic1_time);
+
+            Map<String, ?> cinematic2_config = (Map<String, ?>) room_config.get("cinematic1");
+            Location cinematic2_loc = RoleCraft.getConfigLocation(cinematic2_config.get("location"), true);
+            Integer cinematic2_time = (Integer) cinematic2_config.get("duration");
+            Cinematic cinematic2 = new Cinematic(cinematic2_loc, cinematic2_time);
+
+            result.add(new DeathRoom(state_bloc, spawnpoint, itemspawn, cinematic1, cinematic2));
         }
         return result;
     }

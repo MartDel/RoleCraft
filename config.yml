@@ -87,22 +87,28 @@ deathrooms:
     x: -205.5
     y: 65
     z: 1307
-  cinematic_view:
     yaw: 180
     pitch: 8
-  weapons_spawnpoint:
+  cinematic1:
+    location:
+      x: -205.5
+      y: 65
+      z: 1304.5
+      yaw: -90
+      pitch: -10
+    duration: 100
+  cinematic2:
+    location:
+      x: -207.5
+      y: 70
+      z: 1304.5
+      yaw: 90
+      pitch: 60
+    duration: 100
+  items_spawnpoint:
     x: -206
     y: 66
     z: 1304
-  items_spawnpoints:
-    '1':
-      x: -212
-      y: 66
-      z: 1304
-    '2':
-      x: -200
-      y: 66
-      z: 1304
 waiting_room:
   spawn:
     x: -200

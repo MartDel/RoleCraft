@@ -1,22 +1,19 @@
 package fr.martdel.rolecraft;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-
+import fr.martdel.rolecraft.database.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import fr.martdel.rolecraft.database.DatabaseManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 public class CustomPlayer {
 	public static final int DEFAULTHEARTS = 10;
@@ -64,11 +61,12 @@ public class CustomPlayer {
 	/**
 	 * Start a cinematic for the player
 	 * Tp every tic the player at a specific location
-	 * @param to Where the player must look 
-	 * @param time How many time before stopping the cinematic
+	 * @param c Cinematic infos
 	 */
-	public void playCinematic(Location to, int time) {
+	public void playCinematic(Cinematic c, Runnable callback){
 		final int delay = 1;
+		final int time = c.getDuration();
+		final Location to = c.getLocation();
 		final GameMode old_gamemode = player.getGameMode();
 		player.setGameMode(GameMode.SPECTATOR);
 		scheduler.runTaskLater(plugin, new Runnable() {
@@ -78,10 +76,17 @@ public class CustomPlayer {
 				player.teleport(to);
 				t++;
 				if(t < time) scheduler.runTaskLater(plugin, this, delay);
-				else player.setGameMode(old_gamemode);
+				else {
+					player.setGameMode(old_gamemode);
+					if(callback != null) callback.run();
+				}
 			}
 		}, delay);
 	}
+	public void playCinematic(Location to, int time, Runnable callback) {
+		playCinematic(new Cinematic(to, time), callback);
+	}
+
 
 	/**
 	 * Get all of items contains in the player's inventory
@@ -130,6 +135,24 @@ public class CustomPlayer {
 		List<ItemStack> result = new ArrayList<>();
 		for(ItemStack i : items){
 			if(!excludes.contains(i)) result.add(i);
+		}
+		return result;
+	}
+
+	/**
+	 * Get random items in the player's inventory and remove them
+	 * @param percentage Percentage of how many items will be removed
+	 * @return List<ItemStack> Removed items
+	 */
+	public List<ItemStack> getRandomItems(int percentage){
+		List<ItemStack> result = new ArrayList<>();
+		List<ItemStack> items = getItems();
+		final int nb_items = ((Double) Math.floor(items.size() * (percentage/100))).intValue();
+		for(int i = 0; i < nb_items; i++){
+			int id = new Random().nextInt(items.size());
+			result.add(items.get(id));
+			player.getInventory().remove(items.get(id));
+			items.remove(id);
 		}
 		return result;
 	}
