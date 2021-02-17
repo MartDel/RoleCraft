@@ -1,8 +1,10 @@
 package fr.martdel.rolecraft.deathroom;
 
-import fr.martdel.rolecraft.*;
-import fr.martdel.rolecraft.deathroom.DeathRoom;
-import org.bukkit.*;
+import fr.martdel.rolecraft.CustomPlayer;
+import fr.martdel.rolecraft.RoleCraft;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
@@ -19,7 +21,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 public class DeathListener implements Listener {
 

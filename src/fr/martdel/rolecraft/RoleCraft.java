@@ -98,7 +98,7 @@ public class RoleCraft extends JavaPlugin {
 	@SuppressWarnings("unchecked")
 	public static Location getConfigLocation(MemorySection data, boolean orientation){
 		double x = Double.parseDouble(data.getString("x"));
-		double y = Double.parseDouble(data.getString("x"));
+		double y = Double.parseDouble(data.getString("y"));
 		double z = Double.parseDouble(data.getString("z"));
 		if(orientation){
 			float yaw = Float.parseFloat(data.getString("yaw"));
