@@ -67,7 +67,7 @@ sell:
   step2:
     name: "§92 - Quel terrain?"
     size: 54
-    admin_name: "§9Quel type de terrain?"
+    admin_name: "§92 - Quel type de terrain?"
     admin_size: 9
   step3:
     name: "§93 - À quel joueur?"

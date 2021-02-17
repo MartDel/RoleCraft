@@ -8,6 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -34,14 +36,16 @@ public class SellListener implements Listener {
 		String title = view.getTitle();
 		if(title.contains("§9")){
 			try{
-				Integer step = Integer.parseInt(title.substring(2,3));
+				int step = Integer.parseInt(title.substring(2,3));
+				if(step == 5) return;
 				Map<Integer, ItemStack> paper_info = getPaper(player.getInventory());
 				ItemStack paper = (ItemStack) paper_info.values().toArray()[0];
+				if(paper == null) return;
 				List<String> lore = paper.getItemMeta().getLore();
-				if(step == lore.size()){
+				if(step != lore.size()){
 					removePaper(player);
 				}
-			} catch (NumberFormatException e) {}
+			} catch (NumberFormatException ignored) {}
 		}
 	}
 	
@@ -52,14 +56,20 @@ public class SellListener implements Listener {
 		ItemStack item = event.getCurrentItem();
 		InventoryView view = event.getView();
 		String title = view.getTitle();
+		int slot = event.getRawSlot();
 		if(item == null) return;
 
 		// STEP 1
 		if(title.equalsIgnoreCase(GUI.SELL_STEP1_NAME)) {
 			try {
+				if(!isCorrectItem(item, slot, GUI.SELL_STEP1_SIZE)){
+					event.setCancelled(true);
+					return;
+				}
 				ItemMeta iMeta = item.getItemMeta();
 				if (iMeta.hasCustomModelData()) {
 					int data = iMeta.getCustomModelData();
+
 					switch (data) {
 						case 0:    // Sell an admin ground
 							if (!player.isOp()) {
@@ -100,7 +110,7 @@ public class SellListener implements Listener {
 								player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
 								return;
 							}
-							player.openInventory(GUI.createSellStep3(plugin));
+							player.openInventory(GUI.createSellStep3(plugin, player));
 							return;
 						case 3:    // Sell a shop
 							customPlayer.loadData();
@@ -116,7 +126,7 @@ public class SellListener implements Listener {
 								player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
 								return;
 							}
-							player.openInventory(GUI.createSellStep3(plugin));
+							player.openInventory(GUI.createSellStep3(plugin, player));
 							return;
 						case 4:    // Sell a farm
 							customPlayer.loadData();
@@ -163,6 +173,10 @@ public class SellListener implements Listener {
 		// STEP 2 (Admin)
 		if(title.equalsIgnoreCase(GUI.SELL_STEP2_ADMINNAME)) {
 			try {
+				if(!isCorrectItem(item, slot, GUI.SELL_STEP2_ADMINSIZE)){
+					event.setCancelled(true);
+					return;
+				}
 				ItemMeta iMeta = item.getItemMeta();
 				if(iMeta.hasDisplayName() && iMeta.hasCustomModelData()){
 
@@ -187,7 +201,7 @@ public class SellListener implements Listener {
 							player.sendMessage("§4Aucun joueur n'est en ligne.");
 							return;
 						}
-						player.openInventory(GUI.createSellStep3(plugin));
+						player.openInventory(GUI.createSellStep3(plugin, player));
 					}
 
 					event.setCancelled(true);
@@ -202,6 +216,10 @@ public class SellListener implements Listener {
 		// STEP 3
 		if(title.equalsIgnoreCase(GUI.SELL_STEP3_NAME)) {
 			try {
+				if(!isCorrectItem(item, slot, GUI.SELL_STEP3_SIZE)){
+					event.setCancelled(true);
+					return;
+				}
 				ItemMeta iMeta = item.getItemMeta();
 				if(iMeta.hasDisplayName()){
 
@@ -229,13 +247,18 @@ public class SellListener implements Listener {
 		// STEP 4
 		if(title.equalsIgnoreCase(GUI.SELL_STEP4_NAME)) {
 			try{
+				if(!isCorrectItem(item, slot, GUI.SELL_STEP4_SIZE)){
+					event.setCancelled(true);
+					return;
+				}
 				ItemMeta iMeta = item.getItemMeta();
 				if(iMeta.hasDisplayName()){
 					if(!iMeta.equals(CustomItems.RUBIS.getItemMeta())){
 						// Validate the price
 						if(iMeta.getDisplayName().equalsIgnoreCase("§2Valider le prix")){
-							Integer nb_rubis = Wallet.count(event.getInventory());
-							if(!addDataToPaper(player, nb_rubis.toString())) {
+							int nb_rubis = Wallet.count(event.getInventory());
+							System.out.println(nb_rubis);
+							if(!addDataToPaper(player, Integer.toString(nb_rubis))) {
 								player.sendMessage("§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
 								return;
 							}
@@ -251,7 +274,9 @@ public class SellListener implements Listener {
 						if(iMeta.getDisplayName().contains("-")){
 							Wallet.remove(event.getInventory(), rubis.getAmount());
 						} else {
-							event.getInventory().addItem(rubis);
+							if(Wallet.count(event.getInventory()) + rubis.getAmount() <= 2304){
+								event.getInventory().addItem(rubis);
+							}
 						}
 					}
 					event.setCancelled(true);
@@ -267,6 +292,10 @@ public class SellListener implements Listener {
 		// STEP 5
 		if(title.equalsIgnoreCase(GUI.SELL_STEP5_NAME)) {
 			try{
+				if(!isCorrectItem(item, slot, GUI.SELL_STEP5_SIZE)){
+					event.setCancelled(true);
+					return;
+				}
 				ItemMeta iMeta = item.getItemMeta();
 				if(iMeta.hasDisplayName()){
 					if(item.getType().equals(CustomItems.SELL_PAPER.getType())){
@@ -279,6 +308,9 @@ public class SellListener implements Listener {
 						} catch (Exception e){
 							player.sendMessage(e.getMessage());
 						}
+						try{
+							player.closeInventory();
+						} catch (Exception ignored) {}
 					}
 					event.setCancelled(true);
 					return;
@@ -288,6 +320,10 @@ public class SellListener implements Listener {
 				// Player clicks on his inventory
 			}
 		}
+	}
+
+	private boolean isCorrectItem(ItemStack item, int slot, int max_size) {
+		return item.hasItemMeta() && slot < max_size;
 	}
 
 	/**
@@ -363,7 +399,6 @@ public class SellListener implements Listener {
 
 		switch (sell_type){
 			case "admin":
-				System.out.println("house");
 				String type_name = infos.get(1);
 				ground = customSender.getAdmin_ground();
 				to = plugin.getServer().getPlayer(infos.get(2));
@@ -448,7 +483,6 @@ public class SellListener implements Listener {
 
 		// Remove paper
 		removePaper(sender);
-		sender.closeInventory();
 		customTo.save();
 	}
 

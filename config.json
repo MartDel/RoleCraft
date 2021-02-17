@@ -100,7 +100,7 @@
         "step2": {
             "name": "§92 - Quel terrain?",
             "size": 54,
-            "admin_name": "§9Quel type de terrain?",
+            "admin_name": "§92 - Quel type de terrain?",
             "admin_size": 9
         },
         "step3": {
@@ -136,41 +136,11 @@
         "spawn": {"x": -200, "y": 69, "z": 1304}
     },
     "deathkeys": {
-        "A1": {
-            "id": 0,
-            "lost": 20,
-            "room": 30,
-            "drop": 50,
-            "price": 10
-        },
-        "A2": {
-            "id": 1,
-            "lost": 10,
-            "room": 40,
-            "drop": 50,
-            "price": 20
-        },
-        "B1": {
-            "id": 2,
-            "lost": 30,
-            "room": 30,
-            "drop": 40,
-            "price": 10
-        },
-        "B2": {
-            "id": 3,
-            "lost": 40,
-            "room": 40,
-            "drop": 20,
-            "price": 20
-        },
-        "C1": {
-            "id": 4,
-            "lost": 20,
-            "room": 60,
-            "drop": 20,
-            "price": 30
-        }
+        "A1": {"id": 0,"lost": 20,"room": 30,"drop": 50,"price": 10},
+        "A2": {"id": 1,"lost": 10,"room": 40,"drop": 50,"price": 20},
+        "B1": {"id": 2,"lost": 30,"room": 30,"drop": 40,"price": 10},
+        "B2": {"id": 3,"lost": 40,"room": 40,"drop": 20,"price": 20},
+        "C1": {"id": 4,"lost": 20,"room": 60,"drop": 20,"price": 30}
     },
 
     "PNJ": [

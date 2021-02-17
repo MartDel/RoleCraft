@@ -217,19 +217,21 @@ public class GUI {
 	 * @param plugin The current plugin
 	 * @return The inventory to show
 	 */
-	public static Inventory createSellStep3(RoleCraft plugin) {
+	public static Inventory createSellStep3(RoleCraft plugin, Player sender) {
 		GUI step3 = new GUI(SELL_STEP3_NAME, SELL_STEP3_SIZE);
 
 		for(Player p: plugin.getServer().getOnlinePlayers()){
-			CustomPlayer customP = new CustomPlayer(p, plugin);
-			String color = customP.getTeam().getColor();
-			// Create player's head (skull)
-			ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-			SkullMeta meta = (SkullMeta) skull.getItemMeta();
-			meta.setOwningPlayer(p);
-			meta.setDisplayName("§" + color + p.getName());
-			skull.setItemMeta(meta);
-			step3.addItem(skull);
+			if(!p.equals(sender)){
+				CustomPlayer customP = new CustomPlayer(p, plugin);
+				String color = customP.getTeam().getColor();
+				// Create player's head (skull)
+				ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+				SkullMeta meta = (SkullMeta) skull.getItemMeta();
+				meta.setOwningPlayer(p);
+				meta.setDisplayName("§" + color + p.getName());
+				skull.setItemMeta(meta);
+				step3.addItem(skull);
+			}
 		}
 
 		return step3.getInventory();
@@ -284,7 +286,7 @@ public class GUI {
 				createItem(Material.EMERALD, 10, "§a+10", new ArrayList<>(), 10),
 				createItem(Material.EMERALD, 64, "§a+64", new ArrayList<>(), 64),
 		};
-		int[] stacks = {19,20,21,22,23,24,25};
+		int[] stacks = {37,38,39,40,41,42,43};
 		for (int i = 0; i < stacks.length; i++) {
 			step4.setItem(stacks[i], items[i]);
 		}
