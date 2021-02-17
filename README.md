@@ -1,6 +1,6 @@
 # RoleCraft
 
-Plugin Minecraft visant à rajouter des métiers au jeu *(fermier, mineur, aventurier, builder)* et à créer une interaction plus évoluée entre les joueurs du serveur. Le plugin est disponible uniquement sur le serveur pour lequel il est destiné : RoleCraft.
+Plugin Minecraft visant à rajouter des métiers au jeu *(fermier, mineur, aventurier, builder)* et à créer une interaction plus évoluée entre les joueurs du serveur. Le plugin est disponible uniquement sur le serveur pour lequel il est destiné : **RoleCraft**.
 
 ## La liste des métiers disponibles :
 
