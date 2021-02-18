@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import fr.martdel.rolecraft.*;
+import fr.martdel.rolecraft.listeners.SellListener;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -197,11 +198,12 @@ public class CommandPublic implements CommandExecutor {
 				/*
 				 * SELL COMMAND
 				 */
+				if(player.getInventory().firstEmpty() == -1){
+					player.sendMessage("§4Vous devez posséder un slot libre dans votre inventaire pour cette opération.");
+					return false;
+				}
 				ItemStack paper = CustomItems.SELL_PAPER.getItem();
-				Inventory playerinv = player.getInventory();
-				removeSellPapers(playerinv);
-				playerinv.addItem(paper);
-				player.updateInventory();
+				player.getInventory().addItem(paper);
 				player.openInventory(GUI.createSellStep1());
 			} else if(cmd.getName().equalsIgnoreCase("confirm")) {
 				/*
@@ -328,24 +330,6 @@ public class CommandPublic implements CommandExecutor {
 		}
 		
 		return false;
-	}
-
-	private void removeSellPapers(Inventory inv){
-		// Find paper
-		ItemStack[] content = inv.getContents();
-		CustomItems template_paper = CustomItems.SELL_PAPER;
-		for(int i = 0; i < content.length; i++) {
-			if(content[i] != null) {
-				ItemStack stack = content[i];
-				if(stack.hasItemMeta()) {
-					Material type = stack.getType();
-					ItemMeta stackMeta = stack.getItemMeta();
-					if(type.equals(template_paper.getType()) && stackMeta.getDisplayName().equalsIgnoreCase(template_paper.getName())) {
-						inv.remove(stack);
-					}
-				}
-			}
-		}
 	}
 
 }

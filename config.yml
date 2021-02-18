@@ -397,7 +397,7 @@ custom_items:
     enchantments: []
   sell_paper:
     type: PAPER
-    name: "§8Papier de vente"
+    name: "§8étape 1"
     lore:
     - Faites un clic droit
     - pour ouvrir le guide

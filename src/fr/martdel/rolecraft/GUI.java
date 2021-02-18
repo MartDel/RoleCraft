@@ -243,13 +243,13 @@ public class GUI {
 	 * @param searched_job The job which we are looking for
 	 * @return The inventory to show
 	 */
-	public static Inventory createSellStep3Job(RoleCraft plugin, int searched_job) throws Exception {
+	public static Inventory createSellStep3Job(RoleCraft plugin, int searched_job, Player sender) throws Exception {
 		GUI step3 = new GUI(SELL_STEP3_NAME, SELL_STEP3_SIZE);
 
 		int founds = 0;
 		for(Player p: plugin.getServer().getOnlinePlayers()){
 			CustomPlayer customP = new CustomPlayer(p, plugin).loadData();
-			if(customP.getJob() == searched_job || customP.isAdmin()){
+			if((customP.getJob() == searched_job || customP.isAdmin()) && !p.equals(sender)){
 				String color = customP.getTeam().getColor();
 				// Create player's head (skull)
 				ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
@@ -370,6 +370,11 @@ public class GUI {
 	}
 	public static ItemStack createItem(Material mat, String name, List<String> lore, int data) {
 		return createItem(mat, 1, name, lore, data);
+	}
+
+	public static void error(Player player, String err){
+		player.closeInventory();
+		player.sendMessage(err);
 	}
 
 }

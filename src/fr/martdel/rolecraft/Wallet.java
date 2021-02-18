@@ -56,6 +56,11 @@ public class Wallet {
 	public void give(int nb) {
 		ItemStack ruby = new ItemStack(CustomItems.RUBIS.getType(), nb);
 		ruby.setItemMeta(CustomItems.RUBIS.getItemMeta());
+
+		// Check the player's inventory
+		System.out.println(player.getInventory().getSize());
+		System.out.println(player.getInventory().getContents().length);
+
 		player.getInventory().addItem(ruby);
 		player.updateInventory();
 	}
