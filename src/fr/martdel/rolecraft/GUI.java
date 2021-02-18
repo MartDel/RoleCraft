@@ -249,7 +249,7 @@ public class GUI {
 		int founds = 0;
 		for(Player p: plugin.getServer().getOnlinePlayers()){
 			CustomPlayer customP = new CustomPlayer(p, plugin).loadData();
-			if((customP.getJob() == searched_job || customP.isAdmin()) && !p.equals(sender)){
+			if((customP.getJob() == searched_job || p.isOp()) && !p.equals(sender)){
 				String color = customP.getTeam().getColor();
 				// Create player's head (skull)
 				ItemStack skull = new ItemStack(Material.PLAYER_HEAD);

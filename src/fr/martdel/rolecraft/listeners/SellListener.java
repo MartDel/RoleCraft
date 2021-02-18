@@ -14,8 +14,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class SellListener implements Listener {
 
@@ -33,7 +35,6 @@ public class SellListener implements Listener {
 		if(title.contains("§9")){
 			try{
 				int step = Integer.parseInt(title.substring(2,3));
-				if(step == 5) return;
 				Integer paperslot = getPaperSlot(player.getInventory());
 				if(paperslot == null) return;
 				ItemStack paper = player.getInventory().getItem(paperslot);
@@ -157,6 +158,37 @@ public class SellListener implements Listener {
 			}
 		}
 
+		// STEP 2
+		if(title.equalsIgnoreCase(GUI.SELL_STEP2_NAME)){
+			event.setCancelled(true);
+			if(!isCorrectItem(item, slot, GUI.SELL_STEP2_SIZE)) return;
+			ItemMeta iMeta = item.getItemMeta();
+			if(!iMeta.hasDisplayName()) return;
+
+			// Get saving data
+			String ground = iMeta.getDisplayName();
+			String to_save;
+			if(ground.contains("§6")) to_save = "shop";
+			else if(ground.contains("§2") || ground.contains("§5")) to_save = ground.substring(2, ground.length());
+			else to_save = "house";
+
+			// Get required job
+			List<String> lore = getDataFromPaper(player);
+			String type = lore.get(0);
+			int required_job;
+			if(type.equalsIgnoreCase("farm")) required_job = 0;
+			else required_job = 3;
+
+			try{
+				Inventory to_show = GUI.createSellStep3Job(plugin, required_job, player);
+				if(!addDataToPaper(player, to_save, 3)) {
+					GUI.error(player, "§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
+					return;
+				}
+				player.openInventory(to_show);
+			} catch (Exception e){ GUI.error(player, "§4Aucun joueur pouvant recevoir ce terrain n'est en ligne."); }
+		}
+
 		// STEP 2 (Admin)
 		if(title.equalsIgnoreCase(GUI.SELL_STEP2_ADMINNAME)) {
 			event.setCancelled(true);
@@ -208,7 +240,7 @@ public class SellListener implements Listener {
 				GUI.error(player, "§4Le joueur sélectionné n'est plus en ligne.");
 				return;
 			}
-			if(!addDataToPaper(player, clicked_player.getName(), 3)) {
+			if(!addDataToPaper(player, clicked_player.getName(), 4)) {
 				GUI.error(player, "§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
 				return;
 			}
@@ -233,7 +265,7 @@ public class SellListener implements Listener {
 
 			// Validate the price
 			if(iMeta.getDisplayName().equalsIgnoreCase("§2Valider le prix")){
-				if(!addDataToPaper(player, Integer.toString(nb_rubis), 3)) {
+				if(!addDataToPaper(player, Integer.toString(nb_rubis), 5)) {
 					GUI.error(player, "§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
 					return;
 				}
