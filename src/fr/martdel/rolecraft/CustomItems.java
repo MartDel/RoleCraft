@@ -80,7 +80,9 @@ public enum CustomItems {
 		iMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
 		// Customs
-		if(this.equals(SELL_PAPER)) iMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		if(this.equals(SELL_PAPER) || this.toString().contains("DEATHKEY")) {
+			iMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		}
 
 		// Manage enchantments
 		Set<Entry<Enchantment, Integer>> enchants = getEnchants().entrySet();

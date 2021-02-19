@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +49,7 @@ public class DeathRoom {
         player.setWaiting(2);
         setCurrentlyUsed(true);
 
-        List<DeathKeys> keys = player.loadData().getKeys();
+        List<DeathKey> keys = player.loadData().getKeys();
         if(keys.isEmpty()) {
             spawnPlayer(player, plugin, null);
             return;
@@ -64,7 +63,7 @@ public class DeathRoom {
         choose_key.setItem(8, GUI.createItem(Material.BARRIER, "§4Ne pas choisir de clé", new ArrayList<>(), 8));
         player.getPlayer().openInventory(choose_key.getInventory());
     }
-    public void spawnPlayer(CustomPlayer player, RoleCraft plugin, DeathKeys choosen_key){
+    public void spawnPlayer(CustomPlayer player, RoleCraft plugin, DeathKey choosen_key){
         if(choosen_key != null){
             player.getPlayer().sendMessage("Vous avez choisi la clé " + choosen_key.toString());
             player.getPlayer().sendMessage("Vous avez perdu " + player.getRandomItems(choosen_key.getLost()) + " stack(s)");

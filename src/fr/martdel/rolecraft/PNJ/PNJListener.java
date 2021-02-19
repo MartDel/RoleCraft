@@ -1,7 +1,10 @@
 package fr.martdel.rolecraft.PNJ;
 
+import java.util.Arrays;
 import java.util.Map;
 
+import fr.martdel.rolecraft.*;
+import fr.martdel.rolecraft.deathroom.DeathKey;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -14,11 +17,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import fr.martdel.rolecraft.CustomItems;
-import fr.martdel.rolecraft.CustomPlayer;
-import fr.martdel.rolecraft.RoleCraft;
-import fr.martdel.rolecraft.Wallet;
 
 public class PNJListener implements Listener {
 	
@@ -40,12 +38,20 @@ public class PNJListener implements Listener {
 			 */
 			Villager pnj = (Villager) entity;
 			String name = pnj.getName();
+
+			// Deathkey PNJ
+			if(name.equalsIgnoreCase(RoleCraft.config.getString("deathkeys.buy_GUI.PNJname"))){
+				event.setCancelled(true);
+				player.openInventory(GUI.createSellDeathkeys(customPlayer.loadData()));
+				return;
+			}
+
 			Map<String, PNJ> registered_pnj = PNJ.getAllPNJ();
-			
 			if(registered_pnj.containsKey(name)) {
 				event.setCancelled(true);
 				PNJ custom_pnj = registered_pnj.get(name);
-				if(custom_pnj.getRequiredJob() != null && customPlayer.loadData().getJob() != custom_pnj.getRequiredJob()) return;
+				Integer required_job = custom_pnj.getRequiredJob();
+				if(required_job != null && !customPlayer.loadData().getJob().equals(required_job)) return;
 				Inventory inv = custom_pnj.getInventory();
 				player.openInventory(inv);
 			}
@@ -60,6 +66,31 @@ public class PNJListener implements Listener {
 		InventoryView view = event.getView();
 
 		if(item == null) return;
+
+		if(view.getTitle().equalsIgnoreCase(GUI.SELLDEATHKEYS_NAME)){
+			// Player is buying a deathkey
+			event.setCancelled(true);
+			if(!item.hasItemMeta() && event.getRawSlot() >= GUI.SELLDEATHKEYS_SIZE) return;
+			ItemMeta iMeta = item.getItemMeta();
+			if(!iMeta.hasCustomModelData()) return;
+			int id = iMeta.getCustomModelData();
+			DeathKey key = DeathKey.getKeyById(id);
+			customPlayer.loadData();
+			if(customPlayer.hasKey(key)) return;
+			int price = key.getPrice();
+			Wallet p_account = customPlayer.getWallet();
+			if(!p_account.has(price)) return;
+			player.closeInventory();
+			p_account.remove(price);
+
+			// Database management for key buying
+			customPlayer.addKey(key);
+			customPlayer.save();
+
+			iMeta.setLore(Arrays.asList("§8Vous possédez déja", "§8cette clé..."));
+
+			player.sendMessage("§aVous venez d'acheter une deathkey de type §5" + key.toString());
+		}
 		
 		if(view.getTitle().contains("Marchand - ")) {
 			/*

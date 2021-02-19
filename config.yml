@@ -145,6 +145,10 @@ deathkeys:
     room: 60
     drop: 20
     price: 30
+  buy_GUI:
+    name: Acheter des §5deathkeys
+    PNJname: "- Bucheron -"
+    size: 27
 PNJ:
 - PNJ_name: "- Fermier -"
   inventory_name: Marchand - §2Fermier

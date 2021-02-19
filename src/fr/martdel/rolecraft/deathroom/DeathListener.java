@@ -62,7 +62,7 @@ public class DeathListener implements Listener {
 		int room_id = Integer.parseInt(title.substring(7,8));
 		DeathRoom room = DeathRoom.getRoomById(room_id);
 		int key_id = itemmeta.getCustomModelData();
-		room.spawnPlayer(customPlayer, plugin, key_id == 8 ? null : DeathKeys.getKeyById(key_id));
+		room.spawnPlayer(customPlayer, plugin, key_id == 8 ? null : DeathKey.getKeyById(key_id));
 	}
 
 	@EventHandler

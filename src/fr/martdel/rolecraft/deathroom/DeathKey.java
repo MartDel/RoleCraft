@@ -1,6 +1,5 @@
 package fr.martdel.rolecraft.deathroom;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 import fr.martdel.rolecraft.CustomItems;
 import fr.martdel.rolecraft.RoleCraft;
 import org.bukkit.inventory.ItemStack;
@@ -8,7 +7,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 
-public enum DeathKeys {
+public enum DeathKey {
 
     A1(CustomItems.DEATHKEYA1),
     A2(CustomItems.DEATHKEYA2),
@@ -19,7 +18,7 @@ public enum DeathKeys {
     private CustomItems customitem;
     private String config_path;
 
-    DeathKeys(CustomItems item){
+    DeathKey(CustomItems item){
         this.config_path = "deathkeys." + this.toString();
         this.customitem = item;
     }
@@ -56,8 +55,8 @@ public enum DeathKeys {
         return key;
     }
 
-    public static DeathKeys getKeyById(int id){
-        for(DeathKeys current : values()){
+    public static DeathKey getKeyById(int id){
+        for(DeathKey current : values()){
             if(current.getId() == id) return current;
         }
         return null;

@@ -1,7 +1,7 @@
 package fr.martdel.rolecraft;
 
 import fr.martdel.rolecraft.database.DatabaseManager;
-import fr.martdel.rolecraft.deathroom.DeathKeys;
+import fr.martdel.rolecraft.deathroom.DeathKey;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -38,7 +38,7 @@ public class CustomPlayer {
 	private Map<String, Map<String, Integer>> builds;
 	private Map<String, Integer> admin_ground;
 
-	private List<DeathKeys> keys;
+	private List<DeathKey> keys;
 
 	public CustomPlayer(Player player, RoleCraft rolecraft) {
 		this.player = player;
@@ -260,7 +260,7 @@ public class CustomPlayer {
 				query_keys.setString(1, uuid.toString());
 				ResultSet result_keys = query_keys.executeQuery();
 				while(result_keys.next()) {
-					DeathKeys key = DeathKeys.getKeyById(result_keys.getInt("key_id"));
+					DeathKey key = DeathKey.getKeyById(result_keys.getInt("key_id"));
 					keys.add(key);
 				}
 				query_keys.close();
@@ -348,7 +348,7 @@ public class CustomPlayer {
 			delete_keys.close();
 			if(!keys.isEmpty()) {
 				// Insert keys
-				for (DeathKeys key : keys) {
+				for (DeathKey key : keys) {
 					PreparedStatement insert_keys = db.getConnection().prepareStatement("INSERT INTO death_keys(key_id, owner_uuid) VALUES(?, ?)");
 					insert_keys.setInt(1, key.getId());
 					insert_keys.setString(2, uuid.toString());
@@ -538,9 +538,9 @@ public class CustomPlayer {
 	public void addFarm(String name, Map<String, Integer> farm) { farms.put(name, farm); }
 	public void removeFarm(String name) { farms.remove(name); }
 
-	public List<DeathKeys> getKeys() { return keys; }
-	public void addKey(DeathKeys key) { keys.add(key); }
-	public void removeKey(DeathKeys key) {
+	public List<DeathKey> getKeys() { return keys; }
+	public void addKey(DeathKey key) { keys.add(key); }
+	public void removeKey(DeathKey key) {
 		for (int i = 0; i < keys.size(); i++){
 			if(keys.get(i).equals(key)) {
 				keys.remove(i);
@@ -548,6 +548,7 @@ public class CustomPlayer {
 			}
 		}
 	}
+	public boolean hasKey(DeathKey key){ return keys.contains(key); }
 
 	public void setPlayer(Player player) { this.player = player; }
 	public Player getPlayer() { return player; }

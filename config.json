@@ -140,7 +140,8 @@
         "A2": {"id": 1,"lost": 10,"room": 40,"drop": 50,"price": 20},
         "B1": {"id": 2,"lost": 30,"room": 30,"drop": 40,"price": 10},
         "B2": {"id": 3,"lost": 40,"room": 40,"drop": 20,"price": 20},
-        "C1": {"id": 4,"lost": 20,"room": 60,"drop": 20,"price": 30}
+        "C1": {"id": 4,"lost": 20,"room": 60,"drop": 20,"price": 30},
+        "buy_GUI": {"name": "Acheter des §5deathkeys", "PNJname": "- Bucheron -", "size": 27}
     },
 
     "PNJ": [

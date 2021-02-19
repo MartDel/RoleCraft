@@ -2,6 +2,7 @@ package fr.martdel.rolecraft;
 
 import java.util.*;
 
+import fr.martdel.rolecraft.deathroom.DeathKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,6 +20,7 @@ public class GUI {
 	public static final String SELL_STEP3_NAME = RoleCraft.config.getString("sell.step3.name");
 	public static final String SELL_STEP4_NAME = RoleCraft.config.getString("sell.step4.name");
 	public static final String SELL_STEP5_NAME = RoleCraft.config.getString("sell.step5.name");
+	public static final String SELLDEATHKEYS_NAME = RoleCraft.config.getString("deathkeys.buy_GUI.name");
 
 	public static final int SELL_STEP1_SIZE = RoleCraft.config.getInt("sell.step1.size");
 	public static final int SELL_STEP2_SIZE = RoleCraft.config.getInt("sell.step2.size");
@@ -26,7 +28,8 @@ public class GUI {
 	public static final int SELL_STEP3_SIZE = RoleCraft.config.getInt("sell.step3.size");
 	public static final int SELL_STEP4_SIZE = RoleCraft.config.getInt("sell.step4.size");
 	public static final int SELL_STEP5_SIZE = RoleCraft.config.getInt("sell.step5.size");
-	
+	public static final int SELLDEATHKEYS_SIZE = RoleCraft.config.getInt("deathkeys.buy_GUI.size");
+
 	private String name;
 	private int size;
 	private Inventory inventory;
@@ -111,6 +114,31 @@ public class GUI {
 		inv.setItem(23, miner);
 		
 		return inv;
+	}
+
+	public static Inventory createSellDeathkeys(CustomPlayer player) {
+		GUI inv = new GUI(SELLDEATHKEYS_NAME, SELLDEATHKEYS_SIZE);
+		inv.setRule("fill", "yes");
+		inv.setRule("fill_type", "BLACK_STAINED_GLASS_PANE");
+
+		DeathKey[] keys = DeathKey.values();
+		final int start_slot = 11;
+		for (int i = 0; i < keys.length; i++) {
+			DeathKey key = keys[i];
+			ItemStack item = key.getItem();
+			ItemMeta meta = item.getItemMeta();
+			List<String> lore = meta.getLore();
+
+			if(player.hasKey(key)){
+				lore = Arrays.asList("§8Vous possédez déja", "§8cette clé...");
+			} else lore.add("§fPrix : §a" + key.getPrice());
+
+			meta.setLore(lore);
+			item.setItemMeta(meta);
+			inv.setItem(start_slot + i, item);
+		}
+
+		return inv.getInventory();
 	}
 
 	/****************************
