@@ -1,6 +1,7 @@
 package fr.martdel.rolecraft.commands;
 
 import fr.martdel.rolecraft.CustomPlayer;
+import fr.martdel.rolecraft.Wallet;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,8 +39,6 @@ public class CommandTest implements CommandExecutor {
 			
 			if(cmd.getName().equalsIgnoreCase("test")) {
 				// Test command
-				World test = Bukkit.getWorld("world");
-				System.out.println(test);
 			} else if(cmd.getName().equalsIgnoreCase("power")) {
 				if(args.length != 0) {
 					if(args[0].equalsIgnoreCase("summoner")) {

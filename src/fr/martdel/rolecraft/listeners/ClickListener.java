@@ -146,7 +146,8 @@ public class ClickListener implements Listener {
 						}
 						
 						if(nb_saphir > 0) {
-							wallet.give(nb_saphir * 20); 
+							try{ wallet.give(nb_saphir * 20); }
+							catch (Exception e){ player.sendMessage(e.getMessage()); }
 							player.sendMessage("Vous venez d'échanger §a" + nb_saphir + "§r saphirs contre §a" + (nb_saphir * 20) + "§r rubis.");
 						} else {
 							player.sendMessage("§4Vous ne possédez pas de saphirs");

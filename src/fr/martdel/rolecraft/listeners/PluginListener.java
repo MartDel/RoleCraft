@@ -250,8 +250,10 @@ public class PluginListener implements Listener {
 			ItemStack food = new ItemStack(food_type, food_amount);
 			player.getInventory().addItem(food);
 			Wallet wallet = customPlayer.getWallet();
-			if(selected_job == 3) wallet.give(rubis_builder);
-			else wallet.give(rubis_else);
+			try {
+				if(selected_job == 3) wallet.give(rubis_builder);
+				else wallet.give(rubis_else);
+			} catch (Exception e){ player.sendMessage(e.getMessage()); }
 
 			// Set scoreboard
 			MainScoreboard sb = new MainScoreboard();

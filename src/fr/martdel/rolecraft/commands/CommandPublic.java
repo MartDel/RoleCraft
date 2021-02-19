@@ -307,7 +307,7 @@ public class CommandPublic implements CommandExecutor {
 				
 				// Manage money
 				account2.remove(value);
-				account1.give(value);
+				//account1.give(value);
 
 				customAddressees.removeBook("Demande de confirmation");
 				

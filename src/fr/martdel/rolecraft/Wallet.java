@@ -53,15 +53,18 @@ public class Wallet {
 	 * Give ruby to the player
 	 * @param nb
 	 */
-	public void give(int nb) {
-		ItemStack ruby = new ItemStack(CustomItems.RUBIS.getType(), nb);
+	public void give(int nb) throws Exception {
+		ItemStack ruby = new ItemStack(CustomItems.RUBIS.getType());
 		ruby.setItemMeta(CustomItems.RUBIS.getItemMeta());
 
-		// Check the player's inventory
-		System.out.println(player.getInventory().getSize());
-		System.out.println(player.getInventory().getContents().length);
+		for(int i = 0; i < nb; i++){
+			if(!canGet(inv)) {
+				remove(i);
+				throw new Exception("§cVous n'avez pas assez de place pour recevoir " + nb + " rubis!");
+			}
+			inv.addItem(ruby);
+		}
 
-		player.getInventory().addItem(ruby);
 		player.updateInventory();
 	}
 	
@@ -84,6 +87,7 @@ public class Wallet {
 				}
 			}
 		}
+		player.updateInventory();
 	}
 
 	/**
@@ -115,6 +119,17 @@ public class Wallet {
 	 */
 	public boolean has(int value) {
 		return count() >= value;
+	}
+
+	public static boolean canGet(Inventory inv){
+		for (ItemStack slot: inv.getStorageContents()) {
+			if(slot == null) return true;
+			if(slot.getType().equals(CustomItems.RUBIS.getType()) && slot.hasItemMeta()){
+				ItemMeta slotMeta = slot.getItemMeta();
+				if(slotMeta.getDisplayName().equalsIgnoreCase(CustomItems.RUBIS.getName()) && slot.getAmount() < slot.getMaxStackSize()) return true;
+			}
+		}
+		return false;
 	}
 
 }

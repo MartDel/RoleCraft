@@ -69,7 +69,8 @@ public class CommandAdmin implements CommandExecutor {
 					}
 				}
 				Wallet playerWallet = customPlayer.getWallet();
-				playerWallet.give(nb);
+				try{ playerWallet.give(nb); }
+				catch (Exception e){ player.sendMessage(e.getMessage()); }
 			}
 		}
 		
