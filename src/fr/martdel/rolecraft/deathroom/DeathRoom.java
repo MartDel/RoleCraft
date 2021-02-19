@@ -61,15 +61,17 @@ public class DeathRoom {
             choose_key.setItem(i, keys.get(i).getItem());
         }
         choose_key.setItem(8, GUI.createItem(Material.BARRIER, "§4Ne pas choisir de clé", new ArrayList<>(), 8));
-        player.getPlayer().openInventory(choose_key.getInventory());
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            player.getPlayer().openInventory(choose_key.getInventory());
+        }, 20);
     }
     public void spawnPlayer(CustomPlayer player, RoleCraft plugin, DeathKey choosen_key){
         if(choosen_key != null){
-            player.getPlayer().sendMessage("Vous avez choisi la clé " + choosen_key.toString());
-            player.getPlayer().sendMessage("Vous avez perdu " + player.getRandomItems(choosen_key.getLost()) + " stack(s)");
-            player.getPlayer().sendMessage("Vous pouvais recupérer " + player.getRandomItems(choosen_key.getRoomDrop()) + " stack(s) dans la salle");
-            player.getPlayer().sendMessage("Vous pouvais recupérer " + player.getRandomItems(choosen_key.getDrop()) + " stack(s) à l'endroit de votre mort");
-        } else player.getPlayer().sendMessage("Vous n'avez pas choisi de clé");
+            player.getPlayer().sendMessage("Vous avez choisi la clé " + choosen_key.toString() + ".");
+            player.getPlayer().sendMessage("Vous avez perdu " + player.getRandomItems(choosen_key.getLost()) + " stack(s).");
+            player.getPlayer().sendMessage("Vous pouvais recupérer " + player.getRandomItems(choosen_key.getRoomDrop()) + " stack(s) dans la salle.");
+            player.getPlayer().sendMessage("Vous pouvais recupérer " + player.getRandomItems(choosen_key.getDrop()) + " stack(s) à l'endroit de votre mort.");
+        } else player.getPlayer().sendMessage("Vous n'avez pas choisi de clé.");
     }
 
     public static List<DeathRoom> getAllRooms(){

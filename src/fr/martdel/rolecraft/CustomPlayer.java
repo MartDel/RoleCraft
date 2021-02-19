@@ -405,6 +405,7 @@ public class CustomPlayer {
 	 * Add the player to the database
 	 */
 	public void register() {
+		setWaiting(0);
 		try {
 			PreparedStatement add = db.getConnection().prepareStatement("INSERT INTO players(uuid, pseudo) VALUES(?, ?)");
 			add.setString(1, uuid.toString());
