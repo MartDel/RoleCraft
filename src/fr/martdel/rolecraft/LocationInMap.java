@@ -78,12 +78,13 @@ public enum LocationInMap {
 			Connection db = plugin.getDB().getConnection();
 			
 			// Check grounds
+			LocationInMap check = null;
 			LocationInMap[] to_check = {HOUSE, SHOP, BUILD, FARM};
 			for (LocationInMap ground : to_check) {
-				LocationInMap check = checkGround(location, player.getUniqueId().toString(), db, ground);
-				if(check != null) return check;
+				check = checkGround(location, player.getUniqueId().toString(), db, ground);
 			}
-			
+			if(check != null) return check;
+
 			// Check protected map
 			for(Integer[] map_locations : getProtectedMapLocations()) {
 				if(isInMap(location, map_locations)) return PROTECTED_MAP;
@@ -145,6 +146,7 @@ public enum LocationInMap {
 		ResultSet result = search.executeQuery();
 		LocationInMap r = null;
 		while(result.next()) {
+			System.out.println("found a " + table);
 			Integer[] ground = {
 				result.getInt("x1"),
 				result.getInt("x2"),
@@ -163,19 +165,13 @@ public enum LocationInMap {
 		int x = location.getBlockX(), y = location.getBlockY(), z = location.getBlockZ();
 		int x1 = Math.min(ground[0], ground[1]), x2 = Math.max(ground[0], ground[1]);
 		int z1 = Math.min(ground[2], ground[3]), z2 = Math.max(ground[2], ground[3]);
-		if( (x >= x1 && x <= x2) && (z >= z1 && z <= z2) && (y >= GROUND_YMIN && y <= GROUND_YMAX) ){
-			return true;
-		}
-		return false;
+		return (x >= x1 && x <= x2) && (z >= z1 && z <= z2) && (y >= GROUND_YMIN && y <= GROUND_YMAX);
 	}
 	private static boolean isInMap(Location location, Integer[] ground) {
 		int x = location.getBlockX(), y = location.getBlockY(), z = location.getBlockZ();
 		int x1 = Math.min(ground[0], ground[1]), x2 = Math.max(ground[0], ground[1]);
 		int z1 = Math.min(ground[2], ground[3]), z2 = Math.max(ground[2], ground[3]);
-		if( (x >= x1 && x <= x2) && (z >= z1 && z <= z2) && y >= MAP_YMIN ){
-			return true;
-		}
-		return false;
+		return (x >= x1 && x <= x2) && (z >= z1 && z <= z2) && y >= MAP_YMIN;
 	}
 
 }

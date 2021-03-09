@@ -403,9 +403,8 @@ custom_items:
     type: PAPER
     name: "§8étape 1"
     lore:
-    - Faites un clic droit
-    - pour ouvrir le guide
-    - de vente !
+    - Aucune informations
+    - de vente pour l'instant...
     metadata: 5
     enchantments:
     - name: LOOT_BONUS_BLOCKS

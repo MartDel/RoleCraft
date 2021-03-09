@@ -60,11 +60,13 @@ public class MapProtectListener implements Listener {
 		/*
 		 * PLAYER USES "flint_and_steel" OR "ender_pearl"
 		 */
-		if(item != null && !LocationInMap.getPlayerPlace(plugin, player).equals(LocationInMap.FREE_PLACE) && !player.isOp()) {
+		if(item != null && !player.isOp()) {
 			Material itemtype = item.getType();
 			if(itemtype.equals(Material.FLINT_AND_STEEL) || itemtype.equals(Material.ENDER_PEARL)) {
-				event.setCancelled(true);
-				return;
+				if(!LocationInMap.getPlayerPlace(plugin, player).equals(LocationInMap.FREE_PLACE)){
+					event.setCancelled(true);
+					return;
+				}
 			}
 		}
 		/*
@@ -74,12 +76,13 @@ public class MapProtectListener implements Listener {
 			BlockState bs = bloc.getState();
 			Material type = bloc.getType();
 			Location coo = bloc.getLocation();
-			LocationInMap bloc_place = LocationInMap.getBlocPlace(plugin, player, coo);
-			
-			if(!player.isOp() && !bloc_place.equals(LocationInMap.FREE_PLACE) && !(bs instanceof Entity)) {
-				if(!bloc_place.equals(LocationInMap.OWNED)) {	// Is in protected map
+
+			if(!player.isOp() && !(bs instanceof Entity)) {
+				LocationInMap bloc_place = LocationInMap.getBlocPlace(plugin, player, coo);
+				if(!bloc_place.equals(LocationInMap.FREE_PLACE) && !bloc_place.equals(LocationInMap.OWNED)) {	// Is in protected map
 
 					if(FORBIDDEN_CITY.contains(type)) {
+						// Forbidden some items in protected map
 						event.setCancelled(true);
 						return;
 					}
@@ -116,10 +119,11 @@ public class MapProtectListener implements Listener {
 		/*
 		 * PLAYER USES A BUCKET
 		 */
-		if(!player.isOp() && LocationInMap.isInProtectedPlace(plugin, player, coo) && !block.getType().equals(Material.WATER)) {
-			event.setCancelled(true);
-			System.out.println("Bucket: interdit");
-			return;
+		if(!player.isOp() && !block.getType().equals(Material.WATER)) {
+			if(LocationInMap.isInProtectedPlace(plugin, player, coo)){
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 	
@@ -131,9 +135,11 @@ public class MapProtectListener implements Listener {
 		/*
 		 * PLAYER USES AN ARMOR STAND
 		 */
-		if(!player.isOp() && LocationInMap.isInProtectedPlace(plugin, player, coo)) {
-			event.setCancelled(true);
-			return;
+		if(!player.isOp()) {
+			if(LocationInMap.isInProtectedPlace(plugin, player, coo)){
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 	
@@ -145,9 +151,11 @@ public class MapProtectListener implements Listener {
 		/*
 		 * PLAYER INTERACT WHITH UNAUTHORIZED "item_frame"
 		 */
-		if(!player.isOp() && LocationInMap.isInProtectedPlace(plugin, player, location) && entity.getType().equals(EntityType.ITEM_FRAME)) {
-			event.setCancelled(true);
-			return;
+		if(!player.isOp() && entity.getType().equals(EntityType.ITEM_FRAME)) {
+			if(LocationInMap.isInProtectedPlace(plugin, player, location)){
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 	
@@ -162,10 +170,11 @@ public class MapProtectListener implements Listener {
 			/*
 			 * PLAYER BREAK AN UNAUTHORIZED ENTITY ("item_frame", "armor_stand", ...)
 			 */
-			if(!player.isOp() && LocationInMap.isInProtectedPlace(plugin, player, location)
-			&& (entity.getType().equals(EntityType.ITEM_FRAME) || entity.getType().equals(EntityType.ARMOR_STAND))) {
-				event.setCancelled(true);
-				return;
+			if(!player.isOp() && (entity.getType().equals(EntityType.ITEM_FRAME) || entity.getType().equals(EntityType.ARMOR_STAND))) {
+				if(LocationInMap.isInProtectedPlace(plugin, player, location)){
+					event.setCancelled(true);
+					return;
+				}
 			}
 		}
 	}
@@ -178,9 +187,11 @@ public class MapProtectListener implements Listener {
 		/*
 		 * PLAYER PLACES A BLOCK
 		 */
-		if(LocationInMap.isInProtectedPlace(plugin, player, blocLoc) && !player.isOp()) {
-			event.setCancelled(true);
-			return;
+		if(!player.isOp()) {
+			if(LocationInMap.isInProtectedPlace(plugin, player, blocLoc)){
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 	
@@ -189,14 +200,14 @@ public class MapProtectListener implements Listener {
 		Player player = event.getPlayer();
 		Entity entity = event.getEntity();
 		Location location = entity.getLocation();
-		
-		System.out.println(event.getEventName());
 		/*
 		 * PLAYER PLACES AN ENTITY
 		 */
-		if(!player.isOp() && LocationInMap.isInProtectedPlace(plugin, player, location)) {
-			event.setCancelled(true);
-			return;
+		if(!player.isOp()) {
+			if(LocationInMap.isInProtectedPlace(plugin, player, location)){
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 	
@@ -208,9 +219,11 @@ public class MapProtectListener implements Listener {
 		/*
 		 * PLAYER BREAKS A BLOCK
 		 */
-		if(LocationInMap.isInProtectedPlace(plugin, player, location) && !player.isOp()) {
-			event.setCancelled(true);
-			return;
+		if(!player.isOp()) {
+			if(LocationInMap.isInProtectedPlace(plugin, player, location)){
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 

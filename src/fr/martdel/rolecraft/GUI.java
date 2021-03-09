@@ -300,8 +300,9 @@ public class GUI {
 	 */
 	public static Inventory createSellStep4() {
 		GUI step4 = new GUI(SELL_STEP4_NAME, SELL_STEP4_SIZE);
+		final int NBRUBIS = 30;
 
-		ItemStack rubis = new ItemStack(CustomItems.RUBIS.getType(), 30);
+		ItemStack rubis = new ItemStack(CustomItems.RUBIS.getType(), NBRUBIS);
 		rubis.setItemMeta(CustomItems.RUBIS.getItemMeta());
 		step4.setItem(0, rubis);
 
@@ -309,10 +310,10 @@ public class GUI {
 				createItem(Material.REDSTONE, 64, "§c-64", new ArrayList<>(), 64),
 				createItem(Material.REDSTONE, 10, "§c-10", new ArrayList<>(), 10),
 				createItem(Material.REDSTONE, 1, "§c-1", new ArrayList<>(), 1),
-				createItem(Material.LIME_STAINED_GLASS_PANE, "§2Valider le prix", new ArrayList<>(), 2),
+				createItem(Material.LIME_STAINED_GLASS_PANE, "§2Valider le prix", Collections.singletonList("§fTotal : §a" + NBRUBIS), 2),
 				createItem(Material.EMERALD, 1, "§a+1", new ArrayList<>(), 1),
 				createItem(Material.EMERALD, 10, "§a+10", new ArrayList<>(), 10),
-				createItem(Material.EMERALD, 64, "§a+64", new ArrayList<>(), 64),
+				createItem(Material.EMERALD, 64, "§a+64", new ArrayList<>(), 64)
 		};
 		int[] stacks = {37,38,39,40,41,42,43};
 		for (int i = 0; i < stacks.length; i++) {
@@ -345,29 +346,30 @@ public class GUI {
 			case "buy_deco":
 				result.add("Vous donnez l'accés à votre terrain pour une déco");
 				i++;
-				result.add("Nom du terrain :" + lore.get(i));
+				result.add("Nom du terrain : " + lore.get(i));
 				break;
 			case "house": result.add("Vous vendez votre maison"); break;
 			case "shop": result.add("Vous vendez votre magasin"); break;
-			case "farm": result.add("Vous vendez votre ferme");
+			case "farm":
+				result.add("Vous vendez votre ferme");
 				i++;
-				result.add("Nom du terrain :" + lore.get(i));
+				result.add("Nom du terrain : " + lore.get(i));
 				break;
 			case "build":
 				result.add("Vous vendez votre terrain de construction");
 				i++;
-				result.add("Nom du terrain :" + lore.get(i));
+				result.add("Nom du terrain : " + lore.get(i));
 				break;
 			case "sell_deco":
 				result.add("Vous vendez une décoration");
 				i++;
-				result.add("Nom du terrain :" + lore.get(i));
+				result.add("Nom du terrain : " + lore.get(i));
 				break;
 		}
 		i++;
 
 		result.add("Vous vendez à " + lore.get(i)); i++;
-		result.add("au prix de " + lore.get(i) + " rubis.");
+		if(i != lore.size()) result.add("au prix de " + lore.get(i) + " rubis.");
 
 		ItemStack paper = new ItemStack(CustomItems.SELL_PAPER.getType());
 		papermeta.setDisplayName("§2Valider la vente");

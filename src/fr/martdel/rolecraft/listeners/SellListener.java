@@ -40,7 +40,6 @@ public class SellListener implements Listener {
 				ItemStack paper = player.getInventory().getItem(paperslot);
 				String name = paper.getItemMeta().getDisplayName();
 				int written_step = Integer.parseInt(name.substring(8));
-				System.out.println(step + ":" + written_step);
 				if(written_step == step) removePaper(player);
 			} catch (NumberFormatException ignored) {}
 		}
@@ -240,11 +239,22 @@ public class SellListener implements Listener {
 				GUI.error(player, "§4Le joueur sélectionné n'est plus en ligne.");
 				return;
 			}
-			if(!addDataToPaper(player, clicked_player.getName(), 4)) {
-				GUI.error(player, "§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
-				return;
+
+			if(getDataFromPaper(player).get(0).equalsIgnoreCase("buy_deco")){
+				if(!addDataToPaper(player, clicked_player.getName(), 5)) {
+					GUI.error(player, "§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
+					return;
+				}
+				Integer paperslot = getPaperSlot(player.getInventory());
+				ItemStack paper = player.getInventory().getItem(paperslot);
+				player.openInventory(GUI.createSellStep5(paper.getItemMeta()));
+			} else {
+				if(!addDataToPaper(player, clicked_player.getName(), 4)) {
+					GUI.error(player, "§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
+					return;
+				}
+				player.openInventory(GUI.createSellStep4());
 			}
-			player.openInventory(GUI.createSellStep4());
 		}
 
 		// STEP 4
@@ -253,6 +263,18 @@ public class SellListener implements Listener {
 			if(!isCorrectItem(item, slot, GUI.SELL_STEP4_SIZE)) return;
 			ItemMeta iMeta = item.getItemMeta();
 			if(!iMeta.hasDisplayName() || iMeta.equals(CustomItems.RUBIS.getItemMeta())) return;
+
+			// Change nb of Rubis
+			ItemStack rubis = new ItemStack(CustomItems.RUBIS.getType(), iMeta.getCustomModelData());
+			rubis.setItemMeta(CustomItems.RUBIS.getItemMeta());
+			String name = iMeta.getDisplayName();
+			if(name.contains("-")){
+				Wallet.remove(event.getInventory(), rubis.getAmount());
+			} else if(name.contains("+")) {
+				if(Wallet.count(event.getInventory()) + rubis.getAmount() <= 2304){
+					event.getInventory().addItem(rubis);
+				}
+			}
 
 			// Update submit button
 			final int btn_slot = 40;
@@ -273,17 +295,6 @@ public class SellListener implements Listener {
 				ItemStack paper = player.getInventory().getItem(paperslot);
 				player.openInventory(GUI.createSellStep5(paper.getItemMeta()));
 				return;
-			}
-
-			// Change nb of Rubis
-			ItemStack rubis = new ItemStack(CustomItems.RUBIS.getType(), iMeta.getCustomModelData());
-			rubis.setItemMeta(CustomItems.RUBIS.getItemMeta());
-			if(iMeta.getDisplayName().contains("-")){
-				Wallet.remove(event.getInventory(), rubis.getAmount());
-			} else {
-				if(Wallet.count(event.getInventory()) + rubis.getAmount() <= 2304){
-					event.getInventory().addItem(rubis);
-				}
 			}
 		}
 
@@ -410,6 +421,7 @@ public class SellListener implements Listener {
 						customTo.addBuild(sender.getDisplayName() + UUID.randomUUID().toString().substring(0, 5), ground);
 						break;
 				}
+				customSender.setAdminGround(null);
 				break;
 			case "buy_deco":
 				String name = infos.get(1);
@@ -418,14 +430,14 @@ public class SellListener implements Listener {
 				} else if (name.equalsIgnoreCase("shop")) {
 					ground = customSender.getShop();
 				} else if (name.contains("f:")) {
-					ground = customSender.getFarms().get(name.substring(2, name.length()));
+					ground = customSender.getFarms().get(name.substring(2));
 				} else if (name.contains("g:")) {
-					ground = customSender.getBuilds().get(name.substring(2, name.length()));
+					ground = customSender.getBuilds().get(name.substring(2));
 				}
 				to = plugin.getServer().getPlayer(infos.get(2));
 				if (to == null) throw new Exception("§4Le joueur sélectionné n'est plus en ligne.");
 				customTo = new CustomPlayer(to, plugin).loadData();
-				price = Integer.parseInt(infos.get(3));
+				price = 0;
 				customTo.addBuild("Terrain de " + sender.getDisplayName(), ground);
 				break;
 			case "house":
@@ -435,6 +447,7 @@ public class SellListener implements Listener {
 				customTo = new CustomPlayer(to, plugin).loadData();
 				price = Integer.parseInt(infos.get(2));
 				customTo.setHouse(ground);
+				customSender.setHouse(null);
 				break;
 			case "shop":
 				ground = customSender.getShop();
@@ -443,6 +456,7 @@ public class SellListener implements Listener {
 				customTo = new CustomPlayer(to, plugin).loadData();
 				price = Integer.parseInt(infos.get(2));
 				customTo.setShop(ground);
+				customSender.setShop(null);
 				break;
 			case "farm":
 				ground = customSender.getFarms().get(infos.get(1));
@@ -451,6 +465,7 @@ public class SellListener implements Listener {
 				customTo = new CustomPlayer(to, plugin).loadData();
 				price = Integer.parseInt(infos.get(3));
 				customTo.addFarm(to.getDisplayName() + UUID.randomUUID().toString().substring(0, 5), ground);
+				customSender.removeFarm(infos.get(1));
 				break;
 			case "build":
 				ground = customSender.getBuilds().get(infos.get(1));
@@ -459,6 +474,7 @@ public class SellListener implements Listener {
 				customTo = new CustomPlayer(to, plugin).loadData();
 				price = Integer.parseInt(infos.get(3));
 				customTo.addBuild(to.getDisplayName() + UUID.randomUUID().toString().substring(0, 5), ground);
+				customSender.removeBuild(infos.get(1));
 				break;
 			case "sell_deco":
 				to = plugin.getServer().getPlayer(infos.get(2));
@@ -480,7 +496,9 @@ public class SellListener implements Listener {
 
 		// Remove paper
 		removePaper(sender);
+		System.out.println(customTo.getBuilds());
 		customTo.save();
+		customSender.save();
 	}
 
 }

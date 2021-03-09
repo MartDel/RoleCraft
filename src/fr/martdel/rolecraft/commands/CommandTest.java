@@ -39,6 +39,8 @@ public class CommandTest implements CommandExecutor {
 			
 			if(cmd.getName().equalsIgnoreCase("test")) {
 				// Test command
+				customPlayer.loadData();
+				System.out.println(customPlayer.getBuilds());
 			} else if(cmd.getName().equalsIgnoreCase("power")) {
 				if(args.length != 0) {
 					if(args[0].equalsIgnoreCase("summoner")) {

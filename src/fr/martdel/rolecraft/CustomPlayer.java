@@ -238,7 +238,7 @@ public class CustomPlayer {
 				this.farms = loadMultipleGrounds("farms");
 				
 				// Get builds
-				this.builds = loadMultipleGrounds("farms");
+				this.builds = loadMultipleGrounds("builds");
 				
 				// Get admin_ground
 				if(is_admin) {
@@ -387,8 +387,8 @@ public class CustomPlayer {
 		
 		if(data.isEmpty()) return;
 		// Insert new grounds
-		for (String ground_name : farms.keySet()) {
-			Map<String, Integer> locations = farms.get(ground_name);
+		for (String ground_name : data.keySet()) {
+			Map<String, Integer> locations = data.get(ground_name);
 			PreparedStatement insert = db.getConnection().prepareStatement("INSERT INTO " + table + "(x1, z1, x2, z2, name, owner_uuid) VALUES(?, ?, ?, ?, ?, ?)");
 			insert.setInt(1, locations.get("x1"));
 			insert.setInt(2, locations.get("z1"));
