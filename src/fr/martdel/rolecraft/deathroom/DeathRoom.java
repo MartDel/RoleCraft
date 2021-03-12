@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,10 +68,15 @@ public class DeathRoom {
     }
     public void spawnPlayer(CustomPlayer player, RoleCraft plugin, DeathKey choosen_key){
         if(choosen_key != null){
-            player.getPlayer().sendMessage("Vous avez choisi la clé " + choosen_key.toString() + ".");
-            player.getPlayer().sendMessage("Vous avez perdu " + player.getRandomItems(choosen_key.getLost()) + " stack(s).");
-            player.getPlayer().sendMessage("Vous pouvais recupérer " + player.getRandomItems(choosen_key.getRoomDrop()) + " stack(s) dans la salle.");
-            player.getPlayer().sendMessage("Vous pouvais recupérer " + player.getRandomItems(choosen_key.getDrop()) + " stack(s) à l'endroit de votre mort.");
+            Map<String, List<ItemStack>> inventory = player.getDeathDrops(choosen_key.getLost(), choosen_key.getRoomDrop(), choosen_key.getDrop());
+            System.out.println(inventory.get("lost"));
+            System.out.println(inventory.get("room"));
+            System.out.println(inventory.get("drops"));
+
+            player.getPlayer().sendMessage("Vous avez choisi la clé §a" + choosen_key.toString() + "§r.");
+            player.getPlayer().sendMessage("Vous avez perdu §4" + inventory.get("lost").size() + " stack(s)§r.");
+            player.getPlayer().sendMessage("Vous pouvais recupérer §a" + inventory.get("room").size() + " stack(s)§r dans la salle.");
+            player.getPlayer().sendMessage("Vous pouvais recupérer §2" + inventory.get("drops").size() + " stack(s)§r à l'endroit de votre mort.");
         } else player.getPlayer().sendMessage("Vous n'avez pas choisi de clé.");
     }
 

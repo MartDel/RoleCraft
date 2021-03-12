@@ -2,6 +2,7 @@ package fr.martdel.rolecraft.commands;
 
 import fr.martdel.rolecraft.CustomPlayer;
 import fr.martdel.rolecraft.Wallet;
+import fr.martdel.rolecraft.deathroom.DeathRoom;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,8 +40,8 @@ public class CommandTest implements CommandExecutor {
 			
 			if(cmd.getName().equalsIgnoreCase("test")) {
 				// Test command
-				customPlayer.loadData();
-				System.out.println(customPlayer.getBuilds());
+				DeathRoom dr = DeathRoom.getAllRooms().get(0);
+				dr.setCurrentlyUsed(false);
 			} else if(cmd.getName().equalsIgnoreCase("power")) {
 				if(args.length != 0) {
 					if(args[0].equalsIgnoreCase("summoner")) {

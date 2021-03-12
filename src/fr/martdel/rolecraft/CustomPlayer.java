@@ -148,20 +148,28 @@ public class CustomPlayer {
 
 	/**
 	 * Get random items in the player's inventory and remove them
-	 * @param percentage Percentage of how many items will be removed
-	 * @return List<ItemStack> Removed items
+	 * @param lost_per Percentage of how many items will be lost
+	 * @param room_per Percentage of how many items will drop into the room
+	 * @param drops_per Percentage of how many items will be drop to the death location
+	 * @return Map<String, List<ItemStack>> Sorted items
 	 */
-	public List<ItemStack> getRandomItems(int percentage){
-		List<ItemStack> result = new ArrayList<>();
-		List<ItemStack> items = getItems();
-		final int nb_items = ((Double) Math.floor(items.size() * (percentage/100))).intValue();
-		for(int i = 0; i < nb_items; i++){
-			int id = new Random().nextInt(items.size());
-			result.add(items.get(id));
-			player.getInventory().remove(items.get(id));
-			items.remove(id);
+	public Map<String, List<ItemStack>> getDeathDrops(int lost_per, int room_per, int drops_per){
+		List<ItemStack> lost = new ArrayList<>(), room = new ArrayList<>(), drops = new ArrayList<>();
+		List<ItemStack> items = getItems(), temp = getItems();
+		int nb_lost = partof(lost_per, items.size()), nb_room = partof(room_per, items.size());
+		for (int i = 0; i < items.size(); i++) {
+			int rand = new Random().nextInt(temp.size());
+			if (i < nb_lost) lost.add(temp.get(rand));
+			else if (i < (nb_lost + nb_room)) room.add(temp.get(rand));
+			else drops.add(temp.get(rand));
+			temp.remove(rand);
 		}
+		Map<String, List<ItemStack>> result = new HashMap<>();
+		result.put("lost", lost); result.put("room", room); result.put("drops", drops);
 		return result;
+	}
+	private int partof(int percentage, int total){
+		return ((Double) Math.floor(total * (percentage/100))).intValue();
 	}
 	
 	/*
