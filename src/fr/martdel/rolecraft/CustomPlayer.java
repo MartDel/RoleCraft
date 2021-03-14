@@ -169,7 +169,7 @@ public class CustomPlayer {
 		return result;
 	}
 	private int partof(int percentage, int total){
-		return ((Double) Math.floor(total * (percentage/100))).intValue();
+		return ((Double) Math.floor(total * (percentage/100.0))).intValue();
 	}
 	
 	/*

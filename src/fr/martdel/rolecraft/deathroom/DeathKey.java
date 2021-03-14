@@ -61,4 +61,11 @@ public enum DeathKey {
         }
         return null;
     }
+
+    public static boolean isKey(ItemStack item){
+        for (DeathKey dk : values()){
+            if(dk.getItem().equals(item)) return true;
+        }
+        return false;
+    }
 }

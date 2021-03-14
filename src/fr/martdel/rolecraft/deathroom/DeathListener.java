@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.InventoryView;
@@ -51,19 +52,40 @@ public class DeathListener implements Listener {
 	@EventHandler
 	public void onClickInventory(InventoryClickEvent event){
 		Player player = (Player) event.getWhoClicked();
-		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
 		ItemStack item = event.getCurrentItem();
 		InventoryView view = event.getView();
 		String title = view.getTitle();
 		if(item == null || !title.contains("§7Room")) return;
+		event.setCancelled(true);
 		ItemMeta itemmeta = item.getItemMeta();
 		if(itemmeta != null && !itemmeta.hasCustomModelData()) return;
+		// Check if clicked item is a key
+		if(!DeathKey.isKey(item)) return;
 
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
 		int room_id = Integer.parseInt(title.substring(7,8));
 		DeathRoom room = DeathRoom.getRoomById(room_id);
 		int key_id = itemmeta.getCustomModelData();
 		room.spawnPlayer(customPlayer, plugin, key_id == 8 ? null : DeathKey.getKeyById(key_id));
+		view.setCursor(item);
 		player.closeInventory();
+	}
+
+	@EventHandler
+	public void onCloseInventory(InventoryCloseEvent event){
+		Player player = (Player) event.getPlayer();
+		InventoryView view = event.getView();
+		ItemStack cursor = view.getCursor();
+		String title = view.getTitle();
+		if(!title.contains("§7Room")) return;
+		if(!cursor.getType().equals(Material.AIR)){
+			view.setCursor(new ItemStack(Material.AIR));
+			return;
+		}
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
+		int room_id = Integer.parseInt(title.substring(7,8));
+		DeathRoom room = DeathRoom.getRoomById(room_id);
+		room.spawnPlayer(customPlayer, plugin, null); // Player didn't choose a key
 	}
 
 	@EventHandler

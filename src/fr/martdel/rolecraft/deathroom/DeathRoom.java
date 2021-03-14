@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,11 @@ public class DeathRoom {
         this.cinematic2 = c2;
     }
 
+    /**
+     * Manage redstone block next to the room
+     * to mark the room as used or not
+     * @param used If the room is currently used or not
+     */
     public void setCurrentlyUsed(boolean used){
         Block bloc = state_bloc.getWorld().getBlockAt(state_bloc);
         bloc.setType(used ? Material.REDSTONE_BLOCK : Material.AIR);
@@ -42,6 +48,12 @@ public class DeathRoom {
         return type.equals(Material.REDSTONE_BLOCK);
     }
 
+    /**
+     * Spawn a player into the room
+     * @param player The player to spawn
+     * @param event The respawn event to update (setRespawnPoint)
+     * @param plugin Instance of RoleCraft plugin
+     */
     public void spawnPlayer(CustomPlayer player, PlayerRespawnEvent event, RoleCraft plugin){
         event.setRespawnLocation(spawnpoint);
         spawnPlayer(player, plugin);
@@ -66,20 +78,36 @@ public class DeathRoom {
             player.getPlayer().openInventory(choose_key.getInventory());
         }, 20);
     }
-    public void spawnPlayer(CustomPlayer player, RoleCraft plugin, DeathKey choosen_key){
-        if(choosen_key != null){
-            Map<String, List<ItemStack>> inventory = player.getDeathDrops(choosen_key.getLost(), choosen_key.getRoomDrop(), choosen_key.getDrop());
+
+    /**
+     * Update player inventory with the chosen DeathKey data
+     * @param player The player to update (instance of CustomPlayer)
+     * @param plugin Instance of RoleCraft plugin
+     * @param chosen_key The key chosen by the player
+     */
+    public void spawnPlayer(CustomPlayer player, RoleCraft plugin, DeathKey chosen_key){
+        if(chosen_key != null){
+            Map<String, List<ItemStack>> inventory = player.getDeathDrops(chosen_key.getLost(), chosen_key.getRoomDrop(), chosen_key.getDrop());
             System.out.println(inventory.get("lost"));
             System.out.println(inventory.get("room"));
             System.out.println(inventory.get("drops"));
 
-            player.getPlayer().sendMessage("Vous avez choisi la clé §a" + choosen_key.toString() + "§r.");
-            player.getPlayer().sendMessage("Vous avez perdu §4" + inventory.get("lost").size() + " stack(s)§r.");
-            player.getPlayer().sendMessage("Vous pouvais recupérer §a" + inventory.get("room").size() + " stack(s)§r dans la salle.");
-            player.getPlayer().sendMessage("Vous pouvais recupérer §2" + inventory.get("drops").size() + " stack(s)§r à l'endroit de votre mort.");
+            List<String> msg = Arrays.asList(
+                    "Vous avez choisi la clé §a" + chosen_key.toString() + "§r.",
+                "Vous avez perdu §c" + inventory.get("lost").size() + " stack(s)§r.",
+                "Vous pouvez recupérer §a" + inventory.get("room").size() + " stack(s)§r dans la salle.",
+                "Vous pouvez recupérer §2" + inventory.get("drops").size() + " stack(s)§r à l'endroit de votre mort"
+            );
+            for (String s : msg) {
+                player.getPlayer().sendMessage(s);
+            }
         } else player.getPlayer().sendMessage("Vous n'avez pas choisi de clé.");
     }
 
+    /**
+     * Get all DeathRooms on the map
+     * @return List<DeathRoom> All of the DeathRooms
+     */
     public static List<DeathRoom> getAllRooms(){
         List<DeathRoom> result = new ArrayList<>();
         List<Map<?, ?>> room_list = RoleCraft.config.getMapList("deathrooms");
@@ -88,6 +116,12 @@ public class DeathRoom {
         }
         return result;
     }
+
+    /**
+     * Get a DeathRoom by its id
+     * @param id The DeathRoom id
+     * @return DeathRoom The DeathRoom to get
+     */
     @SuppressWarnings("unchecked")
     public static DeathRoom getRoomById(int id){
         List<Map<?, ?>> room_list = RoleCraft.config.getMapList("deathrooms");
