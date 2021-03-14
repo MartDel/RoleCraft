@@ -136,6 +136,7 @@
         "spawn": {"x": -200, "y": 69, "z": 1304}
     },
     "deathkeys": {
+        "normal": {"lost": 25, "room": 25, "drop": 50},
         "A1": {"id": 0,"lost": 20,"room": 30,"drop": 50,"price": 10},
         "A2": {"id": 1,"lost": 10,"room": 40,"drop": 50,"price": 20},
         "B1": {"id": 2,"lost": 30,"room": 30,"drop": 40,"price": 10},

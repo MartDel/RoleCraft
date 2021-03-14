@@ -24,6 +24,10 @@ public class DeathRoom {
     private final Cinematic cinematic1;
     private final Cinematic cinematic2;
 
+    public static int NORMALLOST = RoleCraft.config.getInt("deathkeys.normal.lost");
+    public static int NORMALROOM = RoleCraft.config.getInt("deathkeys.normal.room");
+    public static int NORMALDROPS = RoleCraft.config.getInt("deathkeys.normal.drops");
+
     public DeathRoom(int id, Location state_bloc, Location spawnpoint, Location itemsspawn, Cinematic c1, Cinematic c2){
         this.id = id;
         this.state_bloc = state_bloc;
@@ -86,22 +90,23 @@ public class DeathRoom {
      * @param chosen_key The key chosen by the player
      */
     public void spawnPlayer(CustomPlayer player, RoleCraft plugin, DeathKey chosen_key){
+        Map<String, List<ItemStack>> inventory;
         if(chosen_key != null){
-            Map<String, List<ItemStack>> inventory = player.getDeathDrops(chosen_key.getLost(), chosen_key.getRoomDrop(), chosen_key.getDrop());
-            System.out.println(inventory.get("lost"));
-            System.out.println(inventory.get("room"));
-            System.out.println(inventory.get("drops"));
-
-            List<String> msg = Arrays.asList(
-                    "Vous avez choisi la clé §a" + chosen_key.toString() + "§r.",
+            inventory = player.getDeathDrops(chosen_key.getLost(), chosen_key.getRoomDrop(), chosen_key.getDrop());
+            player.getPlayer().sendMessage("Vous avez choisi la clé §a" + chosen_key.toString() + "§r.");
+        } else {
+            inventory = player.getDeathDrops(NORMALLOST, NORMALROOM, NORMALDROPS);
+            player.getPlayer().sendMessage("Vous n'avez pas choisi de clé.");
+        }
+        List<String> msg = Arrays.asList(
                 "Vous avez perdu §c" + inventory.get("lost").size() + " stack(s)§r.",
                 "Vous pouvez recupérer §a" + inventory.get("room").size() + " stack(s)§r dans la salle.",
                 "Vous pouvez recupérer §2" + inventory.get("drops").size() + " stack(s)§r à l'endroit de votre mort"
-            );
-            for (String s : msg) {
-                player.getPlayer().sendMessage(s);
-            }
-        } else player.getPlayer().sendMessage("Vous n'avez pas choisi de clé.");
+        );
+        for (String s : msg) {
+            player.getPlayer().sendMessage(s);
+        }
+
     }
 
     /**

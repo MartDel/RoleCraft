@@ -32,6 +32,8 @@ public class CustomPlayer {
 	private Boolean has_spe;
 	private Integer job;
 
+	private Location death_location;
+
 	private Map<String, Integer> house;
 	private Map<String, Integer> shop;
 	private Map<String, Map<String, Integer>> farms;
@@ -51,8 +53,10 @@ public class CustomPlayer {
 		this.is_admin = false;
 		this.level = 1;
 		this.score = 0;
-		this.job = null;
 		this.has_spe = false;
+		this.job = null;
+
+		this.death_location = null;
 
 		// Grounds
 		this.house = null;
@@ -235,6 +239,20 @@ public class CustomPlayer {
 				this.score = result.getInt("score");
 				this.job = result.getInt("job") == 0 ? null : result.getInt("job") - 1;
 				this.has_spe = result.getByte("spe") == 1;
+
+				// Load last death location
+				PreparedStatement death_location = db.getConnection().prepareStatement("SELECT world, x, y, z FROM death_locations WHERE uuid=?");
+				death_location.setString(1, uuid.toString());
+				ResultSet result_death = death_location.executeQuery();
+				if(result_death.next() && result_death.getString("world") != null) {
+					this.death_location = new Location(
+						Bukkit.getWorld(result_death.getString("world")),
+						result_death.getInt("x"),
+						result_death.getInt("y"),
+						result_death.getInt("z")
+					);
+				}
+				death_location.close();
 				
 				// Get house
 				this.house = loadGround("houses");
@@ -324,6 +342,18 @@ public class CustomPlayer {
 			update_player.setString(6, uuid.toString());
 			update_player.executeUpdate();
 			update_player.close();
+
+			// Update last death location
+			if(death_location != null){
+				PreparedStatement update_death = db.getConnection().prepareStatement("UPDATE death_locations SET world=?, x=?, y=?, z=? WHERE uuid=?");
+				update_death.setString(1, this.death_location.getWorld().getName());
+				update_death.setInt(2, this.death_location.getBlockX());
+				update_death.setInt(3, this.death_location.getBlockY());
+				update_death.setInt(4, this.death_location.getBlockZ());
+				update_death.setString(5, uuid.toString());
+				update_death.executeUpdate();
+				update_death.close();
+			}
 			
 			// Update house
 			updateGround("houses", house);
@@ -420,6 +450,10 @@ public class CustomPlayer {
 			add.setString(2, player.getDisplayName());
 			add.executeUpdate();
 			add.close();
+			PreparedStatement death_location = db.getConnection().prepareStatement("INSERT INTO death_locations(uuid) VALUES(?)");
+			death_location.setString(1, uuid.toString());
+			death_location.executeUpdate();
+			death_location.close();
 		} catch (SQLException e) {
 			DatabaseManager.error(e);
 		}
@@ -529,6 +563,9 @@ public class CustomPlayer {
 	
 	public Boolean hasSpe() { return this.has_spe; }
 	public void setSpe(Boolean spe) { this.has_spe = spe; }
+
+	public Location getDeathLocation() { return this.death_location; }
+	public void setDeathLocation(Location death_location) { this.death_location = death_location; }
 	
 	public Map<String, Integer> getHouse() { return house; }
 	public void setHouse(Map<String, Integer> house) { this.house = house; }

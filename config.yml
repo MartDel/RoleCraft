@@ -115,6 +115,10 @@ waiting_room:
     y: 69
     z: 1304
 deathkeys:
+  normal:
+    lost: 25
+    room: 25
+    drop: 50
   A1:
     id: 0
     lost: 20

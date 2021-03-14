@@ -146,7 +146,7 @@ public enum LocationInMap {
 		ResultSet result = search.executeQuery();
 		LocationInMap r = null;
 		while(result.next()) {
-			System.out.println("found a " + table);
+//			System.out.println("found a " + table);
 			Integer[] ground = {
 				result.getInt("x1"),
 				result.getInt("x2"),

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : ven. 05 fév. 2021 à 10:34
+-- Généré le : Dim 14 mars 2021 à 19:47
 -- Version du serveur :  8.0.23-0ubuntu0.20.10.1
 -- Version de PHP : 7.4.9
 
@@ -63,6 +63,21 @@ CREATE TABLE `death_keys` (
   `id` int NOT NULL,
   `owner_uuid` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `key_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `death_locations`
+--
+
+CREATE TABLE `death_locations` (
+  `id` int NOT NULL,
+  `uuid` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `world` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `x` int DEFAULT NULL,
+  `y` int DEFAULT NULL,
+  `z` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -150,6 +165,12 @@ ALTER TABLE `death_keys`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `death_locations`
+--
+ALTER TABLE `death_locations`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `farms`
 --
 ALTER TABLE `farms`
@@ -193,6 +214,12 @@ ALTER TABLE `builds`
 -- AUTO_INCREMENT pour la table `death_keys`
 --
 ALTER TABLE `death_keys`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `death_locations`
+--
+ALTER TABLE `death_locations`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
