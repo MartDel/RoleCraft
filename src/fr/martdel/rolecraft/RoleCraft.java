@@ -1,6 +1,9 @@
 package fr.martdel.rolecraft;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import fr.martdel.rolecraft.PNJ.PNJListener;
+import fr.martdel.rolecraft.cinematics.Cinematic;
 import fr.martdel.rolecraft.commands.CommandAdmin;
 import fr.martdel.rolecraft.commands.CommandPublic;
 import fr.martdel.rolecraft.commands.CommandTest;
@@ -15,9 +18,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
 
 public class RoleCraft extends JavaPlugin {
 	
@@ -25,12 +28,15 @@ public class RoleCraft extends JavaPlugin {
 	public static final World OVERWORLD = Bukkit.getWorld("world");
 	
 	private static final String[] PUBLICCOMMANDS = {"switch", "mp", "farmer", "miner", "explorer", "builder", "admin", "invite", "ginfo", "sell"};
-	private static final String[] ADMINCOMMANDS = {"delimiter", "path", "spawn", "rubis"};
+	private static final String[] ADMINCOMMANDS = {"delimiter", "path", "spawn", "rubis", "cinematic"};
 	private static final String[] TESTCOMMANDS = {"test", "power"};
 	
 	private DatabaseManager db;
 	private Score lvl;
 	private Score waiting;
+	private Score recording;
+
+	private Map<String, Cinematic> cinematic_list = new HashMap<>();
 
 	@Override
 	public void onEnable() {
@@ -41,7 +47,37 @@ public class RoleCraft extends JavaPlugin {
 		this.db = new DatabaseManager();
 		this.lvl = new Score(this, "Niveau");
 		this.waiting = new Score(this, "waiting");
-		
+
+		// Admin scoreboard
+		this.recording = new Score(this, "recording");
+
+		// Load cinematic files
+		String[] names = new File(Cinematic.PATH).list();
+		try {
+			for (String name : names){
+				Scanner file = new Scanner(new File(Cinematic.PATH + "/" + name));
+				name = name.split("\\.")[0];
+				List<Location> locations = new ArrayList<>();
+				while (file.hasNextLine()) {
+					String data = file.nextLine();
+					JsonObject json = new JsonParser().parse(data).getAsJsonObject();
+					Location saved_loc = new Location(
+						Bukkit.getWorld(json.get("world").getAsString()),
+						json.get("x").getAsDouble(),
+						json.get("y").getAsDouble(),
+						json.get("z").getAsDouble(),
+						json.get("yaw").getAsFloat(),
+						json.get("pitch").getAsFloat()
+					);
+					locations.add(saved_loc);
+				}
+				file.close();
+				cinematic_list.put(name, new Cinematic(locations));
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
 		// Commands
 		for (String command : PUBLICCOMMANDS) {
 			getCommand(command).setExecutor(new CommandPublic(this));
@@ -77,8 +113,7 @@ public class RoleCraft extends JavaPlugin {
 	public void onDisable() {
 		System.out.println("§b[RoleCraft]§r Server OFF...");
 	}
-	
-	public DatabaseManager getDB() { return db; }
+
 	
 	/**
 	 * Capitalize the first letter of a string
@@ -127,7 +162,11 @@ public class RoleCraft extends JavaPlugin {
 		);
 	}
 
+	public DatabaseManager getDB() { return db; }
 	public Score getLvl() { return lvl; }
 	public Score getWaiting() { return waiting; }
+	public Score getRecording() { return recording; }
 
+	public Map<String, Cinematic> getCinematicList() { return cinematic_list; }
+	public void setCinematicList(Map<String, Cinematic> cinematic_list) { this.cinematic_list = cinematic_list; }
 }

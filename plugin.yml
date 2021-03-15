@@ -40,6 +40,9 @@ commands:
   rubis:
     description: Give des rubis
     permission: rubis.use
+  cinematic:
+    description: Cinematic control
+    permission: cinmatic.use
 
   # Powers
   power:

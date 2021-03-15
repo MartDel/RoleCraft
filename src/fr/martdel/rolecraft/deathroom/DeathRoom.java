@@ -1,14 +1,12 @@
 package fr.martdel.rolecraft.deathroom;
 
-import fr.martdel.rolecraft.Cinematic;
+import fr.martdel.rolecraft.cinematics.Cinematic;
 import fr.martdel.rolecraft.CustomPlayer;
 import fr.martdel.rolecraft.GUI;
 import fr.martdel.rolecraft.RoleCraft;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;

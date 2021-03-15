@@ -1,5 +1,6 @@
 package fr.martdel.rolecraft;
 
+import fr.martdel.rolecraft.cinematics.Cinematic;
 import fr.martdel.rolecraft.database.DatabaseManager;
 import fr.martdel.rolecraft.deathroom.DeathKey;
 import org.bukkit.Bukkit;
@@ -70,36 +71,6 @@ public class CustomPlayer {
 		// Keys
 		this.keys = new ArrayList<>();
 	}
-
-	/**
-	 * Start a cinematic for the player
-	 * Tp every tic the player at a specific location
-	 * @param c Cinematic infos
-	 */
-	public void playCinematic(Cinematic c, Runnable callback){
-		final int delay = 1;
-		final int time = c.getDuration();
-		final Location to = c.getLocation();
-		final GameMode old_gamemode = player.getGameMode();
-		player.setGameMode(GameMode.SPECTATOR);
-		scheduler.runTaskLater(plugin, new Runnable() {
-			private int t = 0;
-			@Override
-			public void run() {
-				player.teleport(to);
-				t++;
-				if(t < time) scheduler.runTaskLater(plugin, this, delay);
-				else {
-					player.setGameMode(old_gamemode);
-					if(callback != null) callback.run();
-				}
-			}
-		}, delay);
-	}
-	public void playCinematic(Location to, int time, Runnable callback) {
-		playCinematic(new Cinematic(to, time), callback);
-	}
-
 
 	/**
 	 * Get all of items contains in the player's inventory
