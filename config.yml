@@ -80,39 +80,26 @@ sell:
     size: 27
 deathrooms:
 - state_bloc:
-    x: -215
-    y: 70
-    z: 1304
+    x: -486
+    y: 173
+    z: 1221
   spawnpoint:
-    x: -205.5
-    y: 65
-    z: 1307
-    yaw: 180
-    pitch: 8
-  cinematic1:
-    location:
-      x: -205.5
-      y: 65
-      z: 1304.5
-      yaw: -90
-      pitch: -10
-    duration: 100
-  cinematic2:
-    location:
-      x: -207.5
-      y: 70
-      z: 1304.5
-      yaw: 90
-      pitch: 60
-    duration: 100
+    x: -486
+    y: 161
+    z: 1208
+    yaw: 0
+    pitch: 0
+  cinematics:
+  - deathroom_nether1_1
+  - deathroom_nether1_2
   items_spawnpoint1:
-    x: -204
-    y: 65
-    z: 1304
+    x: -473
+    y: 164
+    z: 1221
   items_spawnpoint2:
-    x: -208
-    y: 66
-    z: 1304
+    x: -498
+    y: 161
+    z: 1221.5
 waiting_room:
   spawn:
     x: -200

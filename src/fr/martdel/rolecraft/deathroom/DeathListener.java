@@ -24,13 +24,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.Collection;
-import java.util.List;
 
 public class DeathListener implements Listener {
 
 	private final RoleCraft plugin;
 	private final BukkitScheduler scheduler;
-	private static final List<DeathRoom> DEATH_ROOMS = DeathRoom.getAllRooms();
 	private static final Location WAITING_ROOM = RoleCraft.getConfigLocation((MemorySection) RoleCraft.config.get("waiting_room.spawn"), false);
 
 	public DeathListener(RoleCraft rolecraft) {
@@ -73,7 +71,7 @@ public class DeathListener implements Listener {
 
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
 		int room_id = Integer.parseInt(title.substring(7,8));
-		DeathRoom room = DeathRoom.getRoomById(room_id);
+		DeathRoom room = DeathRoom.getRoomById(room_id, plugin);
 		int key_id = itemmeta.getCustomModelData();
 		room.spawnPlayer(customPlayer, plugin, key_id == 8 ? null : DeathKey.getKeyById(key_id));
 		view.setCursor(item);
@@ -93,7 +91,7 @@ public class DeathListener implements Listener {
 		}
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
 		int room_id = Integer.parseInt(title.substring(7,8));
-		DeathRoom room = DeathRoom.getRoomById(room_id);
+		DeathRoom room = DeathRoom.getRoomById(room_id, plugin);
 		room.spawnPlayer(customPlayer, plugin, null); // Player didn't choose a key
 	}
 
@@ -142,7 +140,7 @@ public class DeathListener implements Listener {
 	}
 
 	private DeathRoom getFreeRespawnRoom(){
-		for(DeathRoom room : DEATH_ROOMS){
+		for(DeathRoom room : DeathRoom.getAllRooms(plugin)){
 			if(!room.isCurrentlyUsed()) return room;
 		}
 		return null;

@@ -40,7 +40,7 @@ public class CommandTest implements CommandExecutor {
 			
 			if(cmd.getName().equalsIgnoreCase("test")) {
 				// Test command
-				DeathRoom dr = DeathRoom.getRoomById(0);
+				DeathRoom dr = DeathRoom.getRoomById(0, plugin);
 				dr.setCurrentlyUsed(false);
 			} else if(cmd.getName().equalsIgnoreCase("power")) {
 				if(args.length != 0) {
