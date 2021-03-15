@@ -22,6 +22,7 @@ public class CustomPlayer {
 
 	private Player player;
 	private UUID uuid;
+	private String ip;
 	private boolean loaded;
 
 	private RoleCraft plugin;
@@ -47,6 +48,7 @@ public class CustomPlayer {
 	public CustomPlayer(Player player, RoleCraft rolecraft) {
 		this.player = player;
 		this.uuid = player.getUniqueId();
+		this.ip = null;
 		this.loaded = false;
 
 		this.plugin = rolecraft;
@@ -207,6 +209,7 @@ public class CustomPlayer {
 			query.setString(1, uuid.toString());
 			ResultSet result = query.executeQuery();
 			if(result.next()) {
+				this.ip = result.getString("IP");
 				this.is_admin = result.getByte("admin") == 1;
 				this.level = result.getInt("level");
 				this.score = result.getInt("score");
@@ -306,14 +309,23 @@ public class CustomPlayer {
 	 * Update the player row in the database
 	 */
 	public void save() {
+		if(!loaded){
+			try {
+				throw new Exception("Player isn't loaded and you are tying to save it !");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return;
+		}
 		try {
-			PreparedStatement update_player = db.getConnection().prepareStatement("UPDATE players SET admin=?, level=?, score=?, job=?, spe=? WHERE uuid=?");
-			update_player.setByte(1, (byte) (is_admin ? 1 : 0));
-			update_player.setInt(2, level);
-			update_player.setInt(3, score);
-			update_player.setInt(4, job + 1);
-			update_player.setByte(5, (byte) (has_spe ? 1 : 0));
-			update_player.setString(6, uuid.toString());
+			PreparedStatement update_player = db.getConnection().prepareStatement("UPDATE players SET IP=?, admin=?, level=?, score=?, job=?, spe=? WHERE uuid=?");
+			update_player.setString(1, ip);
+			update_player.setByte(2, (byte) (is_admin ? 1 : 0));
+			update_player.setInt(3, level);
+			update_player.setInt(4, score);
+			update_player.setInt(5, job == null ? 0 : job + 1);
+			update_player.setByte(6, (byte) (has_spe ? 1 : 0));
+			update_player.setString(7, uuid.toString());
 			update_player.executeUpdate();
 			update_player.close();
 
@@ -448,6 +460,8 @@ public class CustomPlayer {
 	/*
 	 * GETTERS and SETTERS
 	 */
+	public String getIp() { return ip; }
+	public void setIp(String ip) { this.ip = ip; }
 	public boolean isLoaded() { return this.loaded; }
 	public TeamManager getTeam() { return TeamManager.getPlayerTeam(plugin, player); }
 	public Wallet getWallet() { return new Wallet(player); }
@@ -573,5 +587,4 @@ public class CustomPlayer {
 
 	public void setPlayer(Player player) { this.player = player; }
 	public Player getPlayer() { return player; }
-
 }

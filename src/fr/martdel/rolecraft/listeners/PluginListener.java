@@ -50,7 +50,7 @@ public class PluginListener implements Listener {
 	public void onJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
-		
+
 		if(customPlayer.isRegistered()) {
 			TeamManager team = customPlayer.getTeam();
 			String color = team.getColor();
@@ -89,6 +89,11 @@ public class PluginListener implements Listener {
 			player.getInventory().clear();
 			player.getInventory().addItem(compass);
 		}
+
+		// Update Ip
+		String ip = player.getAddress().getAddress().toString().substring(1);
+		customPlayer.setIp(ip);
+		customPlayer.save();
 
 		// Update scoreboards
 		for (Player p : Bukkit.getOnlinePlayers()){
