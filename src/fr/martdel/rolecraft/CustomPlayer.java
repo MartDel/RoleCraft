@@ -21,6 +21,7 @@ public class CustomPlayer {
 
 	private Player player;
 	private UUID uuid;
+	private boolean loaded;
 
 	private RoleCraft plugin;
 	private BukkitScheduler scheduler;
@@ -45,6 +46,7 @@ public class CustomPlayer {
 	public CustomPlayer(Player player, RoleCraft rolecraft) {
 		this.player = player;
 		this.uuid = player.getUniqueId();
+		this.loaded = false;
 
 		this.plugin = rolecraft;
 		this.db = rolecraft.getDB();
@@ -292,6 +294,7 @@ public class CustomPlayer {
 				query_keys.close();
 			}
 			query.close();
+			this.loaded = true;
 		} catch (SQLException e) {
 			DatabaseManager.error(e);
 		}
@@ -474,6 +477,7 @@ public class CustomPlayer {
 	/*
 	 * GETTERS and SETTERS
 	 */
+	public boolean isLoaded() { return this.loaded; }
 	public TeamManager getTeam() { return TeamManager.getPlayerTeam(plugin, player); }
 	public Wallet getWallet() { return new Wallet(player); }
 	

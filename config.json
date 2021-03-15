@@ -129,7 +129,8 @@
                 "location": {"x": -207.5, "y": 70, "z": 1304.5, "yaw": 90, "pitch": 60},
                 "duration": 100
             },
-            "items_spawnpoint": {"x": -206, "y": 66, "z": 1304}
+            "items_spawnpoint1": {"x": -204, "y": 65, "z": 1304},
+            "items_spawnpoint2": {"x": -208, "y": 66, "z": 1304}
         }
     ],
     "waiting_room": {

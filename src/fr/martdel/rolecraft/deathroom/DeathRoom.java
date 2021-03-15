@@ -4,11 +4,15 @@ import fr.martdel.rolecraft.Cinematic;
 import fr.martdel.rolecraft.CustomPlayer;
 import fr.martdel.rolecraft.GUI;
 import fr.martdel.rolecraft.RoleCraft;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +24,8 @@ public class DeathRoom {
     private final int id;
     private final Location state_bloc;
     private final Location spawnpoint;
-    private final Location itemsspawn;
+    private final Location itemsspawn1;
+    private final Location itemsspawn2;
     private final Cinematic cinematic1;
     private final Cinematic cinematic2;
 
@@ -28,11 +33,12 @@ public class DeathRoom {
     public static int NORMALROOM = RoleCraft.config.getInt("deathkeys.normal.room");
     public static int NORMALDROPS = RoleCraft.config.getInt("deathkeys.normal.drops");
 
-    public DeathRoom(int id, Location state_bloc, Location spawnpoint, Location itemsspawn, Cinematic c1, Cinematic c2){
+    public DeathRoom(int id, Location state_bloc, Location spawnpoint, Location itemsspawn1, Location itemsspawn2, Cinematic c1, Cinematic c2){
         this.id = id;
         this.state_bloc = state_bloc;
         this.spawnpoint = spawnpoint;
-        this.itemsspawn = itemsspawn;
+        this.itemsspawn1 = itemsspawn1;
+        this.itemsspawn2 = itemsspawn2;
         this.cinematic1 = c1;
         this.cinematic2 = c2;
     }
@@ -85,28 +91,54 @@ public class DeathRoom {
 
     /**
      * Update player inventory with the chosen DeathKey data
-     * @param player The player to update (instance of CustomPlayer)
+     * @param customPlayer The player to update (instance of CustomPlayer)
      * @param plugin Instance of RoleCraft plugin
      * @param chosen_key The key chosen by the player
      */
-    public void spawnPlayer(CustomPlayer player, RoleCraft plugin, DeathKey chosen_key){
+    public void spawnPlayer(CustomPlayer customPlayer, RoleCraft plugin, DeathKey chosen_key){
+        Player player = customPlayer.getPlayer();
         Map<String, List<ItemStack>> inventory;
         if(chosen_key != null){
-            inventory = player.getDeathDrops(chosen_key.getLost(), chosen_key.getRoomDrop(), chosen_key.getDrop());
-            player.getPlayer().sendMessage("Vous avez choisi la clé §a" + chosen_key.toString() + "§r.");
+            inventory = customPlayer.getDeathDrops(chosen_key.getLost(), chosen_key.getRoomDrop(), chosen_key.getDrop());
+            player.sendMessage("Vous avez choisi la clé §a" + chosen_key.toString() + "§r.");
         } else {
-            inventory = player.getDeathDrops(NORMALLOST, NORMALROOM, NORMALDROPS);
-            player.getPlayer().sendMessage("Vous n'avez pas choisi de clé.");
+            inventory = customPlayer.getDeathDrops(NORMALLOST, NORMALROOM, NORMALDROPS);
+            player.sendMessage("Vous n'avez pas choisi de clé.");
         }
         List<String> msg = Arrays.asList(
-                "Vous avez perdu §c" + inventory.get("lost").size() + " stack(s)§r.",
-                "Vous pouvez recupérer §a" + inventory.get("room").size() + " stack(s)§r dans la salle.",
-                "Vous pouvez recupérer §2" + inventory.get("drops").size() + " stack(s)§r à l'endroit de votre mort"
+            "Vous avez perdu §c" + inventory.get("lost").size() + " stack(s)§r.",
+            "Vous pouvez recupérer §a" + inventory.get("room").size() + " stack(s)§r dans la salle.",
+            "Vous pouvez recupérer §2" + inventory.get("drops").size() + " stack(s)§r à l'endroit de votre mort"
         );
         for (String s : msg) {
-            player.getPlayer().sendMessage(s);
+            player.sendMessage(s);
         }
+        player.getInventory().clear();
 
+        // Spawn room items
+        List<ItemStack> room_items = inventory.get("room");
+        BukkitScheduler scheduler = plugin.getServer().getScheduler();
+        scheduler.runTaskLater(plugin, new Runnable() {
+            private int i = 0;
+            @Override
+            public void run() {
+                ItemStack item = room_items.get(i);
+                if(i % 2 == 0){
+                    // First spawn
+                    RoleCraft.OVERWORLD.dropItem(itemsspawn1, item);
+                } else {
+                    // Second spawn
+                    RoleCraft.OVERWORLD.dropItem(itemsspawn2, item);
+                }
+                i++;
+                if(i < room_items.size()) scheduler.runTaskLater(plugin, this, 10);
+            }
+        }, 10);
+
+        // Spawn drop items
+        for (ItemStack item : inventory.get("drops")){
+            RoleCraft.OVERWORLD.dropItem(customPlayer.getDeathLocation(), item);
+        }
     }
 
     /**
@@ -139,7 +171,8 @@ public class DeathRoom {
         Location spawnpoint = RoleCraft.getConfigLocation(room_config.get("spawnpoint"), true);
 
         // Get items spawn
-        Location itemspawn = RoleCraft.getConfigLocation(room_config.get("items_spawnpoint"), false);
+        Location itemspawn1 = RoleCraft.getConfigLocation(room_config.get("items_spawnpoint1"), false);
+        Location itemspawn2 = RoleCraft.getConfigLocation(room_config.get("items_spawnpoint2"), false);
 
         // Get cinematics
         Map<String, ?> cinematic1_config = (Map<String, ?>) room_config.get("cinematic1");
@@ -152,7 +185,7 @@ public class DeathRoom {
         Integer cinematic2_time = (Integer) cinematic2_config.get("duration");
         Cinematic cinematic2 = new Cinematic(cinematic2_loc, cinematic2_time);
 
-        return new DeathRoom(id, state_bloc, spawnpoint, itemspawn, cinematic1, cinematic2);
+        return new DeathRoom(id, state_bloc, spawnpoint, itemspawn1, itemspawn2, cinematic1, cinematic2);
     }
 
     public int getId() { return id; }
