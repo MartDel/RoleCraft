@@ -118,9 +118,9 @@ public class DeathRoom {
                         player.sendMessage("Vous n'avez pas choisi de clé.");
                     }
                     List<String> msg = Arrays.asList(
-                            "Vous avez perdu §c" + inventory.get("lost").size() + " stack(s)§r.",
-                            "Vous pouvez recupérer §a" + inventory.get("room").size() + " stack(s)§r dans la salle.",
-                            "Vous pouvez recupérer §2" + inventory.get("drops").size() + " stack(s)§r à l'endroit de votre mort"
+                        "Vous avez perdu §c" + inventory.get("lost").size() + " stack(s)§r.",
+                        "Vous pouvez recupérer §a" + inventory.get("room").size() + " stack(s)§r dans la salle.",
+                        "Vous pouvez recupérer §2" + inventory.get("drops").size() + " stack(s)§r à l'endroit de votre mort"
                     );
                     for (String s : msg) {
                         player.sendMessage(s);

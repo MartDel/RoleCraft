@@ -28,28 +28,13 @@ import fr.martdel.rolecraft.LocationInMap;
 import fr.martdel.rolecraft.RoleCraft;
 
 public class MapProtectListener implements Listener {
-	
-	private static final List<Material> FORBIDDEN_GROUNDS = new ArrayList<>();
-	private static final List<Material> FORBIDDEN_CITY = new ArrayList<>();
+
+	private static final List<Material> FORBIDDEN_GROUNDS = RoleCraft.getConfigMaterialList("controlled_items.grounds"); // Forbidden interactions on grounds
+	private static final List<Material> FORBIDDEN_CITY = RoleCraft.getConfigMaterialList("controlled_items.city"); // Forbidden interactions in the city
 	
 	private RoleCraft plugin;
 
-	public MapProtectListener(RoleCraft rolecraft) {
-		this.plugin = rolecraft;
-		
-		List<String> list;
-		// Get forbidden interactions on grounds
-		list = RoleCraft.config.getStringList("controled_items.grounds");
-		for (String name : list) {
-			FORBIDDEN_GROUNDS.add(Material.getMaterial(name));
-		}
-		
-		// Get forbidden interactions on grounds
-		list = RoleCraft.config.getStringList("controled_items.city");
-		for (String name : list) {
-			FORBIDDEN_CITY.add(Material.getMaterial(name));
-		}
-	}
+	public MapProtectListener(RoleCraft rolecraft) { this.plugin = rolecraft; }
 	
 	@EventHandler
 	public void onClick(PlayerInteractEvent event) {

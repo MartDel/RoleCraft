@@ -12,6 +12,7 @@ import fr.martdel.rolecraft.deathroom.DeathListener;
 import fr.martdel.rolecraft.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -152,6 +153,15 @@ public class RoleCraft extends JavaPlugin {
 			float pitch = data.get("pitch") instanceof Float ? (Float) data.get("pitch") : (Integer) data.get("pitch");
 			return new Location(OVERWORLD, x, y, z, yaw, pitch);
 		} else return new Location(OVERWORLD, x, y, z);
+	}
+
+	public static List<Material> getConfigMaterialList(String path){
+		List<Material> result = new ArrayList<>();
+		List<String> list = RoleCraft.config.getStringList(path);;
+		for (String name : list) {
+			result.add(Material.getMaterial(name));
+		}
+		return result;
 	}
 	
 	public static void printLocation(Location l) {
