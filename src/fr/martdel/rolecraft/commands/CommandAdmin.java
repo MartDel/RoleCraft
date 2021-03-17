@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import fr.martdel.rolecraft.CustomItems;
@@ -171,6 +172,18 @@ public class CommandAdmin implements CommandExecutor {
 						player.sendMessage("§4Argument incorrect...");
 						break;
 				}
+			} else if(cmd.getName().equalsIgnoreCase("mob")){
+				if(args.length != 1) {
+					player.sendMessage("§4Arguments non valides...");
+					return false;
+				}
+				String mob_name = args[0];
+				EntityType mob = EntityType.valueOf(mob_name);
+				if(mob == null) {
+					player.sendMessage("§4Nom du mob incorrect...");
+					return false;
+				}
+				player.getWorld().spawnEntity(player.getLocation(), mob);
 			}
 		}
 		

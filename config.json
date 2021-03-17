@@ -126,6 +126,7 @@
             "items_spawnpoint2": {"x": -498, "y": 161, "z": 1221.5}
         }
     ],
+    "respawn_entity_name": "Réapparaître",
     "waiting_room": {
         "spawn": {"x": -200, "y": 69, "z": 1304}
     },

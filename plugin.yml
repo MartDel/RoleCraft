@@ -41,8 +41,11 @@ commands:
     description: Give des rubis
     permission: rubis.use
   cinematic:
-    description: Cinematic control
-    permission: cinmatic.use
+    description: Controle les cinematiques
+    permission: cinematic.use
+  mob:
+    description: Spawn un mob a la position du joueur
+    permission: mob.use
 
   # Powers
   power:

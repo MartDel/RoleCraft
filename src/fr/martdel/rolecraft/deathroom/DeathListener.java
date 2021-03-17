@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.InventoryView;
@@ -100,42 +101,55 @@ public class DeathListener implements Listener {
 		Player player = event.getPlayer();
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
 		Block bloc = event.getClickedBlock();
+		if(bloc != null) return;
+		BlockState bs = bloc.getState();
 
-		if(bloc != null) {
-			BlockState bs = bloc.getState();
-			// Respawn btn is pressed
-			if(bloc.getType().equals(Material.STONE_BUTTON) && plugin.getWaiting().getScore(player) == 2) {
+		if(bs instanceof Sign){
+			Sign sign = (Sign) bs;
+			// Respawn sign is clicked
+			if(sign.getLine(0).equalsIgnoreCase("respawn")){
 				player.teleport(player.getBedSpawnLocation());
 				customPlayer.setWaiting(0);
-
-				// Clear all of entities in the room (Items and Mobs)
-				Collection<Entity> entities = bloc.getWorld().getNearbyEntities(bloc.getLocation(), 10, 3, 10);
-				for(Entity e : entities){
-					if(!(e instanceof Player)) e.remove();
-				}
-
-				// Tp a waiting player (if he exists)
-				scheduler.runTaskLater(plugin, () -> {
-					for(Player p : Bukkit.getOnlinePlayers()){
-						CustomPlayer customP = new CustomPlayer(p, plugin);
-						if(customP.getWaiting() == 1){
-							DeathRoom room = getFreeRespawnRoom();
-							if(room != null) room.spawnPlayer(customP, plugin);
-							return;
-						}
-					}
-				}, 60);
 				return;
 			}
-			if(bs instanceof Sign){
-				Sign sign = (Sign) bs;
-				// Respawn sign is clicked
-				if(sign.getLine(0).equalsIgnoreCase("respawn")){
-					player.teleport(player.getBedSpawnLocation());
-					customPlayer.setWaiting(0);
-					return;
-				}
+		}
+	}
+
+	@EventHandler
+	public void onPNJUse(PlayerInteractEntityEvent event) {
+		Player player = event.getPlayer();
+		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
+		Entity entity = event.getRightClicked();
+		String name = entity.getName();
+
+		if(customPlayer.getWaiting() == 2 && name.contains(RoleCraft.config.getString("respawn_entity"))){
+			// Repawn player
+			player.teleport(player.getBedSpawnLocation());
+			customPlayer.setWaiting(0);
+
+			String id_str = name.substring(24,25);
+			System.out.println(id_str);
+			int id = Integer.parseInt(id_str);
+			DeathRoom dr = DeathRoom.getRoomById(id, plugin);
+			dr.setCurrentlyUsed(false);
+
+			// Clear all of entities in the room (Items and Mobs)
+			Collection<Entity> entities = entity.getWorld().getNearbyEntities(entity.getLocation(), 10, 3, 10);
+			for(Entity e : entities){
+				if(!(e instanceof Player)) e.remove();
 			}
+
+			// Tp a waiting player (if he exists)
+			scheduler.runTaskLater(plugin, () -> {
+				for(Player p : Bukkit.getOnlinePlayers()){
+					CustomPlayer customP = new CustomPlayer(p, plugin);
+					if(customP.getWaiting() == 1){
+						DeathRoom room = getFreeRespawnRoom();
+						if(room != null) room.spawnPlayer(customP, plugin);
+						return;
+					}
+				}
+			}, 60);
 		}
 	}
 

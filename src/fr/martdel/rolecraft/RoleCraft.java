@@ -29,7 +29,7 @@ public class RoleCraft extends JavaPlugin {
 	public static final World OVERWORLD = Bukkit.getWorld("world");
 	
 	private static final String[] PUBLICCOMMANDS = {"switch", "mp", "farmer", "miner", "explorer", "builder", "admin", "invite", "ginfo", "sell"};
-	private static final String[] ADMINCOMMANDS = {"delimiter", "path", "spawn", "rubis", "cinematic"};
+	private static final String[] ADMINCOMMANDS = {"delimiter", "path", "spawn", "rubis", "cinematic", "mob"};
 	private static final String[] TESTCOMMANDS = {"test", "power"};
 	
 	private DatabaseManager db;
