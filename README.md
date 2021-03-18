@@ -17,15 +17,14 @@ L'intéraction sur ce serveur est primordiale ! Les métiers doivent s'entraider
 * **Armurier** : Le joueur part explorer les alentours du village et les différentes dimensions. Il est missionné par les joueurs pour aller chercher des ressources rares contre une certaine somme d’argent. *Il se spécialise en **Garde** : Il débloque l’option de mercenaire et de garde du corps.*
 * **Builder** : Le joueur est missionné par les admins pour agrandir le village et la map. Il peut aussi créer des maisons sur mesure pour les vendre aux joueurs. *Il se spécialise en **Ingénieur** : Il débloque les système de redstone.*
 
-* Fin de la **V1** *
-
+*Fin de la **V1***
 ***
 
 # V2.0
 
 Une deuxième version de ce serveur est en cours de développement depuis *décembre 2020*. Comme promesse : une **nouvelle map** époustouflante et **des dixaines de nouvelles fonctionnalités** pour supprimer au maximum les bugs et la monotonie.
 
-Le jeu commence avec le joueur en train de se faire tuer dans le donjon ultime, une fois arrivé à 1 demi cœur il tombe à terre et entend ses coéquipiers crier. Après un écran noir la cinématique commence, on l’a retrouvé à moitié mort aux alentours du village d’Elophéria, il décide alors de prendre un nouveau départ et de s’intégrer à la communauté. Il choisit alors son métier et se met en tête de se rappeler qui il était et tout ce qu’il savait.
+Le jeu commence avec le joueur en train de se faire tuer dans le donjon ultime, une fois arrivé à 1 demi cœur il tombe à terre et entend ses coéquipiers crier. Après un écran noir la cinématique commence, on l’a retrouvé à moitié mort aux alentours du village d’**Elophéria**, il décide alors de prendre un nouveau départ et de s’intégrer à la communauté. Il choisit alors son métier et se met en tête de se rappeler qui il était et tout ce qu’il savait.
 
 Les donjons sont des lieux des anciens temps construits par les ancêtres de ce pays dont on a oublié le nom depuis longtemps. Ils ont été construits dans le but de garder le savoir des anciens et constituent des lieux d’épreuves pour toute personne voulant prouver sa valeur.
 
