@@ -1,10 +1,9 @@
-package fr.martdel.rolecraft;
+package fr.martdel.rolecraft.player;
 
-import fr.martdel.rolecraft.cinematics.Cinematic;
+import fr.martdel.rolecraft.RoleCraft;
 import fr.martdel.rolecraft.database.DatabaseManager;
 import fr.martdel.rolecraft.deathroom.DeathKey;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

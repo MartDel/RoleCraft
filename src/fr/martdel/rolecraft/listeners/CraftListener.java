@@ -1,6 +1,5 @@
 package fr.martdel.rolecraft.listeners;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Material;
@@ -17,7 +16,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-import fr.martdel.rolecraft.CustomPlayer;
+import fr.martdel.rolecraft.player.CustomPlayer;
 import fr.martdel.rolecraft.RoleCraft;
 
 public class CraftListener implements Listener {

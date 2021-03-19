@@ -2,9 +2,9 @@ package fr.martdel.rolecraft.listeners;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import fr.martdel.rolecraft.MapChecker.LocationChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,11 +23,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import fr.martdel.rolecraft.CustomItems;
-import fr.martdel.rolecraft.CustomPlayer;
+import fr.martdel.rolecraft.player.CustomPlayer;
 import fr.martdel.rolecraft.GUI;
-import fr.martdel.rolecraft.LocationInMap;
+import fr.martdel.rolecraft.MapChecker.LocationInMap;
 import fr.martdel.rolecraft.RoleCraft;
-import fr.martdel.rolecraft.Wallet;
+import fr.martdel.rolecraft.player.Wallet;
 
 public class ClickListener implements Listener {
 	
@@ -68,12 +68,10 @@ public class ClickListener implements Listener {
 					 */
 					Chest letterbox = (Chest) bs;
 					String name = letterbox.getCustomName();
-					Map<String, OfflinePlayer> owners = LocationInMap.getPlayerOwner(plugin, player, letterbox.getLocation());
-					if(owners.size() == 0 || !owners.containsKey("houses")) return;
-					OfflinePlayer owner = owners.get("houses");
+					OfflinePlayer owner = new LocationChecker(letterbox.getLocation(), player, plugin).getOwner();
 
-					if(name == null) return;
-					if(name.equalsIgnoreCase("§8Boite aux lettres") && owner != null && !owner.equals(player) && !player.isOp()) {
+					if(name == null || owner == null) return;
+					if(name.equalsIgnoreCase("§8Boite aux lettres") && !owner.equals(player) && !player.isOp()) {
 						// Build letterbox inventory
 						String color = new CustomPlayer(owner.getPlayer(), plugin).getTeam().getColor();
 						Inventory show = Bukkit.createInventory(null, 27, "§8Boite aux lettres de §" + color + owner.getName());

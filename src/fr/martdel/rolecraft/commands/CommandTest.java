@@ -1,14 +1,7 @@
 package fr.martdel.rolecraft.commands;
 
-import fr.martdel.rolecraft.CustomPlayer;
-import fr.martdel.rolecraft.Wallet;
+import fr.martdel.rolecraft.player.CustomPlayer;
 import fr.martdel.rolecraft.deathroom.DeathRoom;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.Powerable;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

@@ -15,7 +15,7 @@ import org.bukkit.event.inventory.FurnaceExtractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import fr.martdel.rolecraft.CustomPlayer;
+import fr.martdel.rolecraft.player.CustomPlayer;
 import fr.martdel.rolecraft.RoleCraft;
 
 public class ScoreMinerListener implements Listener {

@@ -1,5 +1,6 @@
-package fr.martdel.rolecraft;
+package fr.martdel.rolecraft.player;
 
+import fr.martdel.rolecraft.RoleCraft;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;

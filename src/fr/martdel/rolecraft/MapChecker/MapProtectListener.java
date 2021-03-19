@@ -1,8 +1,6 @@
-package fr.martdel.rolecraft.listeners;
+package fr.martdel.rolecraft.MapChecker;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import fr.martdel.rolecraft.RoleCraft;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -24,8 +22,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import fr.martdel.rolecraft.LocationInMap;
-import fr.martdel.rolecraft.RoleCraft;
+import java.util.List;
 
 public class MapProtectListener implements Listener {
 
@@ -48,7 +45,7 @@ public class MapProtectListener implements Listener {
 		if(item != null && !player.isOp()) {
 			Material itemtype = item.getType();
 			if(itemtype.equals(Material.FLINT_AND_STEEL) || itemtype.equals(Material.ENDER_PEARL)) {
-				if(!LocationInMap.getPlayerPlace(plugin, player).equals(LocationInMap.FREE_PLACE)){
+				if(new LocationChecker(player, plugin).isFree()){
 					event.setCancelled(true);
 					return;
 				}
@@ -63,15 +60,15 @@ public class MapProtectListener implements Listener {
 			Location coo = bloc.getLocation();
 
 			if(!player.isOp() && !(bs instanceof Entity)) {
-				List<LocationInMap> bloc_place = LocationInMap.getBlocPlace(plugin, player, coo);
-				if(LocationInMap.isInProtectedPlace(plugin, player, coo)) {	// Is in protected map
+				if(LocationChecker.isInProtectedMap(coo)) {	// Is in protected map
 
 					if(FORBIDDEN_CITY.contains(type)) {
 						// Forbidden some items in protected map
 						event.setCancelled(true);
 						return;
 					}
-						
+
+					List<LocationInMap> bloc_place = new LocationChecker(coo, player, plugin).getType();
 					if(bloc_place.contains(LocationInMap.SHOP)) {
 						// Is in a player shop
 						if(FORBIDDEN_GROUNDS.contains(type) && type.equals(Material.CHEST)) {

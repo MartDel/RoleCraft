@@ -2,6 +2,7 @@ package fr.martdel.rolecraft;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import fr.martdel.rolecraft.MapChecker.MapProtectListener;
 import fr.martdel.rolecraft.PNJ.PNJListener;
 import fr.martdel.rolecraft.cinematics.Cinematic;
 import fr.martdel.rolecraft.commands.CommandAdmin;
@@ -10,6 +11,7 @@ import fr.martdel.rolecraft.commands.CommandTest;
 import fr.martdel.rolecraft.database.DatabaseManager;
 import fr.martdel.rolecraft.deathroom.DeathListener;
 import fr.martdel.rolecraft.listeners.*;
+import fr.martdel.rolecraft.player.Score;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -94,7 +96,7 @@ public class RoleCraft extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new PluginListener(this), this);
 		getServer().getPluginManager().registerEvents(new ClickListener(this), this);
 		getServer().getPluginManager().registerEvents(new DeathListener(this), this);
-		getServer().getPluginManager().registerEvents(new MapProtectListener(this), this);
+//		getServer().getPluginManager().registerEvents(new MapProtectListener(this), this);
 		getServer().getPluginManager().registerEvents(new CraftListener(this), this);
 		getServer().getPluginManager().registerEvents(new PNJListener(this), this);
 		getServer().getPluginManager().registerEvents(new SellListener(this), this);

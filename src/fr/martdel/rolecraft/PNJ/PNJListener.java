@@ -5,6 +5,8 @@ import java.util.Map;
 
 import fr.martdel.rolecraft.*;
 import fr.martdel.rolecraft.deathroom.DeathKey;
+import fr.martdel.rolecraft.player.CustomPlayer;
+import fr.martdel.rolecraft.player.Wallet;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

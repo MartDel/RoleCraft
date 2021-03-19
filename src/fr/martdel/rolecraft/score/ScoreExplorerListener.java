@@ -12,7 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import fr.martdel.rolecraft.CustomPlayer;
+import fr.martdel.rolecraft.player.CustomPlayer;
 import fr.martdel.rolecraft.RoleCraft;
 
 public class ScoreExplorerListener implements Listener {

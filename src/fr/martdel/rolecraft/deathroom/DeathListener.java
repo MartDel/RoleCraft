@@ -1,6 +1,6 @@
 package fr.martdel.rolecraft.deathroom;
 
-import fr.martdel.rolecraft.CustomPlayer;
+import fr.martdel.rolecraft.player.CustomPlayer;
 import fr.martdel.rolecraft.RoleCraft;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

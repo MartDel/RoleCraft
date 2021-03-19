@@ -1,5 +1,6 @@
-package fr.martdel.rolecraft;
+package fr.martdel.rolecraft.player;
 
+import fr.martdel.rolecraft.CustomItems;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

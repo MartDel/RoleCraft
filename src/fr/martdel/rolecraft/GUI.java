@@ -3,6 +3,7 @@ package fr.martdel.rolecraft;
 import java.util.*;
 
 import fr.martdel.rolecraft.deathroom.DeathKey;
+import fr.martdel.rolecraft.player.CustomPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

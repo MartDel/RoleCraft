@@ -3,22 +3,23 @@ package fr.martdel.rolecraft.commands;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import fr.martdel.rolecraft.*;
-import fr.martdel.rolecraft.listeners.SellListener;
+import fr.martdel.rolecraft.MapChecker.LocationChecker;
+import fr.martdel.rolecraft.MapChecker.LocationInMap;
+import fr.martdel.rolecraft.player.CustomPlayer;
+import fr.martdel.rolecraft.player.TeamManager;
+import fr.martdel.rolecraft.player.Wallet;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import fr.martdel.rolecraft.database.DatabaseManager;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class CommandPublic implements CommandExecutor {
 	
@@ -192,11 +193,11 @@ public class CommandPublic implements CommandExecutor {
 				/*
 				 * SHOW INFORMATION ABOUT GROUNDS
 				 */
-				List<LocationInMap> grounds = LocationInMap.getPlayerPlace(plugin, player);
-				for(LocationInMap ground : grounds){
-					player.sendMessage("Vous êtes dans " + ground.getDescription() + ".");
+				List<LocationInMap> types = new LocationChecker(player, plugin).getType();
+				for(LocationInMap type : types){
+					player.sendMessage("Vous êtes dans " + type.getDescription() + ".");
 				}
-				System.out.println(grounds);
+				System.out.println(types);
 			} else if(cmd.getName().equalsIgnoreCase("sell")) {
 				/*
 				 * SELL COMMAND

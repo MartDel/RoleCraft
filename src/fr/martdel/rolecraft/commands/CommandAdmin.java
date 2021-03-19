@@ -10,12 +10,11 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import fr.martdel.rolecraft.CustomItems;
-import fr.martdel.rolecraft.CustomPlayer;
+import fr.martdel.rolecraft.player.CustomPlayer;
 import fr.martdel.rolecraft.RoleCraft;
-import fr.martdel.rolecraft.Wallet;
+import fr.martdel.rolecraft.player.Wallet;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 

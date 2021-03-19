@@ -1,7 +1,7 @@
 package fr.martdel.rolecraft.cinematics;
 
 import fr.martdel.rolecraft.RoleCraft;
-import fr.martdel.rolecraft.Score;
+import fr.martdel.rolecraft.player.Score;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

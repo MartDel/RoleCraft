@@ -5,6 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import fr.martdel.rolecraft.*;
+import fr.martdel.rolecraft.player.CustomPlayer;
+import fr.martdel.rolecraft.player.MainScoreboard;
+import fr.martdel.rolecraft.player.TeamManager;
+import fr.martdel.rolecraft.player.Wallet;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

@@ -1,6 +1,8 @@
 package fr.martdel.rolecraft.listeners;
 
 import fr.martdel.rolecraft.*;
+import fr.martdel.rolecraft.player.CustomPlayer;
+import fr.martdel.rolecraft.player.Wallet;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
