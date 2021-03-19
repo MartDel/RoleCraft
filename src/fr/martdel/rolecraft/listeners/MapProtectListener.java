@@ -63,32 +63,28 @@ public class MapProtectListener implements Listener {
 			Location coo = bloc.getLocation();
 
 			if(!player.isOp() && !(bs instanceof Entity)) {
-				LocationInMap bloc_place = LocationInMap.getBlocPlace(plugin, player, coo);
-				if(!bloc_place.equals(LocationInMap.FREE_PLACE) && !bloc_place.equals(LocationInMap.OWNED)) {	// Is in protected map
+				List<LocationInMap> bloc_place = LocationInMap.getBlocPlace(plugin, player, coo);
+				if(LocationInMap.isInProtectedPlace(plugin, player, coo)) {	// Is in protected map
 
 					if(FORBIDDEN_CITY.contains(type)) {
 						// Forbidden some items in protected map
 						event.setCancelled(true);
 						return;
 					}
-					
-					if(!bloc_place.equals(LocationInMap.PROTECTED_MAP)) {	// Is in a player ground
 						
-						if(bloc_place.equals(LocationInMap.SHOP)) {
-							// Is in a player shop
-							if(FORBIDDEN_GROUNDS.contains(type) && type.equals(Material.CHEST)) {
-								event.setCancelled(true);
-								return;
-							}
-						} else {
-							// Isn't in a player shop
-							if(FORBIDDEN_GROUNDS.contains(type)) {
-								event.setCancelled(true);
-								System.out.println("Pas chez soi");
-								return;
-							}
+					if(bloc_place.contains(LocationInMap.SHOP)) {
+						// Is in a player shop
+						if(FORBIDDEN_GROUNDS.contains(type) && type.equals(Material.CHEST)) {
+							event.setCancelled(true);
+							return;
 						}
-						
+					} else {
+						// Isn't in a player shop
+						if(FORBIDDEN_GROUNDS.contains(type)) {
+							event.setCancelled(true);
+							System.out.println("Pas chez soi");
+							return;
+						}
 					}
 					
 				}

@@ -2,6 +2,7 @@ package fr.martdel.rolecraft.listeners;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -67,9 +68,11 @@ public class ClickListener implements Listener {
 					 */
 					Chest letterbox = (Chest) bs;
 					String name = letterbox.getCustomName();
-					OfflinePlayer owner = LocationInMap.getPlayerOwner(plugin, player, letterbox.getLocation());
+					Map<String, OfflinePlayer> owners = LocationInMap.getPlayerOwner(plugin, player, letterbox.getLocation());
+					if(owners.size() == 0 || !owners.containsKey("houses")) return;
+					OfflinePlayer owner = owners.get("houses");
 
-					if(name == null || owner == null) return;
+					if(name == null) return;
 					if(name.equalsIgnoreCase("§8Boite aux lettres") && owner != null && !owner.equals(player) && !player.isOp()) {
 						// Build letterbox inventory
 						String color = new CustomPlayer(owner.getPlayer(), plugin).getTeam().getColor();
@@ -85,7 +88,6 @@ public class ClickListener implements Listener {
 						player.setCompassTarget(letterbox.getLocation());
 						
 						event.setCancelled(true);
-						return;
 					}
 				} else if(bs instanceof Sign) {
 					Sign sign = (Sign) bs;

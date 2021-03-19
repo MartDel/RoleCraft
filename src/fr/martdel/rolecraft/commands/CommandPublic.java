@@ -192,8 +192,11 @@ public class CommandPublic implements CommandExecutor {
 				/*
 				 * SHOW INFORMATION ABOUT GROUNDS
 				 */
-				LocationInMap ground = LocationInMap.getPlayerPlace(plugin, player);
-				player.sendMessage("Vous êtes dans " + ground.getDescription() + ".");
+				List<LocationInMap> grounds = LocationInMap.getPlayerPlace(plugin, player);
+				for(LocationInMap ground : grounds){
+					player.sendMessage("Vous êtes dans " + ground.getDescription() + ".");
+				}
+				System.out.println(grounds);
 			} else if(cmd.getName().equalsIgnoreCase("sell")) {
 				/*
 				 * SELL COMMAND
