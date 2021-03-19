@@ -194,10 +194,11 @@ public class CommandPublic implements CommandExecutor {
 				 * SHOW INFORMATION ABOUT GROUNDS
 				 */
 				List<LocationInMap> types = new LocationChecker(player, plugin).getType();
+				// Sort by priority
+				// Get player owner if necessary
 				for(LocationInMap type : types){
 					player.sendMessage("Vous êtes dans " + type.getDescription() + ".");
 				}
-				System.out.println(types);
 			} else if(cmd.getName().equalsIgnoreCase("sell")) {
 				/*
 				 * SELL COMMAND

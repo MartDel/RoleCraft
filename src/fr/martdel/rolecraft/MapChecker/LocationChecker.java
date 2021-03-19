@@ -11,10 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static fr.martdel.rolecraft.MapChecker.LocationInMap.*;
 
@@ -134,7 +131,7 @@ public class LocationChecker {
                 };
                 if(isIn(loc, ground)) {
                     if(result.getString("owner_uuid").equalsIgnoreCase(uuid)) builders.add(player);
-                    else builders.add(Bukkit.getOfflinePlayer(result.getString("owner_uuid")));
+                    else builders.add(Bukkit.getOfflinePlayer(UUID.fromString(result.getString("owner_uuid"))));
                     break;
                 }
             }
@@ -192,8 +189,7 @@ public class LocationChecker {
         Ground res = new Ground();
         PreparedStatement search = db.prepareStatement("SELECT * FROM " + table.toString().toLowerCase() + "s");
         ResultSet result = search.executeQuery();
-        while(result.next()) {
-            System.out.println("found a " + table);
+        while(result.next() && !res.exist()) {
             Integer[] ground = {
                     result.getInt("x1"),
                     result.getInt("x2"),
@@ -208,7 +204,6 @@ public class LocationChecker {
                     res.setGroundType(table);
                     res.setUuid(result.getString("owner_uuid"));
                 }
-                break;
             }
         }
         search.close();

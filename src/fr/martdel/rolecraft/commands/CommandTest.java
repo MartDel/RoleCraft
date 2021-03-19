@@ -2,6 +2,8 @@ package fr.martdel.rolecraft.commands;
 
 import fr.martdel.rolecraft.player.CustomPlayer;
 import fr.martdel.rolecraft.deathroom.DeathRoom;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,6 +17,8 @@ import fr.martdel.rolecraft.powers.Fertility;
 import fr.martdel.rolecraft.powers.ShockWave;
 import fr.martdel.rolecraft.powers.SummonMob;
 import fr.martdel.rolecraft.powers.Telekinesis;
+
+import java.util.UUID;
 
 public class CommandTest implements CommandExecutor {
 
@@ -33,8 +37,8 @@ public class CommandTest implements CommandExecutor {
 			
 			if(cmd.getName().equalsIgnoreCase("test")) {
 				// Test command
-				DeathRoom dr = DeathRoom.getRoomById(0, plugin);
-				dr.setCurrentlyUsed(false);
+				OfflinePlayer test = plugin.getServer().getOfflinePlayer(UUID.fromString("d985993e-f3ed-45fc-8cdf-0dc38748e73f"));
+				System.out.println(test.getName());
 			} else if(cmd.getName().equalsIgnoreCase("power")) {
 				if(args.length != 0) {
 					if(args[0].equalsIgnoreCase("summoner")) {

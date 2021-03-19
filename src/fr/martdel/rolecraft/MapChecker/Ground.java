@@ -3,6 +3,8 @@ package fr.martdel.rolecraft.MapChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.util.UUID;
+
 public class Ground {
 
     private String uuid;
@@ -13,7 +15,7 @@ public class Ground {
         this.uuid = uuid;
         this.ground_type = ground_type;
 
-        this.player = Bukkit.getOfflinePlayer(uuid);
+        this.player = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
     }
 
     public Ground(){
@@ -32,7 +34,7 @@ public class Ground {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
-        this.player = Bukkit.getOfflinePlayer(uuid);
+        this.player = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
     }
 
     public OfflinePlayer getPlayer() {
