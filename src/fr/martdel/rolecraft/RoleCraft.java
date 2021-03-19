@@ -2,7 +2,6 @@ package fr.martdel.rolecraft;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import fr.martdel.rolecraft.MapChecker.MapProtectListener;
 import fr.martdel.rolecraft.PNJ.PNJListener;
 import fr.martdel.rolecraft.cinematics.Cinematic;
 import fr.martdel.rolecraft.commands.CommandAdmin;
