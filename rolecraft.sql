@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.7deb1
+-- version 4.9.5deb2
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : Dim 14 mars 2021 à 19:47
--- Version du serveur :  8.0.23-0ubuntu0.20.10.1
--- Version de PHP : 7.4.9
+-- Généré le : ven. 19 mars 2021 à 10:35
+-- Version du serveur :  8.0.23-0ubuntu0.20.04.1
+-- Version de PHP : 7.4.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -120,6 +120,7 @@ CREATE TABLE `houses` (
 CREATE TABLE `players` (
   `uuid` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `pseudo` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `IP` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `admin` bit(1) NOT NULL DEFAULT b'0',
   `level` int NOT NULL DEFAULT '1',
   `score` int NOT NULL DEFAULT '0',
