@@ -1567,8 +1567,12 @@ powers:
     item_type: GLASS_PANE
     cooldown: 2400
     duration: 1000
-    start_msg: "§5Vous êtes maintenant §ainvisible"
-    stop_msg: "§5Vous n'êtes §cplus invisible"
+    start_msg:
+    - "§5Vous êtes maintenant §ainvisibles"
+    - "§cNe vous approchez pas§r trop des monstres même s'ils ne peuvent pas vous
+      voir !"
+    - Selectionnez un slot vide pour passer inaperçu
+    stop_msg: "§5Vous n'êtes plus §cinvisibles"
   loader:
     item_type: CLOCK
     item_name1: "§8Chargement de"
