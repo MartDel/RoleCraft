@@ -101,7 +101,7 @@ public class DeathListener implements Listener {
 		Player player = event.getPlayer();
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
 		Block bloc = event.getClickedBlock();
-		if(bloc != null) return;
+		if(bloc == null) return;
 		BlockState bs = bloc.getState();
 
 		if(bs instanceof Sign){
@@ -122,7 +122,7 @@ public class DeathListener implements Listener {
 		Entity entity = event.getRightClicked();
 		String name = entity.getName();
 
-		if(customPlayer.getWaiting() == 2 && name.contains(RoleCraft.config.getString("respawn_entity"))){
+		if(customPlayer.getWaiting() == 2 && name.contains(RoleCraft.config.getString("respawn_entity_name"))){
 			// Repawn player
 			player.teleport(player.getBedSpawnLocation());
 			customPlayer.setWaiting(0);

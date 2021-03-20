@@ -1,4 +1,4 @@
-package fr.martdel.rolecraft.listeners;
+package fr.martdel.rolecraft.powers;
 
 import java.util.Arrays;
 import java.util.List;
@@ -125,6 +125,13 @@ public class PowerListener implements Listener {
 						event.setCancelled(true);
 						Fertility fertility = new Fertility(plugin, player);
 						fertility.run();
+					} else if(name.equalsIgnoreCase(Invisibility.ITEMNAME)){
+						// Invisibility power
+						event.setCancelled(true);
+						Invisibility invisibility = new Invisibility(plugin, player);
+						invisibility.start();
+						PowerLoader loader = new PowerLoader(plugin, player, Invisibility.getItemStack());
+						loader.startLoading(Invisibility.COOLDOWN);
 					}
 				}
 			}

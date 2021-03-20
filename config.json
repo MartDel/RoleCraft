@@ -596,6 +596,14 @@
             "tree": "JUNGLE_LOG",
             "tree_height": 10
         },
+        "invisibility": {
+            "item_name": "§5Invisibilité",
+            "item_type": "GLASS_PANE",
+            "cooldown": 2400,
+            "duration": 1000,
+            "start_msg": "§5Vous êtes maintenant §ainvisible",
+            "stop_msg": "§5Vous n'êtes plus §cinvisible"
+        },
         "loader": {
             "item_type": "CLOCK",
             "item_name1": "§8Chargement de",

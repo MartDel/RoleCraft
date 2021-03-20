@@ -11,6 +11,7 @@ import fr.martdel.rolecraft.database.DatabaseManager;
 import fr.martdel.rolecraft.deathroom.DeathListener;
 import fr.martdel.rolecraft.listeners.*;
 import fr.martdel.rolecraft.player.Score;
+import fr.martdel.rolecraft.powers.PowerListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -156,21 +157,24 @@ public class RoleCraft extends JavaPlugin {
 		} else return new Location(OVERWORLD, x, y, z);
 	}
 
+	/**
+	 * Get a Material List from a configuration path
+	 * @param path The configuration path to read
+	 * @return The found Material list, can be void if nothing was found
+	 */
 	public static List<Material> getConfigMaterialList(String path){
 		List<Material> result = new ArrayList<>();
-		List<String> list = RoleCraft.config.getStringList(path);;
+		List<String> list = config.getStringList(path);;
 		for (String name : list) {
 			result.add(Material.getMaterial(name));
 		}
 		return result;
 	}
-	
-	public static void printLocation(Location l) {
-		System.out.println(
-			"x=" + l.getBlockX() +
-			" y=" + l.getBlockY() +
-			" z=" + l.getBlockZ()
-		);
+
+	public static Material getConfigMaterial(String path){
+		String name = config.getString(path);
+		assert name != null;
+		return Material.getMaterial(name);
 	}
 
 	public DatabaseManager getDB() { return db; }

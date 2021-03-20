@@ -2,6 +2,7 @@ package fr.martdel.rolecraft.commands;
 
 import fr.martdel.rolecraft.player.CustomPlayer;
 import fr.martdel.rolecraft.deathroom.DeathRoom;
+import fr.martdel.rolecraft.powers.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -11,12 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import fr.martdel.rolecraft.RoleCraft;
-import fr.martdel.rolecraft.powers.Bomb;
-import fr.martdel.rolecraft.powers.Bunker;
-import fr.martdel.rolecraft.powers.Fertility;
-import fr.martdel.rolecraft.powers.ShockWave;
-import fr.martdel.rolecraft.powers.SummonMob;
-import fr.martdel.rolecraft.powers.Telekinesis;
 
 import java.util.UUID;
 
@@ -37,8 +32,9 @@ public class CommandTest implements CommandExecutor {
 			
 			if(cmd.getName().equalsIgnoreCase("test")) {
 				// Test command
-				OfflinePlayer test = plugin.getServer().getOfflinePlayer(UUID.fromString("d985993e-f3ed-45fc-8cdf-0dc38748e73f"));
-				System.out.println(test.getName());
+				boolean invisible  = player.isInvisible();
+				player.setInvisible(!invisible);
+				player.sendMessage(invisible ? "visible" : "invisible");
 			} else if(cmd.getName().equalsIgnoreCase("power")) {
 				if(args.length != 0) {
 					if(args[0].equalsIgnoreCase("summoner")) {
@@ -59,6 +55,9 @@ public class CommandTest implements CommandExecutor {
 					} else if(args[0].equalsIgnoreCase("fertility")) {	
 						ItemStack fertility = Fertility.getItemStack();
 						player.getInventory().addItem(fertility);
+					} else if(args[0].equalsIgnoreCase("invisibility")) {
+						ItemStack invisibility = Invisibility.getItemStack();
+						player.getInventory().addItem(invisibility);
 					}
 				}
 			}
