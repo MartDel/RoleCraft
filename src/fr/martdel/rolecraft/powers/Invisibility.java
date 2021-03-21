@@ -54,11 +54,24 @@ public class Invisibility {
         inv.setItemInOffHand(new ItemStack(Material.AIR));
         player.updateInventory();
 
-        // Stop invisibility
         scheduler.runTaskLater(plugin, () -> {
+            // Stop invisibility
             player.setInvisible(false);
             assert STOPMSG != null;
             player.sendMessage(STOPMSG);
+
+            // Show player extra items
+            PlayerInventory inv2 = player.getInventory();
+            inv2.setHelmet(inv2.getItem(9));
+            inv2.setChestplate(inv2.getItem(10));
+            inv2.setLeggings(inv2.getItem(11));
+            inv2.setBoots(inv2.getItem(12));
+            inv2.setItemInOffHand(inv2.getItem(13));
+            int[] to_remove = {9, 10, 11, 12, 13};
+            for (int slot: to_remove){
+                inv2.setItem(slot, new ItemStack(Material.AIR));
+            }
+            player.updateInventory();
         }, DURATION);
     }
 
