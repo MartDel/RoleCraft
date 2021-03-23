@@ -25,7 +25,7 @@ public class CommandPublic implements CommandExecutor {
 	
 	private final String[] TEAMCMD = {"farmer", "miner", "explorer", "builder"};
 	
-	private RoleCraft plugin;
+	private final RoleCraft plugin;
 
 	public CommandPublic(RoleCraft rolecraft) {
 		this.plugin = rolecraft;
@@ -51,8 +51,8 @@ public class CommandPublic implements CommandExecutor {
 					}
 
 					StringBuilder message = new StringBuilder();
-					for(int j = 0; j < args.length; j++) {
-						message.append(args[j] + " ");
+					for (String arg : args) {
+						message.append(arg).append(" ");
 					}
 
 					try {
@@ -67,8 +67,9 @@ public class CommandPublic implements CommandExecutor {
 							@SuppressWarnings("unchecked")
 							Map<String, String> job = (Map<String, String>) jobs_list.get(i);
 							String fr = job.get("fr") + "s";
-							String player_color = team.getColor();						
-							
+							String player_color = team.getColor();
+
+							assert addressees != null;
 							addressees.sendMessage("(A tous les " + fr + ") [§" + player_color + player.getDisplayName() + "§r] " + message);
 						}
 						query.close();
@@ -128,8 +129,8 @@ public class CommandPublic implements CommandExecutor {
 				}
 				
 				StringBuilder message = new StringBuilder();
-				for(int i = 1; i < args.length; i++) {
-					message.append(args[i] + " ");
+				for(String arg : args) {
+					message.append(arg).append(" ");
 				}
 				
 				String sender_color = customPlayer.getTeam().getColor();
@@ -147,8 +148,8 @@ public class CommandPublic implements CommandExecutor {
 				}
 				
 				StringBuilder message = new StringBuilder();
-				for(int i = 0; i < args.length; i++) {
-					message.append(args[i] + " ");
+				for (String arg : args) {
+					message.append(arg).append(" ");
 				}
 
 				String player_color = team.getColor();
@@ -160,6 +161,7 @@ public class CommandPublic implements CommandExecutor {
 					while(result.next()) {
 						String uuid = result.getString("uuid");
 						Player addressees = plugin.getServer().getPlayer(uuid);
+						assert addressees != null;
 						addressees.sendMessage("(A tous les admins) [§" + player_color + player.getDisplayName() + "§r] " + message.toString());
 					}
 					query.close();
@@ -236,15 +238,12 @@ public class CommandPublic implements CommandExecutor {
 					return false;
 				}
 				CustomPlayer customEmitter = new CustomPlayer(emitter, plugin).loadData();
-				Wallet account1 = customEmitter.getWallet();
-				
+
 				// Get addressees
-				Player addressees = player;
-				CustomPlayer customAddressees = customPlayer;
-				Wallet account2 = customAddressees.getWallet();
-				if(!addressees.isOp() && !account2.has(value)) {
-					addressees.sendMessage("§4Vous n'avez pas les rubis nécessaires pour accepter cette transaction...");
-					addressees.sendMessage("§4Il vous faut §a" + value + " rubis§4.");
+				Wallet account2 = customPlayer.getWallet();
+				if(!player.isOp() && !account2.has(value)) {
+					player.sendMessage("§4Vous n'avez pas les rubis nécessaires pour accepter cette transaction...");
+					player.sendMessage("§4Il vous faut §a" + value + " rubis§4.");
 					return false;
 				}				
 
@@ -266,7 +265,7 @@ public class CommandPublic implements CommandExecutor {
 						case "farm":
 							Map<String, Map<String, Integer>> farms = customEmitter.getFarms();
 							if(!farms.containsKey(name)) {
-								addressees.sendMessage("§4Le terrain demandé n'éxiste plus.");
+								player.sendMessage("§4Le terrain demandé n'éxiste plus.");
 								return false;
 							}
 							emitter_ground = farms.get(name);
@@ -275,7 +274,7 @@ public class CommandPublic implements CommandExecutor {
 						case "build":
 							Map<String, Map<String, Integer>> builds = customEmitter.getBuilds();
 							if(!builds.containsKey(name)) {
-								addressees.sendMessage("§4Le terrain demandé n'éxiste plus.");
+								player.sendMessage("§4Le terrain demandé n'éxiste plus.");
 								return false;
 							}
 							emitter_ground = builds.get(name);
@@ -288,18 +287,18 @@ public class CommandPublic implements CommandExecutor {
 				}
 				if(emitter_ground == null) {
 					emitter.sendMessage("§4Vous ne pouvez pas déléger un terrain vide.");
-					addressees.sendMessage("§4Aucun terrain n'a été trouvé...");
+					player.sendMessage("§4Aucun terrain n'a été trouvé...");
 					return false;
 				}
 				
 				// Send the emitter ground to the addressees
-				if(addressees.isOp()) customAddressees.setAdminGround(emitter_ground);
+				if(player.isOp()) customPlayer.setAdminGround(emitter_ground);
 				else {
 					switch (type) {
-						case "house": customAddressees.setHouse(emitter_ground); break;
-						case "shop": customAddressees.setShop(emitter_ground); break;
-						case "farm": customAddressees.addFarm("Ferme sans nom", emitter_ground); break;
-						case "build": customAddressees.addBuild("Terrain de build sans nom", emitter_ground); break;
+						case "house": customPlayer.setHouse(emitter_ground); break;
+						case "shop": customPlayer.setShop(emitter_ground); break;
+						case "farm": customPlayer.addFarm("Ferme sans nom", emitter_ground); break;
+						case "build": customPlayer.addBuild("Terrain de build sans nom", emitter_ground); break;
 						default:
 							System.out.println("Le switch marche pas frère");
 							break;
@@ -307,30 +306,30 @@ public class CommandPublic implements CommandExecutor {
 				}
 
 				// Sound effects
-				addressees.playSound(addressees.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-				addressees.playSound(addressees.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
+				player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+				player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
 				
 				// Manage money
 				account2.remove(value);
 				//account1.give(value);
 
-				customAddressees.removeBook("Demande de confirmation");
+				customPlayer.removeBook("Demande de confirmation");
 				
-				player.sendMessage("Votre terrain a été délégué §e" + addressees.getDisplayName());
-				addressees.sendMessage("§e" + player.getDisplayName() + "§r vient de vous déléger son terrain");
+				player.sendMessage("Votre terrain a été délégué §e" + player.getDisplayName());
+				player.sendMessage("§e" + player.getDisplayName() + "§r vient de vous déléger son terrain");
 				
 				// Builder XP
-				if(customAddressees.getJob() != 3 || player.isOp()) return false;
-				int score = customAddressees.getScore();
-				int add = 0;
+				if(customPlayer.getJob() != 3 || player.isOp()) return false;
+				int score = customPlayer.getScore();
+				int add;
 				
 				if(value <= 100) add = 100;
-				else if(value > 100 && value <= 500) add = 200;
-				else if(value > 500 && value <= 1000) add = 500;
-				else if(value > 1000) add = 750;
+				else if(value <= 500) add = 200;
+				else if(value <= 1000) add = 500;
+				else add = 750;
 				
-				customAddressees.setScore(score + add);
-				customAddressees.save();
+				customPlayer.setScore(score + add);
+				customPlayer.save();
 			}
 		}
 		

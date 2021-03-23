@@ -4,6 +4,7 @@ import fr.martdel.rolecraft.RoleCraft;
 import fr.martdel.rolecraft.player.Score;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -17,14 +18,9 @@ public class Cinematic {
     public static final String PATH = "assets/cinematic";
 
     private List<Location> data;
-    private Integer duration;
-    private boolean dynamic;
+    private final Integer duration;
+    private final boolean dynamic;
 
-    public Cinematic(Location loc, int d){
-        this.data = Collections.singletonList(loc);
-        this.duration = d;
-        this.dynamic = false;
-    }
     public Cinematic(List<Location> loc){
         this.data = loc;
         this.duration = null;
@@ -85,9 +81,12 @@ public class Cinematic {
             file.createNewFile();
             FileWriter writer = new FileWriter(file);
             for (Location loc : this.data){
+                World world = loc.getWorld();
+                assert world != null;
+                String worldname = world.getName();
                 writer.write(
                 "{" +
-                        "\"world\":\"" + loc.getWorld().getName() + "\"," +
+                        "\"world\":\"" + worldname + "\"," +
                         "\"x\":\"" + loc.getX() + "\"," +
                         "\"y\":\"" + loc.getY() + "\"," +
                         "\"z\":\"" + loc.getZ() + "\"," +
@@ -99,7 +98,7 @@ public class Cinematic {
             writer.flush();
             writer.close();
             Map<String, Cinematic> cinematic_list = plugin.getCinematicList();
-            if(cinematic_list.containsKey(name)) cinematic_list.remove(name);
+            cinematic_list.remove(name);
             cinematic_list.put(name, this);
             plugin.setCinematicList(cinematic_list);
         } catch (IOException e) {
@@ -113,12 +112,11 @@ public class Cinematic {
      * Delete the cinematic from the server files
      * @param name The cinematic name
      * @param plugin Instance of RoleCraft plugin
-     * @return boolean If it's a success or not
      */
-    public boolean delete(String name, RoleCraft plugin){
+    public void delete(String name, RoleCraft plugin){
         plugin.getCinematicList().remove(name);
         File file = new File(PATH + "/" + name + ".json");
-        return file.delete();
+        file.delete();
     }
 
     /**

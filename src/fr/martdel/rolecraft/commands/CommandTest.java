@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class CommandTest implements CommandExecutor {
 
-	private RoleCraft plugin;
+	private final RoleCraft plugin;
 
 	public CommandTest(RoleCraft roleCraft) {
 		this.plugin = roleCraft;

@@ -21,6 +21,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -48,7 +49,7 @@ public class PowerListener implements Listener {
 		Action action = event.getAction();
 		ItemStack item = event.getItem();
 		
-		// Using an item
+		// Using a power item
 		if(item != null && item.hasItemMeta()) {
 			Material type = item.getType();
 			ItemMeta iMeta = item.getItemMeta();
@@ -172,26 +173,31 @@ public class PowerListener implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onItemDrop(PlayerDropItemEvent event) {
 		Item item = event.getItemDrop();
 		Player player = event.getPlayer();
 		ItemStack itemstack = item.getItemStack();
-		
+
 		if(itemstack.equals(Bomb.getItemStack())) {
-			plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
-				@Override
-				public void run() {
-					Bomb bomb = new Bomb(item.getLocation());
-					bomb.explode();
-					World world = item.getWorld();
-					world.spawnParticle(Particle.SMOKE_NORMAL, item.getLocation(), 3);
-					item.remove();
-					player.getInventory().addItem(Bomb.getItemStack());
-				}
+			plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+				Bomb bomb = new Bomb(item.getLocation());
+				bomb.explode();
+				World world = item.getWorld();
+				world.spawnParticle(Particle.SMOKE_NORMAL, item.getLocation(), 3);
+				item.remove();
+				player.getInventory().addItem(Bomb.getItemStack());
 			}, 40);
 		}
+	}
+
+	@EventHandler
+	public void onInteractEntity(PlayerInteractEntityEvent event){
+		Player player = event.getPlayer();
+		Entity entity = event.getRightClicked();
+
+		entity.setGravity(false);
 	}
 	
 	@EventHandler

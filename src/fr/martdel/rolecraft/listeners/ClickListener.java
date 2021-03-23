@@ -1,10 +1,11 @@
 package fr.martdel.rolecraft.listeners;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
+import fr.martdel.rolecraft.CustomItems;
+import fr.martdel.rolecraft.GUI;
 import fr.martdel.rolecraft.MapChecker.LocationChecker;
+import fr.martdel.rolecraft.RoleCraft;
+import fr.martdel.rolecraft.player.CustomPlayer;
+import fr.martdel.rolecraft.player.Wallet;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,12 +23,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import fr.martdel.rolecraft.CustomItems;
-import fr.martdel.rolecraft.player.CustomPlayer;
-import fr.martdel.rolecraft.GUI;
-import fr.martdel.rolecraft.MapChecker.LocationInMap;
-import fr.martdel.rolecraft.RoleCraft;
-import fr.martdel.rolecraft.player.Wallet;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClickListener implements Listener {
 	

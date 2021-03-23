@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class CommandAdmin implements CommandExecutor {
 	
-	private RoleCraft plugin;
+	private final RoleCraft plugin;
 
 	public CommandAdmin(RoleCraft roleCraft) {
 		this.plugin = roleCraft;
@@ -66,13 +66,11 @@ public class CommandAdmin implements CommandExecutor {
 				/*
 				 * GIVE RUBY TO THE PLAYER
 				 */
-				Integer nb = 1;
+				int nb = 1;
 				if(args.length == 1) {
 					try {
 						nb = Integer.parseInt(args[0]);
-					} catch (Exception e) {
-						nb = 1;
-					}
+					} catch (Exception ignored) {}
 				}
 				Wallet playerWallet = customPlayer.getWallet();
 				try{ playerWallet.give(nb); }
@@ -177,12 +175,12 @@ public class CommandAdmin implements CommandExecutor {
 					return false;
 				}
 				String mob_name = args[0];
-				EntityType mob = EntityType.valueOf(mob_name);
-				if(mob == null) {
-					player.sendMessage("§4Nom du mob incorrect...");
-					return false;
+				try{
+					EntityType mob = EntityType.valueOf(mob_name);
+					player.getWorld().spawnEntity(player.getLocation(), mob);
+				} catch (IllegalArgumentException e){
+					player.sendMessage("Le mob n'a pas été trouvé...");
 				}
-				player.getWorld().spawnEntity(player.getLocation(), mob);
 			}
 		}
 		
