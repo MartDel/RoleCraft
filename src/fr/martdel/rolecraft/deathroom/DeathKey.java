@@ -15,8 +15,8 @@ public enum DeathKey {
     B2(CustomItems.DEATHKEYB2),
     C1(CustomItems.DEATHKEYC1);
 
-    private CustomItems customitem;
-    private String config_path;
+    private final CustomItems customitem;
+    private final String config_path;
 
     DeathKey(CustomItems item){
         this.config_path = "deathkeys." + this.toString();
@@ -46,6 +46,7 @@ public enum DeathKey {
     public ItemStack getItem(){
         ItemStack key = customitem.getItem();
         ItemMeta keymeta = key.getItemMeta();
+        assert keymeta != null;
         keymeta.setLore(Arrays.asList(
             "§fTaux de pertes: §4" + getLost(),
             "§fTaux de drops dans la salle: §a" + getRoomDrop(),

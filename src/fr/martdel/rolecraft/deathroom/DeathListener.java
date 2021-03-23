@@ -25,12 +25,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class DeathListener implements Listener {
 
 	private final RoleCraft plugin;
 	private final BukkitScheduler scheduler;
-	private static final Location WAITING_ROOM = RoleCraft.getConfigLocation((MemorySection) RoleCraft.config.get("waiting_room.spawn"), false);
+	private static final Location WAITING_ROOM = RoleCraft.getConfigLocation((MemorySection) Objects.requireNonNull(RoleCraft.config.get("waiting_room.spawn")), false);
 
 	public DeathListener(RoleCraft rolecraft) {
 		this.plugin = rolecraft;
@@ -73,6 +74,7 @@ public class DeathListener implements Listener {
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
 		int room_id = Integer.parseInt(title.substring(7,8));
 		DeathRoom room = DeathRoom.getRoomById(room_id, plugin);
+		assert itemmeta != null;
 		int key_id = itemmeta.getCustomModelData();
 		room.spawnPlayer(customPlayer, plugin, key_id == 8 ? null : DeathKey.getKeyById(key_id));
 		view.setCursor(item);
@@ -85,7 +87,7 @@ public class DeathListener implements Listener {
 		InventoryView view = event.getView();
 		ItemStack cursor = view.getCursor();
 		String title = view.getTitle();
-		if(!title.contains("§7Room")) return;
+		if(!title.contains("§7Room") || cursor == null) return;
 		if(!cursor.getType().equals(Material.AIR)){
 			view.setCursor(new ItemStack(Material.AIR));
 			return;
@@ -108,9 +110,10 @@ public class DeathListener implements Listener {
 			Sign sign = (Sign) bs;
 			// Respawn sign is clicked
 			if(sign.getLine(0).equalsIgnoreCase("respawn")){
-				player.teleport(player.getBedSpawnLocation());
+				Location spawnpoint = player.getBedSpawnLocation();
+				assert spawnpoint != null;
+				player.teleport(spawnpoint);
 				customPlayer.setWaiting(0);
-				return;
 			}
 		}
 	}
@@ -122,9 +125,13 @@ public class DeathListener implements Listener {
 		Entity entity = event.getRightClicked();
 		String name = entity.getName();
 
-		if(customPlayer.getWaiting() == 2 && name.contains(RoleCraft.config.getString("respawn_entity_name"))){
+		String respawn_entity_name = RoleCraft.config.getString("respawn_entity_name");
+		assert respawn_entity_name != null;
+		if(customPlayer.getWaiting() == 2 && name.contains(respawn_entity_name)){
 			// Repawn player
-			player.teleport(player.getBedSpawnLocation());
+			Location respawn = player.getBedSpawnLocation();
+			assert respawn != null;
+			player.teleport(respawn);
 			customPlayer.setWaiting(0);
 
 			String id_str = name.substring(24,25);

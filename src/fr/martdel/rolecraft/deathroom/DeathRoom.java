@@ -6,6 +6,7 @@ import fr.martdel.rolecraft.GUI;
 import fr.martdel.rolecraft.RoleCraft;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -19,12 +20,12 @@ import java.util.Map;
 
 public class DeathRoom {
 
-    private int id;
-    private Location state_bloc;
-    private Location spawnpoint;
-    private Location itemsspawn1;
-    private Location itemsspawn2;
-    private List<Cinematic> cinematic_list;
+    private final int id;
+    private final Location state_bloc;
+    private final Location spawnpoint;
+    private final Location itemsspawn1;
+    private final Location itemsspawn2;
+    private final List<Cinematic> cinematic_list;
 
     public static int NORMALLOST = RoleCraft.config.getInt("deathkeys.normal.lost");
     public static int NORMALROOM = RoleCraft.config.getInt("deathkeys.normal.room");
@@ -45,11 +46,15 @@ public class DeathRoom {
      * @param used If the room is currently used or not
      */
     public void setCurrentlyUsed(boolean used){
-        Block bloc = state_bloc.getWorld().getBlockAt(state_bloc);
+        World world = state_bloc.getWorld();
+        assert world != null;
+        Block bloc = world.getBlockAt(state_bloc);
         bloc.setType(used ? Material.REDSTONE_BLOCK : Material.AIR);
     }
     public boolean isCurrentlyUsed(){
-        Block bloc = state_bloc.getWorld().getBlockAt(state_bloc);
+        World world = state_bloc.getWorld();
+        assert world != null;
+        Block bloc = world.getBlockAt(state_bloc);
         Material type = bloc.getType();
         return type.equals(Material.REDSTONE_BLOCK);
     }
@@ -80,9 +85,7 @@ public class DeathRoom {
             choose_key.setItem(i, keys.get(i).getItem());
         }
         choose_key.setItem(8, GUI.createItem(Material.BARRIER, "§4Ne pas choisir de clé", new ArrayList<>(), 8));
-        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            player.getPlayer().openInventory(choose_key.getInventory());
-        }, 20);
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> player.getPlayer().openInventory(choose_key.getInventory()), 20);
     }
 
     /**
@@ -137,6 +140,7 @@ public class DeathRoom {
             @Override
             public void run() {
                 ItemStack item = room_items.get(i);
+                assert RoleCraft.OVERWORLD != null;
                 if(i % 2 == 0){
                     // First spawn
                     RoleCraft.OVERWORLD.dropItem(itemsspawn1, item);
@@ -151,6 +155,7 @@ public class DeathRoom {
 
         // Spawn drop items
         for (ItemStack item : inventory.get("drops")){
+            assert RoleCraft.OVERWORLD != null;
             RoleCraft.OVERWORLD.dropItem(customPlayer.getDeathLocation(), item);
         }
     }
