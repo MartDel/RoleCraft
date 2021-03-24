@@ -1,5 +1,6 @@
 package fr.martdel.rolecraft.database;
 
+import fr.martdel.rolecraft.Credentials;
 import fr.martdel.rolecraft.HttpRequest;
 
 import java.sql.Connection;
@@ -48,7 +49,7 @@ public class DatabaseManager {
 		Map<String, String> headers = new HashMap<>();
 		headers.put("Content-Type", "application/json; utf-8");
 		headers.put("Accept", "application/json");
-		headers.put("Access-Token", "o.9UUQyrzcm1yfAoqdxZMRCjvlAmz1LYqq");
+		headers.put("Access-Token", Credentials.PUSHBULLET_TOKEN);
 		HttpRequest notif = new HttpRequest(
 			"https://api.pushbullet.com/v2/pushes",
 			"POST",
