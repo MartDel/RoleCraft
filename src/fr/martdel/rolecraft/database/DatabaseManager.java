@@ -1,8 +1,12 @@
 package fr.martdel.rolecraft.database;
 
+import fr.martdel.rolecraft.HttpRequest;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class DatabaseManager {
@@ -20,8 +24,8 @@ public class DatabaseManager {
 			properties.setProperty("useSSL", "false");
 			this.connection = DriverManager.getConnection(DBCredentials.toURI(), properties);
 		} catch (SQLException | ClassNotFoundException e) {
-			// TODO Add pushbullet notification
-			e.printStackTrace();
+			if(e instanceof SQLException) error((SQLException) e);
+			else e.printStackTrace();
 		}
 	}
 
@@ -40,9 +44,16 @@ public class DatabaseManager {
 	}
 
 	public static void error(SQLException e) {
-		// TODO Pushbullet notification
 		e.printStackTrace();
+		Map<String, String> headers = new HashMap<>();
+		headers.put("Content-Type", "application/json; utf-8");
+		headers.put("Accept", "application/json");
+		headers.put("Access-Token", "o.9UUQyrzcm1yfAoqdxZMRCjvlAmz1LYqq");
+		HttpRequest notif = new HttpRequest(
+			"https://api.pushbullet.com/v2/pushes",
+			"POST",
+			headers,
+			"{\"type\": \"note\", \"title\": \"RoleCraft database error !\", \"body\": \"" + e.getMessage() + "\"}");
+		notif.execute();
 	}
-
-
 }
