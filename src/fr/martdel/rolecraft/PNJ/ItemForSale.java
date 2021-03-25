@@ -23,6 +23,7 @@ public class ItemForSale {
 	public ItemStack getItemStack() {
 		ItemStack tradeItem = new ItemStack(type, amount);
 		ItemMeta itemMeta = tradeItem.getItemMeta();
+		assert itemMeta != null;
 		itemMeta.setLore(Arrays.asList("§fPrix " + (toSell ? "de vente " : "") + ":", "§a" + price + " rubis."));
 		itemMeta.setCustomModelData(price);
 		tradeItem.setItemMeta(itemMeta);

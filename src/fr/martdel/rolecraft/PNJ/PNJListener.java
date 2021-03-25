@@ -1,6 +1,7 @@
 package fr.martdel.rolecraft.PNJ;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import fr.martdel.rolecraft.*;
@@ -22,7 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class PNJListener implements Listener {
 	
-	private RoleCraft plugin;
+	private final RoleCraft plugin;
 	
 	public PNJListener(RoleCraft rolecraft) {
 		this.plugin = rolecraft;
@@ -74,11 +75,13 @@ public class PNJListener implements Listener {
 			event.setCancelled(true);
 			if(!item.hasItemMeta() && event.getRawSlot() >= GUI.SELLDEATHKEYS_SIZE) return;
 			ItemMeta iMeta = item.getItemMeta();
+			assert iMeta != null;
 			if(!iMeta.hasCustomModelData()) return;
 			int id = iMeta.getCustomModelData();
 			DeathKey key = DeathKey.getKeyById(id);
 			customPlayer.loadData();
 			if(customPlayer.hasKey(key)) return;
+			assert key != null;
 			int price = key.getPrice();
 			Wallet p_account = customPlayer.getWallet();
 			if(!p_account.has(price)) return;
@@ -100,11 +103,15 @@ public class PNJListener implements Listener {
 			 */
 			try {
 				event.setCancelled(true);
-				int value = item.getItemMeta().getCustomModelData();
+				ItemMeta itemmeta = item.getItemMeta();
+				assert itemmeta != null;
+				int value = itemmeta.getCustomModelData();
 				Material itemtype = item.getType();
 				int amount = item.getAmount();
 				Wallet p_account = customPlayer.getWallet();
-				if(item.getItemMeta().getLore().get(0).contains("vente")) {
+				List<String> lore = item.getItemMeta().getLore();
+				assert lore != null;
+				if(lore.get(0).contains("vente")) {
 					/*
 					 * PLAYER SELL SOMETHING
 					 */
@@ -125,13 +132,13 @@ public class PNJListener implements Listener {
 								}
 							}
 						}
-						p_account.give(value);
 					} else { // Emerald bug fixed
 						int nb_emerald = 0;
 						CustomItems rubis = CustomItems.RUBIS;
 						for(ItemStack stack : player.getInventory().getStorageContents()) {
 							if(stack != null) {
 								ItemMeta meta = stack.getItemMeta();
+								assert meta != null;
 								if(!meta.equals(rubis.getItemMeta()) && stack.getType().equals(rubis.getType())) {
 									nb_emerald += stack.getAmount();
 								}
@@ -143,6 +150,7 @@ public class PNJListener implements Listener {
 						for(ItemStack stack : player.getInventory().getStorageContents()) {
 							if(stack != null && count != 0) {
 								ItemMeta meta = stack.getItemMeta();
+								assert meta != null;
 								if(!meta.equals(rubis.getItemMeta()) && stack.getType().equals(rubis.getType())) {
 									if(stack.getAmount() < count) {
 										count -= stack.getAmount();
@@ -154,8 +162,8 @@ public class PNJListener implements Listener {
 								}
 							}
 						}
-						p_account.give(value);
 					}
+					p_account.give(value);
 				} else if(!item.getItemMeta().getLore().get(0).contains("vente") && p_account.has(value)) {
 					/*
 					 * PLAYER BUY SOMETHING
@@ -172,8 +180,8 @@ public class PNJListener implements Listener {
 	
 	/**
 	 * Count an occurrence of an item in the player's inventory
-	 * @param player
-	 * @param type Item type
+	 * @param player The player to read his inventory
+	 * @param type The item type to count
 	 * @return Occurrence number
 	 */
 	private int countItem(Player player, Material type) {
