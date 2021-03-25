@@ -11,13 +11,6 @@ public class Ground {
     private OfflinePlayer player;
     private LocationInMap ground_type;
 
-    public Ground(String uuid, LocationInMap ground_type){
-        this.uuid = uuid;
-        this.ground_type = ground_type;
-
-        this.player = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
-    }
-
     public Ground(){
         this.uuid = null;
         this.ground_type = null;
@@ -26,10 +19,6 @@ public class Ground {
 
     public boolean exist(){
         return uuid != null && ground_type != null;
-    }
-
-    public String getUuid() {
-        return uuid;
     }
 
     public void setUuid(String uuid) {
