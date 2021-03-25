@@ -21,8 +21,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class RoleCraft extends JavaPlugin {
@@ -164,7 +167,7 @@ public class RoleCraft extends JavaPlugin {
 	 */
 	public static List<Material> getConfigMaterialList(String path){
 		List<Material> result = new ArrayList<>();
-		List<String> list = config.getStringList(path);;
+		List<String> list = config.getStringList(path);
 		for (String name : list) {
 			result.add(Material.getMaterial(name));
 		}
