@@ -32,9 +32,6 @@ public class CommandTest implements CommandExecutor {
 			
 			if(cmd.getName().equalsIgnoreCase("test")) {
 				// Test command
-				boolean invisible  = player.isInvisible();
-				player.setInvisible(!invisible);
-				player.sendMessage(invisible ? "visible" : "invisible");
 			} else if(cmd.getName().equalsIgnoreCase("power")) {
 				if(args.length != 0) {
 					if(args[0].equalsIgnoreCase("summoner")) {

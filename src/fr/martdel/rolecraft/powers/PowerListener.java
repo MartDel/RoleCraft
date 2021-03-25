@@ -1,6 +1,7 @@
 package fr.martdel.rolecraft.powers;
 
 import fr.martdel.rolecraft.RoleCraft;
+import fr.martdel.rolecraft.player.CustomPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -14,7 +15,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -186,12 +186,6 @@ public class PowerListener implements Listener {
 		}
 	}
 
-	@EventHandler
-	public void onInteractEntity(PlayerInteractEntityEvent event){
-		Entity entity = event.getRightClicked();
-		entity.setGravity(false);
-	}
-	
 	@EventHandler
 	public void onItemPickup(EntityPickupItemEvent event) {
 		// TODO check bomb pickup
