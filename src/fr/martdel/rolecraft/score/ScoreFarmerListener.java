@@ -26,27 +26,18 @@ import fr.martdel.rolecraft.RoleCraft;
 
 public class ScoreFarmerListener implements Listener {
 
-	private RoleCraft plugin;
+	private final RoleCraft plugin;
 	
-	private Map<Material, Integer> use;
-	private Map<Material, Integer> broke;
-	private Map<Material, Integer> craft;
-	private Map<Material, Integer> cook;
+	private final Map<Material, Integer> use = RoleCraft.getMaterialMap("score.farmer.use");
+	private final Map<Material, Integer> broke = RoleCraft.getMaterialMap("score.farmer.broke");
+	private final Map<Material, Integer> craft = RoleCraft.getMaterialMap("score.farmer.craft");
+	private final Map<Material, Integer> cook = RoleCraft.getMaterialMap("score.farmer.cook");
 
-	private Map<Material, Integer> spe_use;
-	private Map<EntityType, Integer> spe_kill;
-	private Map<Material, Integer> spe_cook;
+	private final Map<Material, Integer> spe_use = RoleCraft.getMaterialMap("score.farmer.spe_use");
+	private final Map<EntityType, Integer> spe_kill = RoleCraft.getEntityMap("score.farmer.spe_kill");
+	private final Map<Material, Integer> spe_cook = RoleCraft.getMaterialMap("score.farmer.spe_cook");
 	
-	public ScoreFarmerListener(RoleCraft rolecraft) {
-		this.plugin = rolecraft;
-		use = getMaterialConfigData("score.farmer.use", "type", "score");
-		broke = getMaterialConfigData("score.farmer.broke", "type", "score");		
-		craft = getMaterialConfigData("score.farmer.craft", "type", "score");
-		cook = getMaterialConfigData("score.farmer.cook", "type", "score");
-		spe_use = getMaterialConfigData("score.farmer.spe_use", "type", "score");
-		spe_cook = getMaterialConfigData("score.farmer.spe_cook", "type", "score");
-		spe_kill = getEntityConfigData("score.farmer.spe_kill", "entity", "score");
-	}
+	public ScoreFarmerListener(RoleCraft rolecraft) { this.plugin = rolecraft; }
 	
 	@EventHandler
 	public void onUsed(PlayerItemBreakEvent event) {
@@ -124,6 +115,7 @@ public class ScoreFarmerListener implements Listener {
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
 		int score = customPlayer.getScore();
 		ItemStack item = event.getCurrentItem();
+		assert item != null;
 		Material itemtype = item.getType();
 		int nb = item.getAmount();
 		int nbFillStack = nbFillStack(event.getInventory());
@@ -159,7 +151,6 @@ public class ScoreFarmerListener implements Listener {
 			}
 			
 			if(click.equals(ClickType.LEFT) || click.equals(ClickType.RIGHT)) {
-				nb_crafted = nb;
 				add = craft.get(itemtype) * nb;
 				player.getInventory().addItem(new ItemStack(itemtype, nb));
 				int it = 0;
@@ -241,37 +232,6 @@ public class ScoreFarmerListener implements Listener {
 			if(i != null && !i.getType().equals(Material.AIR) && it < 9) nb++;
 		}
 		return nb;
-	}
-	
-	private Map<String, Integer> getConfigData(String path, String key_name, String value_name){
-		Map<String, Integer> result = new HashMap<>();
-		List<Map<?, ?>> config_list = RoleCraft.config.getMapList(path);
-		for (Map<?, ?> el : config_list) {
-			@SuppressWarnings("unchecked")
-			Map<String, ?> current_config = (Map<String, ?>) el;
-			String key = (String) current_config.get(key_name);
-			Integer value = Integer.getInteger((String) current_config.get(value_name));
-			result.put(key, value);
-		}
-		return result;
-	}
-	private Map<Material, Integer> getMaterialConfigData(String path, String key_name, String value_name){
-		Map<Material, Integer> result = new HashMap<>();
-		Map<String, Integer> start_map = getConfigData(path, key_name, value_name);
-		for (int i = 0; i < start_map.size(); i++) {
-			String key_start = (String) start_map.keySet().toArray()[i];
-			result.put(Material.getMaterial(key_start), start_map.get(key_start));
-		}
-		return result;
-	}
-	private Map<EntityType, Integer> getEntityConfigData(String path, String key_name, String value_name){
-		Map<EntityType, Integer> result = new HashMap<>();
-		Map<String, Integer> start_map = getConfigData(path, key_name, value_name);
-		for (int i = 0; i < start_map.size(); i++) {
-			String key_start = (String) start_map.keySet().toArray()[i];
-			result.put(EntityType.valueOf(key_start), start_map.get(key_start));
-		}
-		return result;
 	}
 
 }

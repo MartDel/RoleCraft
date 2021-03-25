@@ -20,26 +20,17 @@ import fr.martdel.rolecraft.RoleCraft;
 
 public class ScoreMinerListener implements Listener {
 	
-	private RoleCraft plugin;
+	private final RoleCraft plugin;
 	
-	private Map<Material, Integer> cook;
-	private Map<Material, Integer> broke;
-	private Map<Material, Integer> craft;
+	private final Map<Material, Integer> cook = RoleCraft.getMaterialMap("score.miner.cook");
+	private final Map<Material, Integer> broke = RoleCraft.getMaterialMap("score.miner.break");
+	private final Map<Material, Integer> craft = RoleCraft.getMaterialMap("score.miner.craft");
 
-	private Map<Material, Integer> spe_cook;
-	private Map<Material, Integer> spe_broke;
-	private Map<Material, Integer> spe_craft;
+	private final Map<Material, Integer> spe_cook = RoleCraft.getMaterialMap("score.miner.spe_cook");
+	private final Map<Material, Integer> spe_broke = RoleCraft.getMaterialMap("score.miner.spe_break");
+	private final Map<Material, Integer> spe_craft = RoleCraft.getMaterialMap("score.miner.spe_craft");
 
-	public ScoreMinerListener(RoleCraft rolecraft) {
-		this.plugin = rolecraft;
-		
-		cook = getConfigData("score.miner.cook");
-		broke = getConfigData("score.miner.cook");
-		craft = getConfigData("score.miner.cook");
-		spe_cook = getConfigData("score.miner.cook");
-		spe_broke = getConfigData("score.miner.cook");
-		spe_craft = getConfigData("score.miner.cook");
-	}
+	public ScoreMinerListener(RoleCraft rolecraft) { this.plugin = rolecraft; }
 	
 	@EventHandler
 	public void onCook(FurnaceExtractEvent event) {
@@ -101,6 +92,7 @@ public class ScoreMinerListener implements Listener {
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
 		int score = customPlayer.getScore();
 		ItemStack item = event.getCurrentItem();
+		assert item != null;
 		Material itemtype = item.getType();
 		int nb = item.getAmount();
 		int nbFillStack = nbFillStack(event.getInventory());
@@ -139,7 +131,6 @@ public class ScoreMinerListener implements Listener {
 			}
 			
 			if(click.equals(ClickType.LEFT) || click.equals(ClickType.RIGHT)) {
-				nb_crafted = nb;
 				if(!customPlayer.hasSpe()) {
 					add = craft.get(itemtype) * nb;
 				} else {
@@ -174,19 +165,6 @@ public class ScoreMinerListener implements Listener {
 			if(i != null && !i.getType().equals(Material.AIR) && it < 9) nb++;
 		}
 		return nb;
-	}
-	
-	private Map<Material, Integer> getConfigData(String path){
-		Map<Material, Integer> result = new HashMap<>();
-		List<Map<?, ?>> config_list = RoleCraft.config.getMapList(path);
-		for (Map<?, ?> el : config_list) {
-			@SuppressWarnings("unchecked")
-			Map<String, ?> current_config = (Map<String, ?>) el;
-			Material type = Material.getMaterial((String) current_config.get("type"));
-			Integer score = Integer.getInteger((String) current_config.get("score"));
-			result.put(type, score);
-		}
-		return result;
 	}
 
 }

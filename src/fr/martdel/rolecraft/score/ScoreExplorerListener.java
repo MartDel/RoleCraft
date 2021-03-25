@@ -1,9 +1,7 @@
 package fr.martdel.rolecraft.score;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import fr.martdel.rolecraft.RoleCraft;
+import fr.martdel.rolecraft.player.CustomPlayer;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -12,30 +10,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import fr.martdel.rolecraft.player.CustomPlayer;
-import fr.martdel.rolecraft.RoleCraft;
+import java.util.Map;
 
 public class ScoreExplorerListener implements Listener {
 
-	private RoleCraft plugin;
+	private final RoleCraft plugin;
+
+	private final Map<EntityType, Integer> kill = RoleCraft.getEntityMap("score.explorer.kill");
 	
-	private Map<EntityType, Integer> kill;
-	
-	public ScoreExplorerListener(RoleCraft rolecraft) {
-		this.plugin = rolecraft;
-		
-		// Kill XP
-		kill = new HashMap<>();
-		List<Map<?, ?>> kills_config = RoleCraft.config.getMapList("score.explorer.kill");
-		for (Map<?, ?> el : kills_config) {
-			@SuppressWarnings("unchecked")
-			Map<String, ?> kill_config = (Map<String, ?>) el;
-			EntityType entity = EntityType.valueOf((String) kill_config.get("entity"));
-			Integer score = (Integer) kill_config.get("score");
-			kill.put(entity, score);
-		}
-		
-	}
+	public ScoreExplorerListener(RoleCraft rolecraft) { this.plugin = rolecraft; }
 	
 	@EventHandler
 	public void onKill(EntityDamageByEntityEvent event) {

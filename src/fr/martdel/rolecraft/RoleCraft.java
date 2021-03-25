@@ -18,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -130,13 +131,14 @@ public class RoleCraft extends JavaPlugin {
 		return str.substring(0, 1).toUpperCase() + str.substring(1);
 	}
 
+	// Config functions //////////
+
 	/**
 	 * Get a location from the config file
 	 * @param data The config file raw
 	 * @param orientation If the raw contains orientations data
 	 * @return Location The found location
 	 */
-	@SuppressWarnings("unchecked")
 	public static Location getConfigLocation(MemorySection data, boolean orientation){
 		double x = Double.parseDouble(data.getString("x"));
 		double y = Double.parseDouble(data.getString("y"));
@@ -147,7 +149,6 @@ public class RoleCraft extends JavaPlugin {
 			return new Location(OVERWORLD, x, y, z, yaw, pitch);
 		} else return new Location(OVERWORLD, x, y, z);
 	}
-	@SuppressWarnings("unchecked")
 	public static Location getConfigLocation(Object config_object, boolean orientation) {
 		Map<String, ?> data = (Map<String, ?>) config_object;
 		double x = data.get("x") instanceof Double ? (Double) data.get("x") : (Integer) data.get("x");
@@ -174,11 +175,54 @@ public class RoleCraft extends JavaPlugin {
 		return result;
 	}
 
+	/**
+	 * Get a Material from configuration file
+	 * @param path The Material configuration path
+	 * @return The found Material
+	 */
 	public static Material getConfigMaterial(String path){
 		String name = config.getString(path);
 		assert name != null;
 		return Material.getMaterial(name);
 	}
+
+	/**
+	 * Get a Map which contains Materials and Strings for score listeners from configuration file
+	 * @param path The configuration path
+	 * @return The found Map
+	 */
+	public static Map<Material, Integer> getMaterialMap(String path){
+		Map<Material, Integer> res = new HashMap<>();
+		List<Map<?, ?>> config_list = config.getMapList(path);
+		for (Map<?, ?> el : config_list) {
+			@SuppressWarnings("unchecked")
+			Map<String, ?> config_el = (Map<String, ?>) el;
+			Material type = Material.getMaterial((String) config_el.get("type"));
+			Integer score = (Integer) config_el.get("score");
+			res.put(type, score);
+		}
+		return res;
+	}
+
+	/**
+	 * Get a Map which contains EntityTypes and Strings for score listeners from configuration file
+	 * @param path The configuration path
+	 * @return The found Map
+	 */
+	public static Map<EntityType, Integer> getEntityMap(String path){
+		Map<EntityType, Integer> res = new HashMap<>();
+		List<Map<?, ?>> config_list = config.getMapList(path);
+		for (Map<?, ?> el : config_list) {
+			@SuppressWarnings("unchecked")
+			Map<String, ?> config_el = (Map<String, ?>) el;
+			EntityType type = EntityType.valueOf((String) config_el.get("entity"));
+			Integer score = (Integer) config_el.get("score");
+			res.put(type, score);
+		}
+		return res;
+	}
+
+	///////////////////
 
 	public DatabaseManager getDB() { return db; }
 	public Score getLvl() { return lvl; }
