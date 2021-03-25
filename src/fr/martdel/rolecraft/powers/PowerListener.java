@@ -1,43 +1,30 @@
 package fr.martdel.rolecraft.powers;
 
-import java.util.Arrays;
-import java.util.List;
-
+import fr.martdel.rolecraft.RoleCraft;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import fr.martdel.rolecraft.RoleCraft;
-import fr.martdel.rolecraft.powers.Bomb;
-import fr.martdel.rolecraft.powers.Bunker;
-import fr.martdel.rolecraft.powers.Fertility;
-import fr.martdel.rolecraft.powers.PowerLoader;
-import fr.martdel.rolecraft.powers.ShockWave;
-import fr.martdel.rolecraft.powers.SummonMob;
-import fr.martdel.rolecraft.powers.Telekinesis;
+import java.util.Arrays;
+import java.util.List;
 
 public class PowerListener implements Listener {
 
-	private RoleCraft plugin;
+	private final RoleCraft plugin;
 
 	public PowerListener(RoleCraft roleCraft) {
 		this.plugin = roleCraft;
@@ -53,6 +40,7 @@ public class PowerListener implements Listener {
 		if(item != null && item.hasItemMeta()) {
 			Material type = item.getType();
 			ItemMeta iMeta = item.getItemMeta();
+			assert iMeta != null;
 			if(iMeta.hasDisplayName()) {
 				String name = iMeta.getDisplayName();
 				
@@ -80,9 +68,12 @@ public class PowerListener implements Listener {
 						if(name.equalsIgnoreCase(SummonMob.ITEMNAME) && type.equals(SummonMob.SPAWNERTYPE)) {
 							// Summoner power
 							event.setCancelled(true);
-							Location clicked_bloc = event.getClickedBlock().getLocation();
+							Block clicked = event.getClickedBlock();
+							assert clicked != null;
+							Location clicked_bloc = clicked.getLocation();
 							ItemStack viewfinder = SummonMob.getViewFinder();
 							ItemMeta viewfinderMeta = viewfinder.getItemMeta();
+							assert viewfinderMeta != null;
 							viewfinderMeta.setLore(Arrays.asList(
 								"Invoquer un blaze sur le bloc :",
 								Integer.toString(clicked_bloc.getBlockX()),
@@ -152,12 +143,15 @@ public class PowerListener implements Listener {
 			if(arrow.getShooter() instanceof Player) {
 				Player shooter = (Player) arrow.getShooter();
 				ItemStack weapon = shooter.getInventory().getItemInMainHand();
-				
-				if(weapon.getType().equals(SummonMob.VIEWFINDERTYPE) && weapon.getItemMeta().getDisplayName().equalsIgnoreCase(SummonMob.ITEMNAME)) {
+				ItemMeta weaponmeta = weapon.getItemMeta();
+				assert weaponmeta != null;
+
+				if(weapon.getType().equals(SummonMob.VIEWFINDERTYPE) && weaponmeta.getDisplayName().equalsIgnoreCase(SummonMob.ITEMNAME)) {
 					// Summoner power
 					event.setDamage(0);
 					List<String> weapon_lore = weapon.getItemMeta().getLore();
 					Location spawn = shooter.getLocation();
+					assert weapon_lore != null;
 					spawn.setX(Integer.parseInt(weapon_lore.get(1)));
 					spawn.setY(Integer.parseInt(weapon_lore.get(2)));
 					spawn.setZ(Integer.parseInt(weapon_lore.get(3)));
@@ -194,9 +188,7 @@ public class PowerListener implements Listener {
 
 	@EventHandler
 	public void onInteractEntity(PlayerInteractEntityEvent event){
-		Player player = event.getPlayer();
 		Entity entity = event.getRightClicked();
-
 		entity.setGravity(false);
 	}
 	

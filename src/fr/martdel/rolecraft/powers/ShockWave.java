@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Ladder;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -18,11 +19,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import fr.martdel.rolecraft.RoleCraft;
-import fr.martdel.rolecraft.superclass.SquareBuilder;
 
 public class ShockWave extends SquareBuilder {
 	
-	private static final Material ITEMTYPE = Material.getMaterial(RoleCraft.config.getString("powers.shockwave.item_type"));
+	private static final Material ITEMTYPE = RoleCraft.getConfigMaterial("powers.shockwave.item_type");
 	private static final int MAXRADIUS = RoleCraft.config.getInt("powers.shockwave.max_radius");
 	private static final int DELAY = RoleCraft.config.getInt("powers.shockwave.speed");
 	private static final int DAMAGE = RoleCraft.config.getInt("powers.shockwave.damage");
@@ -30,11 +30,11 @@ public class ShockWave extends SquareBuilder {
 	public static final int COOLDOWN = RoleCraft.config.getInt("powers.shockwave.cooldown");
 	public static final String ITEMNAME = RoleCraft.config.getString("powers.shockwave.item_name");
 
-	private Location center;
+	private final Location center;
 	private int radius = 1;
 
-	private RoleCraft plugin;
-	private BukkitScheduler scheduler;
+	private final RoleCraft plugin;
+	private final BukkitScheduler scheduler;
 
 	public ShockWave(RoleCraft plugin, Location center) {
 		super(center, MAXRADIUS);
@@ -48,15 +48,17 @@ public class ShockWave extends SquareBuilder {
 			@Override
 			public void run() {
 				// Up the blocs
-				if((int) radius != MAXRADIUS - 1) {
+				if(radius != MAXRADIUS - 1) {
 					Location[] corners = getCorners(radius);
 					for (int i = 0; i < corners.length; i++) {
 						List<Location> blocs = getBlocsForRow(corners[i], getRowLength(radius), i);
 						for (Location bloc : blocs) {
-							Location under_bloc_loc = new Location(bloc.getWorld(), bloc.getBlockX(), bloc.getBlockY() - 1, bloc.getBlockZ());
-							Block under_bloc = under_bloc_loc.getWorld().getBlockAt(under_bloc_loc);
+							World world = bloc.getWorld();
+							assert world != null;
+							Location under_bloc_loc = new Location(world, bloc.getBlockX(), bloc.getBlockY() - 1, bloc.getBlockZ());
+							Block under_bloc = world.getBlockAt(under_bloc_loc);
 							Material under_bloc_type = under_bloc.getType();
-							Block current_bloc = bloc.getWorld().getBlockAt(bloc);
+							Block current_bloc = world.getBlockAt(bloc);
 							current_bloc.setType(under_bloc_type);
 						}
 					}
@@ -66,7 +68,9 @@ public class ShockWave extends SquareBuilder {
 				for (int i = 0; i < old_corners.length; i++) {
 					List<Location> blocs = getBlocsForRow(old_corners[i], getRowLength(radius - 1), i);
 					for (Location bloc : blocs) {
-						bloc.getWorld().getBlockAt(bloc).setType(Material.AIR);
+						World world = bloc.getWorld();
+						assert world != null;
+						world.getBlockAt(bloc).setType(Material.AIR);
 					}
 				}
 				
@@ -78,6 +82,7 @@ public class ShockWave extends SquareBuilder {
 	
 	public void makeDamages(Player damager) {
 		World world = center.getWorld();
+		assert world != null;
 		Collection<Entity> entities = world.getNearbyEntities(center, MAXRADIUS, MAXRADIUS, 3);
 		for (Entity entity : entities) {
 			if(entity instanceof Damageable) {
@@ -88,7 +93,7 @@ public class ShockWave extends SquareBuilder {
 						player.damage(DAMAGE);
 					}
 				} else {
-					mob.damage(DAMAGE);;
+					mob.damage(DAMAGE);
 				}
 			}
 		}
@@ -106,20 +111,19 @@ public class ShockWave extends SquareBuilder {
 			case 3: increase = true; increaseX = false; break;
 		}
 		
-		int starter_i = 0;
+		int starter_i;
 		if(increaseX) starter_i = starter.getBlockX();
 		else starter_i = starter.getBlockZ();
 		
 		for (int i = 0; i < length; i++) {
-			int new_value = 0;
+			int new_value;
 			if(increase) new_value = starter_i + i;
 			else new_value = starter_i - i;
 
-			Location current_bloc = starter;
-			if(increaseX) current_bloc.setX(new_value);
-			else current_bloc.setZ(new_value);
+			if(increaseX) starter.setX(new_value);
+			else starter.setZ(new_value);
 			
-			blocs.add(new Location(current_bloc.getWorld(), current_bloc.getBlockX(), current_bloc.getBlockY(), current_bloc.getBlockZ()));
+			blocs.add(new Location(starter.getWorld(), starter.getBlockX(), starter.getBlockY(), starter.getBlockZ()));
 		}
 		
 		return blocs;
@@ -128,6 +132,7 @@ public class ShockWave extends SquareBuilder {
 	public static ItemStack getItemStack() {
 		ItemStack item = new ItemStack(ITEMTYPE);
 		ItemMeta itemmeta = item.getItemMeta();
+		assert itemmeta != null;
 		itemmeta.setDisplayName(ITEMNAME);
 		itemmeta.setLore(Arrays.asList("Tirez sur un ennemi pour", "§dinvoquer un allié§r"));
 		itemmeta.addEnchant(Enchantment.DURABILITY, 200, true);

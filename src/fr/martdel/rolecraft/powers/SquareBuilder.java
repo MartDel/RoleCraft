@@ -1,4 +1,4 @@
-package fr.martdel.rolecraft.superclass;
+package fr.martdel.rolecraft.powers;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import org.bukkit.block.Block;
 
 public abstract class SquareBuilder {
 	
-	private Location center;
-	private int maxradius;
+	private final Location center;
+	private final int maxradius;
 	
 	private Integer current_y = 0;
 
@@ -29,7 +29,9 @@ public abstract class SquareBuilder {
 			for (int i = 0; i < corners.length; i++) {
 				List<Location> blocs = getBlocsForRow(corners[i], getRowLength(r), i);
 				for (Location bloc : blocs) {
-					Block current_bloc = bloc.getWorld().getBlockAt(bloc);
+					World world = bloc.getWorld();
+					assert world != null;
+					Block current_bloc = world.getBlockAt(bloc);
 					if(!current_bloc.getType().equals(Material.AIR)) {
 						return false;
 					}
@@ -49,16 +51,13 @@ public abstract class SquareBuilder {
 		int x = center.getBlockX();
 		int y = center.getBlockY() + current_y;
 		int z = center.getBlockZ();
-		int r = radius != 0 ? radius : 0;
-		
-		Location[] corners = {
-			new Location(world, x - r, y, z + r),
-			new Location(world, x + r, y, z + r),
-			new Location(world, x + r, y, z - r),
-			new Location(world, x - r, y, z - r)
+
+		return new Location[]{
+			new Location(world, x - radius, y, z + radius),
+			new Location(world, x + radius, y, z + radius),
+			new Location(world, x + radius, y, z - radius),
+			new Location(world, x - radius, y, z - radius)
 		};
-		
-		return corners;
 	}
 
 	public Integer getCurrent_y() { return current_y; }

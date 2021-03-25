@@ -10,13 +10,13 @@ import fr.martdel.rolecraft.RoleCraft;
 
 public class PowerLoader {
 	
-	private static final Material LOADERTYPE = Material.getMaterial(RoleCraft.config.getString("powers.loader.item_type"));
+	private static final Material LOADERTYPE = RoleCraft.getConfigMaterial("powers.loader.item_type");
 
-	private ItemStack item;
-	private ItemStack give_item;
-	private Player player;
-	private RoleCraft plugin;
-	private BukkitScheduler scheduler;
+	private final ItemStack item;
+	private final ItemStack give_item;
+	private final Player player;
+	private final RoleCraft plugin;
+	private final BukkitScheduler scheduler;
 
 	public PowerLoader(RoleCraft rolecraft, Player player, ItemStack itemStack) {
 		this.item = itemStack;
@@ -39,7 +39,9 @@ public class PowerLoader {
 			private int slot = 0;
 			@Override
 			public void run() {
-				String power = item.getItemMeta().getDisplayName();
+				ItemMeta powermeta = item.getItemMeta();
+				assert powermeta != null;
+				String power = powermeta.getDisplayName();
 				double progress = (((double) t)/((double) cooldown)) * 100;
 				
 				ItemStack[] content = player.getInventory().getContents();
@@ -54,6 +56,8 @@ public class PowerLoader {
 						if(current_item.equals(item)) itemslot = i;
 						else if(current_item.getType().equals(LOADERTYPE)) {
 							ItemMeta current_meta = current_item.getItemMeta();
+							assert loadermeta != null;
+							assert current_meta != null;
 							ItemMeta loadermeta_less = getCustomItemMeta(loadermeta, power, ((int)progress) - 1);
 							if(current_meta.equals(loadermeta) || current_meta.equals(loadermeta_less)) {
 								loaderslot = i;
@@ -89,7 +93,9 @@ public class PowerLoader {
 	
 	private ItemStack getItemStack(String power, int progress) {
 		ItemStack loader = new ItemStack(LOADERTYPE);
-		loader.setItemMeta(getCustomItemMeta(loader.getItemMeta(), power, progress));
+		ItemMeta loader_meta = loader.getItemMeta();
+		assert loader_meta != null;
+		loader.setItemMeta(getCustomItemMeta(loader_meta, power, progress));
 		if(progress != 0) loader.setAmount(progress);
 		return loader;
 	}

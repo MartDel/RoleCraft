@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -12,12 +13,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import fr.martdel.rolecraft.RoleCraft;
-import fr.martdel.rolecraft.superclass.SquareBuilder;
 
 public class Bunker extends SquareBuilder {
 	
-	private static final Material ITEMTYPE = Material.getMaterial(RoleCraft.config.getString("powers.bunker.item_type"));
-	private static final Material BLOCKTYPE = Material.getMaterial(RoleCraft.config.getString("powers.bunker.block_type"));
+	private static final Material ITEMTYPE = RoleCraft.getConfigMaterial("powers.bunker.item_type");
+	private static final Material BLOCKTYPE = RoleCraft.getConfigMaterial("powers.bunker.block_type");
 	private static final int RADIUS = RoleCraft.config.getInt("powers.bunker.radius");
 	private static final int BUILD_DELAY = RoleCraft.config.getInt("powers.bunker.speed");
 	private static final int LIFE = RoleCraft.config.getInt("powers.bunker.life");
@@ -25,8 +25,8 @@ public class Bunker extends SquareBuilder {
 	public static final int COOLDOWN = RoleCraft.config.getInt("powers.bunker.cooldown");
 	public static final String ITEMNAME = RoleCraft.config.getString("powers.bunker.item_name");
 
-	private RoleCraft plugin;
-	private BukkitScheduler scheduler;
+	private final RoleCraft plugin;
+	private final BukkitScheduler scheduler;
 
 	public Bunker(RoleCraft plugin, Location center) {
 		super(center, RADIUS);		
@@ -43,13 +43,12 @@ public class Bunker extends SquareBuilder {
 				@Override
 				public void run() {
 					Location bloc = blocs.get(i);
-					bloc.getWorld().getBlockAt(bloc).setType(BLOCKTYPE);
+					World world = bloc.getWorld();
+					assert world != null;
+					world.getBlockAt(bloc).setType(BLOCKTYPE);
 					i++;
 					if(i < blocs.size()) scheduler.runTaskLater(plugin, this, BUILD_DELAY);
-					else scheduler.runTaskLater(plugin, new Runnable() {
-						@Override
-						public void run() { destroy(); }
-					}, LIFE);
+					else scheduler.runTaskLater(plugin, () -> destroy(), LIFE);
 				}
 			}, BUILD_DELAY);
 		}
@@ -64,7 +63,9 @@ public class Bunker extends SquareBuilder {
 				@Override
 				public void run() {
 					Location bloc = blocs.get(i);
-					bloc.getWorld().getBlockAt(bloc).setType(Material.AIR);
+					World world = bloc.getWorld();
+					assert world != null;
+					world.getBlockAt(bloc).setType(Material.AIR);
 					i++;
 					if(i < blocs.size()) scheduler.runTaskLater(plugin, this, BUILD_DELAY);
 				}
@@ -84,7 +85,7 @@ public class Bunker extends SquareBuilder {
 			case 3: increase = true; increaseX = false; break;
 		}
 		
-		int starter_i = 0;
+		int starter_i;
 		if(increaseX) starter_i = starter.getBlockX();
 		else starter_i = starter.getBlockZ();
 		
@@ -92,15 +93,14 @@ public class Bunker extends SquareBuilder {
 		for (int j = 0; j < 2; j++) {			
 			y += j * 2;
 			for (int i = 0; i < length; i++) {
-				int new_value = 0;
+				int new_value;
 				if(increase) new_value = starter_i + i;
 				else new_value = starter_i - i;
 
-				Location current_bloc = starter;
-				if(increaseX) current_bloc.setX(new_value);
-				else current_bloc.setZ(new_value);
-				current_bloc.setY(y);
-				blocs.add(new Location(current_bloc.getWorld(), current_bloc.getBlockX(), current_bloc.getBlockY(), current_bloc.getBlockZ()));
+				if(increaseX) starter.setX(new_value);
+				else starter.setZ(new_value);
+				starter.setY(y);
+				blocs.add(new Location(starter.getWorld(), starter.getBlockX(), starter.getBlockY(), starter.getBlockZ()));
 			}
 		}
 		
@@ -110,6 +110,7 @@ public class Bunker extends SquareBuilder {
 	public static ItemStack getItemStack() {
 		ItemStack item = new ItemStack(ITEMTYPE);
 		ItemMeta itemmeta = item.getItemMeta();
+		assert itemmeta != null;
 		itemmeta.setDisplayName(ITEMNAME);
 		itemmeta.addEnchant(Enchantment.DURABILITY, 200, true);
 		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

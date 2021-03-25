@@ -15,22 +15,22 @@ import fr.martdel.rolecraft.RoleCraft;
 
 public class Fertility {
 	
-	private static final Material ITEMTYPE = Material.getMaterial(RoleCraft.config.getString("powers.fertility.item_type"));
+	private static final Material ITEMTYPE = RoleCraft.getConfigMaterial("powers.fertility.item_type");
 	private static final int MAXRADIUS = RoleCraft.config.getInt("powers.fertility.radius");
 
 	private static final String ENDMSG = RoleCraft.config.getString("powers.fertility.end_msg");
 	private static final String NOTFOUNDMSG = RoleCraft.config.getString("powers.fertility.not_found_msg");
 	
-	private static final Material TREEROOT = Material.getMaterial(RoleCraft.config.getString("powers.fertility.tree"));
+	private static final Material TREEROOT = RoleCraft.getConfigMaterial("powers.fertility.tree");
 	private static final int TREEHEIGHT = RoleCraft.config.getInt("powers.fertility.tree_height");
 
 	public static final String ITEMNAME = RoleCraft.config.getString("powers.fertility.item_name");
 
-	private Player player;
-	private Location center;
-	private World world;
-	private RoleCraft plugin;
-	private BukkitScheduler scheduler;
+	private final Player player;
+	private final Location center;
+	private final World world;
+	private final RoleCraft plugin;
+	private final BukkitScheduler scheduler;
 	
 	public Fertility(RoleCraft plugin, Player player) {
 		this.player = player;
@@ -62,6 +62,7 @@ public class Fertility {
 				}
 			}
 		}
+		assert NOTFOUNDMSG != null;
 		player.sendMessage(NOTFOUNDMSG);
 	}
 
@@ -71,6 +72,7 @@ public class Fertility {
 			private int i = 1;
 			@Override
 			public void run() {
+				assert ENDMSG != null;
 				Location new_log = new Location(
 					world,
 					current.getBlockX(),
@@ -86,7 +88,9 @@ public class Fertility {
 				
 				i++;
 				if(i < TREEHEIGHT) scheduler.runTaskLater(plugin, this, delay);
-				else player.sendMessage(ENDMSG);
+				else {
+					player.sendMessage(ENDMSG);
+				}
 			}
 		}, delay);
 	}
@@ -94,6 +98,7 @@ public class Fertility {
 	public static ItemStack getItemStack() {
 		ItemStack item = new ItemStack(ITEMTYPE);
 		ItemMeta itemmeta = item.getItemMeta();
+		assert itemmeta != null;
 		itemmeta.setDisplayName(ITEMNAME);
 		itemmeta.addEnchant(Enchantment.DURABILITY, 200, true);
 		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

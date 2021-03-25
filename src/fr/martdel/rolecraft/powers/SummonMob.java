@@ -21,24 +21,22 @@ public class SummonMob {
 	private static final int DELAY = RoleCraft.config.getInt("powers.summoner.attack_delay");
 
 	public static final String ITEMNAME = RoleCraft.config.getString("powers.summoner.item_name");
-	public static final Material SPAWNERTYPE = Material.getMaterial(RoleCraft.config.getString("powers.summoner.spawner_type"));
-	public static final Material VIEWFINDERTYPE = Material.getMaterial(RoleCraft.config.getString("powers.summoner.viewfinder_type"));
+	public static final Material SPAWNERTYPE = RoleCraft.getConfigMaterial("powers.summoner.spawner_type");
+	public static final Material VIEWFINDERTYPE = RoleCraft.getConfigMaterial("powers.summoner.viewfinder_type");
 	public static final int COOLDOWN = RoleCraft.config.getInt("powers.summoner.cooldown");
 	
-	private Location location;
-	private World world;
-	private int ticklife;
+	private final Location location;
+	private final World world;
 	private LivingEntity mob;
 	private LivingEntity victim;
 	
-	private RoleCraft plugin;
-	private BukkitScheduler scheduler;
+	private final RoleCraft plugin;
+	private final BukkitScheduler scheduler;
 
 	public SummonMob(RoleCraft plugin, Location spawner) {
 		this.location = spawner;
 		this.world = spawner.getWorld();
-		this.ticklife = LIFE;
-		
+
 		this.plugin = plugin;
 		this.scheduler = plugin.getServer().getScheduler();
 	}
@@ -75,7 +73,6 @@ public class SummonMob {
 				double yaw = 1;
 				if(xdif == 0) {
 					if(zdif < 0) yaw = 179;
-					else yaw = 1;
 				} else {
 					yaw = targetinfo.getYaw();
 					if(xdif > 0 && zdif > 0) yaw = -90 + yaw;
@@ -94,7 +91,7 @@ public class SummonMob {
 				fireball.setIsIncendiary(false);
 				
 				life += delay;
-				if(life < ticklife && !victim.isDead()) scheduler.runTaskLater(plugin, this, delay);
+				if(life < LIFE && !victim.isDead()) scheduler.runTaskLater(plugin, this, delay);
 				else mob.remove();
 			}
 		}, delay);
@@ -104,13 +101,10 @@ public class SummonMob {
 		this.mob = mob;
 	}
 	
-	public void setTickLife(int life) {
-		this.ticklife = life;
-	}
-	
 	public static ItemStack getSpawner() {
 		ItemStack item = new ItemStack(SPAWNERTYPE);
 		ItemMeta itemmeta = item.getItemMeta();
+		assert itemmeta != null;
 		itemmeta.setDisplayName(ITEMNAME);
 		itemmeta.addEnchant(Enchantment.DURABILITY, 200, true);
 		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -121,6 +115,7 @@ public class SummonMob {
 	public static ItemStack getViewFinder() {
 		ItemStack item = new ItemStack(VIEWFINDERTYPE);
 		ItemMeta itemmeta = item.getItemMeta();
+		assert itemmeta != null;
 		itemmeta.setDisplayName(ITEMNAME);
 		itemmeta.addEnchant(Enchantment.DURABILITY, 200, true);
 		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

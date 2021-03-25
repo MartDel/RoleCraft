@@ -18,7 +18,7 @@ import fr.martdel.rolecraft.RoleCraft;
 
 public class Telekinesis {
 	
-	private static final Material ITEMTYPE = Material.getMaterial(RoleCraft.config.getString("powers.telekinesis.item_type"));
+	private static final Material ITEMTYPE = RoleCraft.getConfigMaterial("powers.telekinesis.item_type");
 	private static final int MAXDISTANCE = RoleCraft.config.getInt("powers.telekinesis.max_distance");
 	private static final String STARTMSG = RoleCraft.config.getString("powers.telekinesis.start_msg");
 	private static final String STOPMSG = RoleCraft.config.getString("powers.telekinesis.stop_msg");
@@ -27,9 +27,9 @@ public class Telekinesis {
 	public static final String USINGNAME = RoleCraft.config.getString("powers.telekinesis.using_name");
 
 	private Block bloc;
-	private Player player;
-	private RoleCraft plugin;
-	private BukkitScheduler scheduler;
+	private final Player player;
+	private final RoleCraft plugin;
+	private final BukkitScheduler scheduler;
 	private int slot;
 	
 	public Telekinesis(RoleCraft rolecraft, Player player, Block bloc) {
@@ -40,6 +40,7 @@ public class Telekinesis {
 	}
 	
 	public void moveBloc() {
+		assert STARTMSG != null;
 		player.sendMessage(STARTMSG);
 		int delay = 2;
 		scheduler.runTaskLater(plugin, new Runnable() {
@@ -47,7 +48,10 @@ public class Telekinesis {
 			@Override
 			public void run() {
 				ItemStack tk_item = player.getInventory().getItemInMainHand();
-				if(tk_item == null || !tk_item.hasItemMeta() || !tk_item.getItemMeta().getDisplayName().equalsIgnoreCase(USINGNAME) || player.isSneaking()) {
+				ItemMeta tk_meta = tk_item.getItemMeta();
+				assert tk_meta != null;
+				if(!tk_item.hasItemMeta() || !tk_meta.getDisplayName().equalsIgnoreCase(USINGNAME) || player.isSneaking()) {
+					assert STOPMSG != null;
 					player.sendMessage(STOPMSG);
 					player.getInventory().setItem(slot, getItemStack());
 					return;
@@ -83,7 +87,9 @@ public class Telekinesis {
 				}
 				for (Block target : targets) {
 					moveTo(target);
-					if(player.getTargetBlockExact(MAXDISTANCE).equals(target)) {
+					Block player_target = player.getTargetBlockExact(MAXDISTANCE);
+					assert player_target != null;
+					if(player_target.equals(target)) {
 						scheduler.runTaskLater(plugin, this, delay);
 						return;
 					}
@@ -103,7 +109,9 @@ public class Telekinesis {
 		}
 	}
 	public void moveTo(Location target) {
-		Block target_bloc = target.getWorld().getBlockAt(target);
+		World target_world = target.getWorld();
+		assert target_world != null;
+		Block target_bloc = target_world.getBlockAt(target);
 		moveTo(target_bloc);
 	}
 	
@@ -117,7 +125,8 @@ public class Telekinesis {
 		Location center = center_bloc.getLocation();
 		World world = center.getWorld(); int x = center.getBlockX();
 		int y = center.getBlockY(); int z = center.getBlockZ();
-		
+		assert world != null;
+
 		Location[] to_check = {
 			new Location(world, x-1, y, z),
 			new Location(world, x+1, y, z),
@@ -126,12 +135,12 @@ public class Telekinesis {
 			new Location(world, x, y, z-1),
 			new Location(world, x, y, z+1)
 		};
-		
+
 		List<Block> found = new ArrayList<>();
-		for (int i = 0; i < to_check.length; i++) {
-			Block current_bloc = world.getBlockAt(to_check[i]);
+		for (Location location : to_check) {
+			Block current_bloc = world.getBlockAt(location);
 			Material type = current_bloc.getType();
-			if(type.equals(Material.AIR)) found.add(current_bloc);
+			if (type.equals(Material.AIR)) found.add(current_bloc);
 		}
 		
 		return found;
@@ -140,6 +149,7 @@ public class Telekinesis {
 	public static ItemStack getItemStack() {
 		ItemStack item = new ItemStack(ITEMTYPE);
 		ItemMeta itemmeta = item.getItemMeta();
+		assert itemmeta != null;
 		itemmeta.setDisplayName(ITEMNAME);
 		itemmeta.addEnchant(Enchantment.DURABILITY, 200, true);
 		itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
