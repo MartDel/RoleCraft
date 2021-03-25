@@ -4,13 +4,16 @@ import fr.martdel.rolecraft.RoleCraft;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 public class Score {
 	
-	private Objective sb;
+	private final Objective sb;
 
 	public Score(RoleCraft main, String sb_str) {
-		this.sb = main.getServer().getScoreboardManager().getMainScoreboard().getObjective(sb_str);
+		ScoreboardManager sbm = main.getServer().getScoreboardManager();
+		assert sbm != null;
+		this.sb = sbm.getMainScoreboard().getObjective(sb_str);
 	}
 	
 	/**
@@ -25,8 +28,8 @@ public class Score {
 	
 	/**
 	 * Set player's score
-	 * @param p Player
-	 * @param score
+	 * @param p The player to update
+	 * @param score The score to set
 	 */
 	@SuppressWarnings("deprecation")
 	public void setScore(Player p, Integer score) {
@@ -35,13 +38,13 @@ public class Score {
 	
 	/**
 	 * Get the score limit for a specific LVL
-	 * @param LVL
+	 * @param LVL The LVL to work with
 	 * @return The score limit (int)
 	 */
 	public static int getLVLScore(int LVL) {
 		int c_lvlscore = 25;
 		for(int i = 2; i <= LVL; i++) c_lvlscore *= 1.4;
-		return (int) c_lvlscore;
+		return c_lvlscore;
 	}
 
 }

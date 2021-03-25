@@ -8,8 +8,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class Wallet {
 	
-	private Player player;
-	private Inventory inv;
+	private final Player player;
+	private final Inventory inv;
 		
 	public Wallet(Player player) {
 		this.player = player;
@@ -25,6 +25,7 @@ public class Wallet {
 		for(ItemStack stack : inv.getStorageContents()) {
 			if(stack != null) {
 				ItemMeta meta = stack.getItemMeta();
+				assert meta != null;
 				if(meta.equals(CustomItems.RUBIS.getItemMeta())) {
 					nb += stack.getAmount();
 				}
@@ -42,6 +43,7 @@ public class Wallet {
 		for(ItemStack stack : inv.getStorageContents()) {
 			if(stack != null) {
 				ItemMeta meta = stack.getItemMeta();
+				assert meta != null;
 				if(meta.equals(CustomItems.RUBIS.getItemMeta())) {
 					nb += stack.getAmount();
 				}
@@ -52,7 +54,7 @@ public class Wallet {
 	
 	/**
 	 * Give ruby to the player
-	 * @param nb
+	 * @param nb Number of ruby to give to the player
 	 */
 	public void give(int nb) throws Exception {
 		ItemStack ruby = new ItemStack(CustomItems.RUBIS.getType());
@@ -77,6 +79,7 @@ public class Wallet {
 		for(ItemStack stack : inv.getStorageContents()) {
 			if(stack != null && nb != 0) {
 				ItemMeta meta = stack.getItemMeta();
+				assert meta != null;
 				if(meta.equals(CustomItems.RUBIS.getItemMeta())) {
 					if(stack.getAmount() < nb) {
 						nb -= stack.getAmount();
@@ -100,6 +103,7 @@ public class Wallet {
 		for(ItemStack stack : inv.getStorageContents()) {
 			if(stack != null && nb != 0) {
 				ItemMeta meta = stack.getItemMeta();
+				assert meta != null;
 				if(meta.equals(CustomItems.RUBIS.getItemMeta())) {
 					if(stack.getAmount() < nb) {
 						nb -= stack.getAmount();
@@ -127,6 +131,7 @@ public class Wallet {
 			if(slot == null) return true;
 			if(slot.getType().equals(CustomItems.RUBIS.getType()) && slot.hasItemMeta()){
 				ItemMeta slotMeta = slot.getItemMeta();
+				assert slotMeta != null;
 				if(slotMeta.getDisplayName().equalsIgnoreCase(CustomItems.RUBIS.getName()) && slot.getAmount() < slot.getMaxStackSize()) return true;
 			}
 		}

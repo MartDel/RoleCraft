@@ -10,11 +10,12 @@ import org.bukkit.scoreboard.ScoreboardManager;
 
 public class MainScoreboard {
 
-    private Scoreboard sb;
-    private Objective obj;
+    private final Scoreboard sb;
+    private final Objective obj;
 
     public MainScoreboard(){
         ScoreboardManager manager = Bukkit.getScoreboardManager();
+        assert manager != null;
         this.sb = manager.getNewScoreboard();
         this.obj = sb.registerNewObjective("gui", "dummy");
     }
@@ -32,6 +33,7 @@ public class MainScoreboard {
         obj.getScore("Avant LVL " + (lvl + 1) + ": §2" + getLVLProgress(player.getScore(), lvl) + "%").setScore(6);
         obj.getScore("§e").setScore(5);
         obj.getScore("En ligne: §a" + Bukkit.getOnlinePlayers().size()).setScore(4);
+        assert plugin != null;
         obj.getScore("Admins: §9" + getNbAdmins(plugin)).setScore(3);
         obj.getScore("").setScore(2);
         obj.getScore("§5Rejoignez le Discord !").setScore(1);
@@ -51,17 +53,6 @@ public class MainScoreboard {
     }
 
     /**
-     * Get the score limit for a specific LVL
-     * @param LVL
-     * @return The score limit (int)
-     */
-    private int getLVLScore(int LVL) {
-        int c_lvlscore = 25;
-        for(int i = 2; i <= LVL; i++) c_lvlscore *= 1.4;
-        return (int) c_lvlscore;
-    }
-
-    /**
      * Get the progress percentage before get the next LVL
      * @param score the current player's score
      * @param c_lvl the current player's lvl
@@ -73,8 +64,8 @@ public class MainScoreboard {
         System.out.println(c_lvl);
         int cLVLScore = 0;
         if(c_lvl == 2) cLVLScore = 25;
-        else if(c_lvl > 2) cLVLScore = getLVLScore(c_lvl - 1);
-        int nxtLVLScore = getLVLScore(c_lvl);
+        else if(c_lvl > 2) cLVLScore = Score.getLVLScore(c_lvl - 1);
+        int nxtLVLScore = Score.getLVLScore(c_lvl);
         System.out.println(cLVLScore);
         System.out.println(nxtLVLScore);
 
@@ -85,26 +76,10 @@ public class MainScoreboard {
 
         float calcul1 = (float) (score - cLVLScore) / total;
         System.out.println(calcul1);
-        float calcul2 = (float) calcul1 * 100;
+        float calcul2 = calcul1 * 100;
         System.out.println(calcul2);
 
         return (int) calcul2;
     }
-
-    /*
-    objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-    objective.setDisplayName("§5RoleCraft");
-
-    objective.getScore("Métier: §" + color + team.getName()).setScore(8);
-    objective.getScore("LVL: §a" + lvl).setScore(7);
-    objective.getScore("Avant LVL " + (lvl + 1) + ": §2" + Score.getLVLProgress(score, lvl) + "%").setScore(6);
-    objective.getScore("§e").setScore(5);
-    objective.getScore("En ligne: §a" + Bukkit.getOnlinePlayers().size()).setScore(4);
-    objective.getScore("Admins: §9" + nb_admins).setScore(3);
-    objective.getScore("").setScore(2);
-    objective.getScore("§5Rejoignez le Discord !").setScore(1);
-
-    player.setScoreboard(scoreboard);
-     */
 
 }

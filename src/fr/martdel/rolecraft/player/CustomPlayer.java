@@ -5,11 +5,11 @@ import fr.martdel.rolecraft.database.DatabaseManager;
 import fr.martdel.rolecraft.deathroom.DeathKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,16 +17,14 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class CustomPlayer {
-	public static final int DEFAULTHEARTS = 10;
 
 	private Player player;
-	private UUID uuid;
+	private final UUID uuid;
 	private String ip;
 	private boolean loaded;
 
-	private RoleCraft plugin;
-	private BukkitScheduler scheduler;
-	private DatabaseManager db;
+	private final RoleCraft plugin;
+	private final DatabaseManager db;
 
 	private Boolean is_admin;
 	private Integer level;
@@ -42,7 +40,7 @@ public class CustomPlayer {
 	private Map<String, Map<String, Integer>> builds;
 	private Map<String, Integer> admin_ground;
 
-	private List<DeathKey> keys;
+	private final List<DeathKey> keys;
 
 	public CustomPlayer(Player player, RoleCraft rolecraft) {
 		this.player = player;
@@ -52,7 +50,6 @@ public class CustomPlayer {
 
 		this.plugin = rolecraft;
 		this.db = rolecraft.getDB();
-		this.scheduler = rolecraft.getServer().getScheduler();
 
 		this.is_admin = false;
 		this.level = 1;
@@ -149,11 +146,11 @@ public class CustomPlayer {
 	private int partof(int percentage, int total){
 		return ((Double) Math.floor(total * (percentage/100.0))).intValue();
 	}
-	
-	/*
-	 * MANAGE HEARTS NUMBER
+
+	/**
+	 * Set player's max number of hearts
+	 * @param hearts Number of hearts (default : 10)
 	 */
-	@SuppressWarnings("deprecation")
 	public void setMaxHearts(int hearts) {
 		if(getMaxHearts() > hearts) {
 			player.setHealth(hearts * 2);
@@ -163,7 +160,11 @@ public class CustomPlayer {
 			player.setHealth(hearts * 2);
 		}
 	}
-	@SuppressWarnings("deprecation")
+
+	/**
+	 * Get player's max number of hearts
+	 * @return Number of hearts (default : 10)
+	 */
 	public int getMaxHearts() { return (int) player.getMaxHealth() / 2; }
 	
 	/**
@@ -176,8 +177,13 @@ public class CustomPlayer {
 				ItemMeta meta = stack.getItemMeta();
 				if(meta instanceof BookMeta) {
 					BookMeta book_meta = (BookMeta) meta;
-					if(book_meta.getAuthor().equalsIgnoreCase("MartDel")
-					&& book_meta.getTitle().equalsIgnoreCase(name)) player.getInventory().remove(stack);
+					String author = book_meta.getAuthor();
+					String title = book_meta.getTitle();
+					assert author != null;
+					assert title != null;
+					if(author.equalsIgnoreCase("MartDel") && title.equalsIgnoreCase(name)) {
+						player.getInventory().remove(stack);
+					}
 				}
 			}
 		}
@@ -331,7 +337,9 @@ public class CustomPlayer {
 			// Update last death location
 			if(death_location != null){
 				PreparedStatement update_death = db.getConnection().prepareStatement("UPDATE death_locations SET world=?, x=?, y=?, z=? WHERE uuid=?");
-				update_death.setString(1, this.death_location.getWorld().getName());
+				World world = this.death_location.getWorld();
+				assert world != null;
+				update_death.setString(1, world.getName());
 				update_death.setInt(2, this.death_location.getBlockX());
 				update_death.setInt(3, this.death_location.getBlockY());
 				update_death.setInt(4, this.death_location.getBlockZ());
@@ -525,7 +533,6 @@ public class CustomPlayer {
 			}
 			
 			player.sendMessage("§aBravo !!§r Vous avez obtenu votre spécialité : §" + spe_color + spe_str);
-			return;
 		}
 	}
 

@@ -3,16 +3,19 @@ package fr.martdel.rolecraft.player;
 import fr.martdel.rolecraft.RoleCraft;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
 public class TeamManager {
-	
+
 	private Team tm;
 	private String name;
-	private RoleCraft plugin;
+	private final RoleCraft plugin;
 
 	public TeamManager(RoleCraft main, String name) {
-		this.tm = main.getServer().getScoreboardManager().getMainScoreboard().getTeam(name);
+		ScoreboardManager sbm = main.getServer().getScoreboardManager();
+		assert sbm != null;
+		this.tm = sbm.getMainScoreboard().getTeam(name);
 		this.name = name;
 		this.plugin = main;
 	}
@@ -24,7 +27,7 @@ public class TeamManager {
 	
 	/**
 	 * Return true if the player is in this team
-	 * @param player
+	 * @param player The player to check
 	 * @return boolean
 	 */
 	@SuppressWarnings("deprecation")
@@ -37,7 +40,7 @@ public class TeamManager {
 	
 	/**
 	 * Add a player to this team
-	 * @param player
+	 * @param player The player to add
 	 */
 	@SuppressWarnings("deprecation")
 	public void add(Player player) {
@@ -46,7 +49,7 @@ public class TeamManager {
 	
 	/**
 	 * Remove a player from this team
-	 * @param player
+	 * @param player The player to remove
 	 */
 	@SuppressWarnings("deprecation")
 	public void remove(Player player) {
@@ -55,7 +58,7 @@ public class TeamManager {
 	
 	/**
 	 * Move a player who is in a first team (this team) to a second team
-	 * @param player
+	 * @param player The player to move
 	 * @param otherTeam The second team (destination)
 	 */
 	public void move(Player player, TeamManager otherTeam) {
@@ -76,13 +79,15 @@ public class TeamManager {
 	
 	/**
 	 * Get the player's team
-	 * @param plugin
-	 * @param player
+	 * @param plugin Instance of RoleCraft plugin
+	 * @param player The player to work with
 	 * @return TeamManager
 	 */
 	public static TeamManager getPlayerTeam(RoleCraft plugin, Player player) {
-		@SuppressWarnings("deprecation")
-		Team team = plugin.getServer().getScoreboardManager().getMainScoreboard().getPlayerTeam(player);
+		ScoreboardManager sbm = plugin.getServer().getScoreboardManager();
+		assert sbm != null;
+		Team team = sbm.getMainScoreboard().getPlayerTeam(player);
+		assert team != null;
 		return new TeamManager(plugin, team);
 	}
 	
@@ -91,5 +96,5 @@ public class TeamManager {
 	public void setName(String name) { this.name = name; }
 	public Team getTeam() { return tm; }
 	public void setTeam(Team team) { this.tm = team; }
-	
+
 }
