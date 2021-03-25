@@ -9,24 +9,25 @@ import fr.martdel.rolecraft.commands.CommandPublic;
 import fr.martdel.rolecraft.commands.CommandTest;
 import fr.martdel.rolecraft.database.DatabaseManager;
 import fr.martdel.rolecraft.deathroom.DeathListener;
-import fr.martdel.rolecraft.listeners.*;
+import fr.martdel.rolecraft.listeners.ClickListener;
+import fr.martdel.rolecraft.listeners.CraftListener;
+import fr.martdel.rolecraft.listeners.PluginListener;
+import fr.martdel.rolecraft.listeners.SellListener;
 import fr.martdel.rolecraft.player.Score;
 import fr.martdel.rolecraft.powers.PowerListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 
 public class RoleCraft extends JavaPlugin {
@@ -48,7 +49,7 @@ public class RoleCraft extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();		
-		System.out.println("§b[RoleCraft]§r Server ON !");
+		System.out.println("[RoleCraft] Server ON !");
 		RoleCraft.config = this.getConfig();
 
 		this.db = new DatabaseManager();
@@ -60,6 +61,7 @@ public class RoleCraft extends JavaPlugin {
 
 		// Load cinematic files
 		String[] names = new File(Cinematic.PATH).list();
+		assert names != null;
 		try {
 			for (String name : names){
 				Scanner file = new Scanner(new File(Cinematic.PATH + "/" + name));
@@ -87,13 +89,19 @@ public class RoleCraft extends JavaPlugin {
 
 		// Commands
 		for (String command : PUBLICCOMMANDS) {
-			getCommand(command).setExecutor(new CommandPublic(this));
+			PluginCommand cmd = getCommand(command);
+			assert cmd != null;
+			cmd.setExecutor(new CommandPublic(this));
 		}
 		for (String command : ADMINCOMMANDS) {
-			getCommand(command).setExecutor(new CommandAdmin(this));
+			PluginCommand cmd = getCommand(command);
+			assert cmd != null;
+			cmd.setExecutor(new CommandAdmin(this));
 		}
 		for (String command : TESTCOMMANDS) {
-			getCommand(command).setExecutor(new CommandTest(this));
+			PluginCommand cmd = getCommand(command);
+			assert cmd != null;
+			cmd.setExecutor(new CommandTest(this));
 		}
 		
 		// Listeners
@@ -118,7 +126,7 @@ public class RoleCraft extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		System.out.println("§b[RoleCraft]§r Server OFF...");
+		System.out.println("[RoleCraft] Server OFF...");
 	}
 
 	
@@ -140,16 +148,23 @@ public class RoleCraft extends JavaPlugin {
 	 * @return Location The found location
 	 */
 	public static Location getConfigLocation(MemorySection data, boolean orientation){
-		double x = Double.parseDouble(data.getString("x"));
-		double y = Double.parseDouble(data.getString("y"));
-		double z = Double.parseDouble(data.getString("z"));
+		String x_str = data.getString("x"); assert x_str != null;
+		String y_str = data.getString("y"); assert y_str != null;
+		String z_str = data.getString("z"); assert z_str != null;
+
+		double x = Double.parseDouble(x_str);
+		double y = Double.parseDouble(y_str);
+		double z = Double.parseDouble(z_str);
 		if(orientation){
-			float yaw = Float.parseFloat(data.getString("yaw"));
-			float pitch = Float.parseFloat(data.getString("pitch"));
+			String yaw_str = data.getString("yaw"); assert yaw_str != null;
+			String pitch_str = data.getString("pitch"); assert pitch_str != null;
+			float yaw = Float.parseFloat(yaw_str);
+			float pitch = Float.parseFloat(pitch_str);
 			return new Location(OVERWORLD, x, y, z, yaw, pitch);
 		} else return new Location(OVERWORLD, x, y, z);
 	}
 	public static Location getConfigLocation(Object config_object, boolean orientation) {
+		@SuppressWarnings("unchecked")
 		Map<String, ?> data = (Map<String, ?>) config_object;
 		double x = data.get("x") instanceof Double ? (Double) data.get("x") : (Integer) data.get("x");
 		double y = data.get("y") instanceof Double ? (Double) data.get("y") : (Integer) data.get("y");

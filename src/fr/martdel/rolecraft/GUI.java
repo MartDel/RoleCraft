@@ -31,10 +31,10 @@ public class GUI {
 	public static final int SELL_STEP5_SIZE = RoleCraft.config.getInt("sell.step5.size");
 	public static final int SELLDEATHKEYS_SIZE = RoleCraft.config.getInt("deathkeys.buy_GUI.size");
 
-	private String name;
-	private int size;
-	private Inventory inventory;
-	private Map<String, String> rules;
+	private final String name;
+	private final int size;
+	private final Inventory inventory;
+	private final Map<String, String> rules;
 
 	public GUI(String name, int size) {
 		this.name = name;
@@ -92,7 +92,7 @@ public class GUI {
 	private int roundSize(int size) {
 		if(size % 9 == 0) return size;
 		size += 9 - (size % 9);
-		return size > 54 ? 54 : size;
+		return Math.min(size, 54);
 	}
 	
 	/**
@@ -128,7 +128,9 @@ public class GUI {
 			DeathKey key = keys[i];
 			ItemStack item = key.getItem();
 			ItemMeta meta = item.getItemMeta();
+			assert meta != null;
 			List<String> lore = meta.getLore();
+			assert lore != null;
 
 			if(player.hasKey(key)){
 				lore = Arrays.asList("§8Vous possédez déja", "§8cette clé...");
@@ -142,10 +144,8 @@ public class GUI {
 		return inv.getInventory();
 	}
 
-	/****************************
-	 		  SELL STEPS
-	****************************/
-	
+	// SELL STEPS /////////////////////
+
 	/**
 	 * Create the GUI for the step 1 of sell command
 	 * @return The inventory to show
@@ -181,6 +181,7 @@ public class GUI {
 
 		ItemStack item = new ItemStack(itemtype);
 		ItemMeta itemmeta = item.getItemMeta();
+		assert itemmeta != null;
 
 		// Get grounds
 		Map<String, Map<String, Integer>> grounds = new HashMap<>();
@@ -256,6 +257,7 @@ public class GUI {
 				// Create player's head (skull)
 				ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
 				SkullMeta meta = (SkullMeta) skull.getItemMeta();
+				assert meta != null;
 				meta.setOwningPlayer(p);
 				meta.setDisplayName("§" + color + p.getName());
 				skull.setItemMeta(meta);
@@ -283,6 +285,7 @@ public class GUI {
 				// Create player's head (skull)
 				ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
 				SkullMeta meta = (SkullMeta) skull.getItemMeta();
+				assert meta != null;
 				meta.setOwningPlayer(p);
 				meta.setDisplayName("§" + color + p.getName());
 				skull.setItemMeta(meta);
@@ -336,6 +339,7 @@ public class GUI {
 
 		List<String> lore = papermeta.getLore();
 		List<String> result = new ArrayList<>();
+		assert lore != null;
 		int i = 0;
 
 		switch (lore.get(i)){
@@ -392,6 +396,7 @@ public class GUI {
 	public static ItemStack createItem(Material mat, int amount, String name, List<String> lore, int data) {
 		ItemStack item = new ItemStack(mat, amount);
 		ItemMeta itemMeta = item.getItemMeta();
+		assert itemMeta != null;
 		itemMeta.setDisplayName(name);
 		itemMeta.setLore(lore);
 		itemMeta.setCustomModelData(data);

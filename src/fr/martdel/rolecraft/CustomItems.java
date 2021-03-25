@@ -29,15 +29,13 @@ public enum CustomItems {
 	// Private items
 	DELIMITER("delimiter");
 
-	private String config_name;
+	private final String config_name;
 
 	CustomItems(String config_name) {
 		this.config_name = "custom_items." + config_name;
 	}
 
-	public Material getType() {
-		return Material.getMaterial(RoleCraft.config.getString(config_name + ".type"));
-	}
+	public Material getType() { return RoleCraft.getConfigMaterial(config_name + ".type"); }
 
 	public String getName() {
 		return RoleCraft.config.getString(config_name + ".name");
@@ -74,6 +72,7 @@ public enum CustomItems {
 	public ItemMeta getItemMeta() {
 		ItemStack item = new ItemStack(getType());
 		ItemMeta iMeta = item.getItemMeta();
+		assert iMeta != null;
 		iMeta.setDisplayName(getName());
 		iMeta.setLore(getLore());
 		iMeta.setCustomModelData(getData());
