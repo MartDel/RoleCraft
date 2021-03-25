@@ -1,10 +1,7 @@
 package fr.martdel.rolecraft.listeners;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import fr.martdel.rolecraft.*;
+import fr.martdel.rolecraft.CustomItems;
+import fr.martdel.rolecraft.RoleCraft;
 import fr.martdel.rolecraft.player.CustomPlayer;
 import fr.martdel.rolecraft.player.MainScoreboard;
 import fr.martdel.rolecraft.player.TeamManager;
@@ -33,22 +30,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.List;
+
 @SuppressWarnings("deprecation")
 public class PluginListener implements Listener {
 	
-	private static final List<Material> FORBIDDEN_WEAPONS= new ArrayList<>();
+	private static final List<Material> FORBIDDEN_WEAPONS= RoleCraft.getConfigMaterialList("controled_items.weapons");
 	
-	private RoleCraft plugin;
+	private final RoleCraft plugin;
 
-	public PluginListener(RoleCraft roleCraft) {
-		this.plugin = roleCraft;
-		
-		// Get forbidden weapons
-		List<String> list = RoleCraft.config.getStringList("controled_items.weapons");
-		for (String weapon_name : list) {
-			FORBIDDEN_WEAPONS.add(Material.getMaterial(weapon_name));
-		}
-	}
+	public PluginListener(RoleCraft roleCraft) { this.plugin = roleCraft; }
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
@@ -95,7 +88,9 @@ public class PluginListener implements Listener {
 		}
 
 		// Update Ip
-		String ip = player.getAddress().getAddress().toString().substring(1);
+		InetSocketAddress address = player.getAddress();
+		assert address != null;
+		String ip = address.getAddress().toString().substring(1);
 		customPlayer.setIp(ip);
 		customPlayer.save();
 
@@ -129,9 +124,7 @@ public class PluginListener implements Listener {
 		String prefix = team.getTeam().getPrefix();
 		
 		// <%1$s> %2$s
-		if(team != null) {
-			event.setFormat("§" + color +  prefix + "§r %1$s> %2$s");
-		}
+		event.setFormat("§" + color +  prefix + "§r %1$s> %2$s");
 	}
 	
 	@EventHandler
@@ -152,6 +145,7 @@ public class PluginListener implements Listener {
 		/*
 		 * REMOVE EMERALD CRAFT
 		 */
+		assert item != null;
 		if(item.getType().equals(Material.EMERALD)) event.setCancelled(true);
 	}
 	
@@ -166,23 +160,20 @@ public class PluginListener implements Listener {
 			 * PLAYER DROPS AN IMPORTANT BOOK
 			 */
 			BookMeta bookMeta = (BookMeta) itemMeta;
+			assert bookMeta != null;
 			String title = bookMeta.getTitle();
 			String author = bookMeta.getAuthor();
 			List<String> protected_titles = Arrays.asList("Mission de départ", "Demande de confirmation");
+			assert author != null;
 			if(author.equalsIgnoreCase("MartDel") && protected_titles.contains(title)) {
 				event.setCancelled(true);
-				return;
 			}
 		} else if(item.getType().equals(Material.COMPASS)) {
 			/*
 			 * PLAYER DROPS THE START COMPASS
 			 */
 			customPlayer.loadData();
-			System.out.println(customPlayer.getJob());
-			if(customPlayer.isNew()) {
-				event.setCancelled(true);
-				return;
-			}
+			if(customPlayer.isNew()) event.setCancelled(true);
 		}
 	}
 	
@@ -230,7 +221,9 @@ public class PluginListener implements Listener {
 		 */
 		if(title.equalsIgnoreCase("§9Choisir son métier")) {
 			customPlayer.loadData();
-			int selected_job = item.getItemMeta().getCustomModelData();
+			ItemMeta meta = item.getItemMeta();
+			assert meta != null;
+			int selected_job = meta.getCustomModelData();
 			customPlayer.setJob(selected_job);
 			
 			String jobname = RoleCraft.firstLetterToUpperCase(customPlayer.getStringJob("fr"));
@@ -251,7 +244,7 @@ public class PluginListener implements Listener {
 			// Give some stuffs
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "give " + player.getDisplayName() + " written_book{pages:['[\"\",{\"text\":\"Bienvenu sur ce serveur \"},{\"text\":\"" + player.getDisplayName() + "\",\"color\":\"dark_aqua\"},{\"text\":\"!\\\\n\\\\nVous avez choisi le métier §" + jobColor + jobname + "§r. Très bon choix!\\\\n\\\\nEnfin, ne perdons pas plus de temps avec les politesses. Il faut vous rendre à la \",\"color\":\"reset\"},{\"text\":\"banque\",\"color\":\"red\"},{\"text\":\", elle se situe \",\"color\":\"reset\"},{\"text\":\"à l\\'Est du village\",\"color\":\"red\"},{\"text\":\".\",\"color\":\"reset\"}]','[\"\",{\"text\":\"Vous y trouverez un banquier. Parlez avec lui et dites lui que vous êtes nouveau dans le coin, il vous donnera la possibilité d\\'\"},{\"text\":\"acheter une maison\",\"color\":\"red\"},{\"text\":\". Parce que c\\'est vrai qu\\'être SDF n\\'est pas la meilleur situation dans ce monde.\",\"color\":\"reset\"}]','[\"\",{\"text\":\"Enfin bref vous trouverez un \"},{\"text\":\"capital de départ\",\"color\":\"red\"},{\"text\":\" dans votre inventaire, faites en bonne usage! N\\'oubliez pas que sans maison, vous ne pourrez rien faire dans ce monde malheureusement.\",\"color\":\"reset\"}]','[\"\",{\"text\":\"Ah... J\\'ai failli oublier... Si vous ne voyez personne dans la banque, \"},{\"text\":\"contactez les banquiers présents sur le serveur en cliquant sur la pancarte\",\"color\":\"red\"},{\"text\":\". Vous ne pouvez pas la manquer!\\\\n\\\\n\",\"color\":\"reset\"},{\"text\":\"Bon courage.\",\"color\":\"dark_green\"}]'],title:\"Mission de départ\",author:MartDel,display:{Lore:[\"Ouvrez ce livre pour découvrir\",\"votre première mission !\"]}}");
 			// Get starter pack
-			Material food_type = Material.getMaterial(RoleCraft.config.getString("starter_pack.food.type"));
+			Material food_type = RoleCraft.getConfigMaterial("starter_pack.food.type");
 			int food_amount = RoleCraft.config.getInt("starter_pack.food.amount");
 			int rubis_builder = RoleCraft.config.getInt("starter_pack.rubis.builder");
 			int rubis_else = RoleCraft.config.getInt("starter_pack.rubis.else");
@@ -271,7 +264,6 @@ public class PluginListener implements Listener {
 			
 			customPlayer.save();
 			event.setCancelled(true);
-			return;
 		} else if(title.contains(CustomItems.LETTERBOX.getName())) {
 			/*
 			 * SEND ITEMS IN A LETTERBOX
@@ -284,6 +276,7 @@ public class PluginListener implements Listener {
 				
 				// Send items in the letterbox
 				Inventory letterbox_inv = letterbox_chest.getInventory();
+				if(inv == null) return;
 				for(int s = 0; s < inv.getSize() - 1; s++) {
 					if(inv.getItem(s) != null) {
 						ItemStack i = inv.getItem(s);
@@ -293,7 +286,6 @@ public class PluginListener implements Listener {
 				
 				player.closeInventory();
 				event.setCancelled(true);
-				return;
 			}
 		}
 	}

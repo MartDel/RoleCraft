@@ -25,13 +25,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ClickListener implements Listener {
 	
 	private static final int LETTERBOX_PRICE = RoleCraft.config.getInt("prices.letterbox");
 	
-	private RoleCraft plugin;
+	private final RoleCraft plugin;
 
 	public ClickListener(RoleCraft rolecraft) {
 		this.plugin = rolecraft;
@@ -49,6 +50,7 @@ public class ClickListener implements Listener {
 		if(item != null && (action.equals(Action.RIGHT_CLICK_BLOCK) || action.equals(Action.RIGHT_CLICK_AIR))) {
 			ItemMeta itemMeta = item.getItemMeta();
 			CustomItems compass = CustomItems.COMPASS;
+			assert itemMeta != null;
 			if(item.getType().equals(compass.getType()) && itemMeta.equals(compass.getItemMeta())) {
 				Inventory inv = GUI.createCompassGUI();
 				player.openInventory(inv);
@@ -71,10 +73,13 @@ public class ClickListener implements Listener {
 					if(name == null || owner == null) return;
 					if(name.equalsIgnoreCase("§8Boite aux lettres") && !owner.equals(player) && !player.isOp()) {
 						// Build letterbox inventory
-						String color = new CustomPlayer(owner.getPlayer(), plugin).getTeam().getColor();
+						Player owner_player = owner.getPlayer();
+						assert owner_player != null;
+						String color = new CustomPlayer(owner_player, plugin).getTeam().getColor();
 						Inventory show = Bukkit.createInventory(null, 27, "§8Boite aux lettres de §" + color + owner.getName());
 						ItemStack validate = new ItemStack(Material.GREEN_CONCRETE);
 						ItemMeta meta = validate.getItemMeta();
+						assert meta != null;
 						meta.setDisplayName("§aEnvoyer");
 						meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 						validate.setItemMeta(meta);
@@ -124,7 +129,6 @@ public class ClickListener implements Listener {
 						} else {
 							player.sendMessage("§4Vous ne possédez pas le nombre de rubis nécessaire pour cet achat.");
 						}
-						return;
 					} else if(sign.getLine(0).equalsIgnoreCase("§f*****§d Echange §f*****")) {
 						/*
 						 * PLAYER CONVERTS HIS SAPHIRS TO RUBYS
@@ -136,6 +140,7 @@ public class ClickListener implements Listener {
 							if(stack != null) {
 								ItemMeta meta = stack.getItemMeta();
 								Material type = stack.getType();
+								assert meta != null;
 								if(meta.equals(CustomItems.SAPHIR.getItemMeta()) && type.equals(CustomItems.SAPHIR.getType())) {
 									nb_saphir += stack.getAmount();
 									stack.setAmount(0);
@@ -150,13 +155,13 @@ public class ClickListener implements Listener {
 						} else {
 							player.sendMessage("§4Vous ne possédez pas de saphirs");
 						}
-						return;
 					}
 				}
 				
 				
 			} else if(action == Action.LEFT_CLICK_BLOCK && item != null) {
 				ItemMeta iMeta = item.getItemMeta();
+				assert iMeta != null;
 				String name = iMeta.getDisplayName();
 				if(!iMeta.hasCustomModelData()) return;
 				int metadata = iMeta.getCustomModelData();
@@ -168,42 +173,41 @@ public class ClickListener implements Listener {
 					/*
 					 * ADMIN DEMARCATES A GROUND
 					 */
-					if(iMeta.getLore().equals(delimiter.getLore())) {
+					List<String> delimiter_lore = delimiter.getLore();
+					List<String> lore = iMeta.getLore();
+					if(lore == null) return;
+					if(delimiter_lore.equals(lore)) {
 						Location coo = bs.getLocation();
 						iMeta.setLore(Arrays.asList("Premier point :", Integer.toString(coo.getBlockX()), Integer.toString(coo.getBlockZ()), "Cliquez sur un bloc du sol", "pour fixer le deuxième point."));
 						item.setItemMeta(iMeta);
-					} else if(iMeta.getLore().get(0).equalsIgnoreCase("Premier point :")) {
+					} else if(lore.get(0).equalsIgnoreCase("Premier point :")) {
 						Location coo2 = bs.getLocation();
-						
-						Integer x1 = Integer.parseInt(iMeta.getLore().get(1));
-						Integer z1 = Integer.parseInt(iMeta.getLore().get(2));
-						
-						Integer x2 = coo2.getBlockX();
-						Integer z2 = coo2.getBlockZ();
 
-						Integer xMin = 0;
-						Integer zMin = 0;
-						Integer xLong = 0;
-						Integer zLong = 0;
-						
+						int x1 = Integer.parseInt(iMeta.getLore().get(1));
+						int z1 = Integer.parseInt(iMeta.getLore().get(2));
+
+						int x2 = coo2.getBlockX();
+						int z2 = coo2.getBlockZ();
+
+						int xMin; int zMin; int xLong; int zLong;
+
 						if(x1 > x2) {xLong = x1 - x2; xMin = x2;}
 						else {xLong = x2 - x1; xMin = x1;}
 						if(z1 > z2) {zLong = z1 - z2; zMin = z2;}
 						else {zLong = z2 - z1; zMin = z1;}
-						
+
 						player.getWorld().getBlockAt(x2, coo2.getBlockY() + 1, z2).setType(Material.OAK_SIGN);
 						Sign sign = (Sign) player.getWorld().getBlockAt(x2, coo2.getBlockY() + 1, z2).getState();
 						sign.setLine(0, "Banque");
 						sign.setLine(1, xMin + ";" + (xMin + xLong));
 						sign.setLine(2, zMin + ";" + (zMin + zLong));
 						sign.update();
-						
+
 						player.sendMessage("Le terrain a été délimité pour la banque");
 						iMeta.setLore(delimiter.getLore());
 						item.setItemMeta(iMeta);
 					}
 					event.setCancelled(true);
-					return;
 				}
 			}
 		}

@@ -1,6 +1,8 @@
 package fr.martdel.rolecraft.listeners;
 
-import fr.martdel.rolecraft.*;
+import fr.martdel.rolecraft.CustomItems;
+import fr.martdel.rolecraft.GUI;
+import fr.martdel.rolecraft.RoleCraft;
 import fr.martdel.rolecraft.player.CustomPlayer;
 import fr.martdel.rolecraft.player.Wallet;
 import org.bukkit.Material;
@@ -23,11 +25,9 @@ import java.util.UUID;
 
 public class SellListener implements Listener {
 
-	private RoleCraft plugin;
+	private final RoleCraft plugin;
 
-	public SellListener(RoleCraft rolecraft) {
-		this.plugin = rolecraft;
-	}
+	public SellListener(RoleCraft rolecraft) { this.plugin = rolecraft; }
 	
 	@EventHandler
 	public void onCloseInventory(InventoryCloseEvent event){
@@ -40,7 +40,10 @@ public class SellListener implements Listener {
 				Integer paperslot = getPaperSlot(player.getInventory());
 				if(paperslot == null) return;
 				ItemStack paper = player.getInventory().getItem(paperslot);
-				String name = paper.getItemMeta().getDisplayName();
+				assert paper != null;
+				ItemMeta papermeta = paper.getItemMeta();
+				assert papermeta != null;
+				String name = papermeta.getDisplayName();
 				int written_step = Integer.parseInt(name.substring(8));
 				if(written_step == step) removePaper(player);
 			} catch (NumberFormatException ignored) {}
@@ -62,6 +65,7 @@ public class SellListener implements Listener {
 			event.setCancelled(true);
 			if(!isCorrectItem(item, slot, GUI.SELL_STEP1_SIZE)) return;
 			ItemMeta iMeta = item.getItemMeta();
+			assert iMeta != null;
 			if (!iMeta.hasCustomModelData()) return;
 
 			int data = iMeta.getCustomModelData();
@@ -164,17 +168,19 @@ public class SellListener implements Listener {
 			event.setCancelled(true);
 			if(!isCorrectItem(item, slot, GUI.SELL_STEP2_SIZE)) return;
 			ItemMeta iMeta = item.getItemMeta();
+			assert iMeta != null;
 			if(!iMeta.hasDisplayName()) return;
 
 			// Get saving data
 			String ground = iMeta.getDisplayName();
 			String to_save;
 			if(ground.contains("§6")) to_save = "shop";
-			else if(ground.contains("§2") || ground.contains("§5")) to_save = ground.substring(2, ground.length());
+			else if(ground.contains("§2") || ground.contains("§5")) to_save = ground.substring(2);
 			else to_save = "house";
 
 			// Get required job
 			List<String> lore = getDataFromPaper(player);
+			assert lore != null;
 			String type = lore.get(0);
 			int required_job;
 			if(type.equalsIgnoreCase("farm")) required_job = 0;
@@ -195,6 +201,7 @@ public class SellListener implements Listener {
 			event.setCancelled(true);
 			if(!isCorrectItem(item, slot, GUI.SELL_STEP2_ADMINSIZE)) return;
 			ItemMeta iMeta = item.getItemMeta();
+			assert iMeta != null;
 			if(!iMeta.hasDisplayName() || !iMeta.hasCustomModelData()) return;
 
 			String to_save = "house";
@@ -233,23 +240,29 @@ public class SellListener implements Listener {
 			event.setCancelled(true);
 			if(!isCorrectItem(item, slot, GUI.SELL_STEP3_SIZE)) return;
 			ItemMeta iMeta = item.getItemMeta();
+			assert iMeta != null;
 			if(!iMeta.hasDisplayName()) return;
 
 			SkullMeta headmeta = (SkullMeta) item.getItemMeta();
 			OfflinePlayer clicked_player = headmeta.getOwningPlayer();
+			assert clicked_player != null;
 			if(!clicked_player.isOnline()){
 				GUI.error(player, "§4Le joueur sélectionné n'est plus en ligne.");
 				return;
 			}
-
-			if(getDataFromPaper(player).get(0).equalsIgnoreCase("buy_deco")){
+			List<String> paperore = getDataFromPaper(player);
+			assert paperore != null;
+			if(paperore.get(0).equalsIgnoreCase("buy_deco")){
 				if(!addDataToPaper(player, clicked_player.getName(), 5)) {
 					GUI.error(player, "§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
 					return;
 				}
 				Integer paperslot = getPaperSlot(player.getInventory());
 				ItemStack paper = player.getInventory().getItem(paperslot);
-				player.openInventory(GUI.createSellStep5(paper.getItemMeta()));
+				assert paper != null;
+				ItemMeta papermeta = paper.getItemMeta();
+				assert papermeta != null;
+				player.openInventory(GUI.createSellStep5(papermeta));
 			} else {
 				if(!addDataToPaper(player, clicked_player.getName(), 4)) {
 					GUI.error(player, "§4Veuillez garder le papier sur vous pendant la configuration de la vente.");
@@ -264,6 +277,7 @@ public class SellListener implements Listener {
 			event.setCancelled(true);
 			if(!isCorrectItem(item, slot, GUI.SELL_STEP4_SIZE)) return;
 			ItemMeta iMeta = item.getItemMeta();
+			assert iMeta != null;
 			if(!iMeta.hasDisplayName() || iMeta.equals(CustomItems.RUBIS.getItemMeta())) return;
 
 			// Change nb of Rubis
@@ -282,7 +296,9 @@ public class SellListener implements Listener {
 			final int btn_slot = 40;
 			int nb_rubis = Wallet.count(event.getInventory());
 			ItemStack submit = view.getItem(btn_slot);
+			assert submit != null;
 			ItemMeta submitbtn = submit.getItemMeta();
+			assert submitbtn != null;
 			submitbtn.setLore(Collections.singletonList("§fTotal : §a" + nb_rubis));
 			submit.setItemMeta(submitbtn);
 			view.setItem(btn_slot, submit);
@@ -295,7 +311,10 @@ public class SellListener implements Listener {
 				}
 				Integer paperslot = getPaperSlot(player.getInventory());
 				ItemStack paper = player.getInventory().getItem(paperslot);
-				player.openInventory(GUI.createSellStep5(paper.getItemMeta()));
+				assert paper != null;
+				ItemMeta papermeta = paper.getItemMeta();
+				assert  papermeta != null;
+				player.openInventory(GUI.createSellStep5(papermeta));
 				return;
 			}
 		}
@@ -305,9 +324,11 @@ public class SellListener implements Listener {
 			event.setCancelled(true);
 			if(!isCorrectItem(item, slot, GUI.SELL_STEP1_SIZE)) return;
 			ItemMeta iMeta = item.getItemMeta();
+			assert iMeta != null;
 			if(!iMeta.hasDisplayName() || !item.getType().equals(CustomItems.SELL_PAPER.getType())) return;
 
 			List<String> lore = getDataFromPaper(player);
+			assert lore != null;
 			try{
 				sell(player, lore);
 			} catch (Exception e){
@@ -336,8 +357,11 @@ public class SellListener implements Listener {
 		if(paperslot == null) return false;
 		ItemStack paper = player.getInventory().getItem(paperslot);
 
+		assert paper != null;
 		ItemMeta paperMeta = paper.getItemMeta();
+		assert paperMeta != null;
 		List<String> lore = paperMeta.getLore();
+		assert lore != null;
 		if (lore.equals(CustomItems.SELL_PAPER.getLore())) lore.clear();
 		lore.add(data);
 		paperMeta.setLore(lore);
@@ -356,9 +380,10 @@ public class SellListener implements Listener {
 		Integer paperslot = getPaperSlot(player.getInventory());
 		if(paperslot == null) return null;
 		ItemStack paper = player.getInventory().getItem(paperslot);
+		assert paper != null;
 		ItemMeta paperMeta = paper.getItemMeta();
-		List<String> lore = paperMeta.getLore();
-		return lore;
+		assert paperMeta != null;
+		return paperMeta.getLore();
 	}
 
 	private void removePaper(Player player){
@@ -366,6 +391,7 @@ public class SellListener implements Listener {
 		Integer paperslot = getPaperSlot(playerinv);
 		if(paperslot == null) return;
 		ItemStack paper = playerinv.getItem(paperslot);
+		assert paper != null;
 		playerinv.remove(paper);
 		player.updateInventory();
 	}
@@ -381,6 +407,7 @@ public class SellListener implements Listener {
 				if(stack.hasItemMeta()) {
 					Material type = stack.getType();
 					ItemMeta stackMeta = stack.getItemMeta();
+					assert stackMeta != null;
 					if(type.equals(template_paper.getType()) && stackMeta.hasLore()) {
 						paper_slot = i;
 					}
@@ -489,6 +516,7 @@ public class SellListener implements Listener {
 
 		// Transaction
 		Wallet senderWallet = customSender.getWallet();
+		assert customTo != null;
 		Wallet toWallet = customTo.getWallet();
 		if (!to.isOp()) {
 			if (!toWallet.has(price)) throw new Exception("§4Le destinataire n'a pas assez de rubis");

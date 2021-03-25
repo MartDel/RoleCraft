@@ -21,7 +21,7 @@ import fr.martdel.rolecraft.RoleCraft;
 
 public class CraftListener implements Listener {
 	
-	private RoleCraft plugin;
+	private final RoleCraft plugin;
 
 	// Error messages sent when a player try to do an unauthorized action (craft an item, get an item, use a block)
 	private static final String ERROR_CRAFT = RoleCraft.config.getString("error_msg.craft_item");
@@ -69,8 +69,9 @@ public class CraftListener implements Listener {
 			/*
 			 * PLAYER USES
 			 */
+			assert ERROR_USE != null;
 			switch(customPlayer.getJob()) {
-			case 0:
+				case 0:
 				if((!customPlayer.hasSpe() && FARMER_USE.contains(itemtype)) || (customPlayer.hasSpe() && USE1.contains(itemtype))) {
 					event.setCancelled(true);
 					player.sendMessage(ERROR_USE);
@@ -103,14 +104,16 @@ public class CraftListener implements Listener {
 		Player player = (Player) event.getWhoClicked();
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin).loadData();
 		ItemStack item = event.getCurrentItem();
+		if(item == null) return;
 		Material itemtype = item.getType();
 
 		if(!player.isOp()) {
 			/*
 			 * PLAYER CRAFTS ITEM (OR GETS) 
 			 */
+			assert ERROR_CRAFT != null;
 			switch(customPlayer.getJob()) {
-			case 0:
+				case 0:
 				if((!customPlayer.hasSpe() && FARMER_GET_CRAFT.contains(itemtype)) || (customPlayer.hasSpe() && BREEDER_GET_CRAFT.contains(itemtype))) {
 					event.setCancelled(true);
 					player.sendMessage(ERROR_CRAFT);
@@ -179,9 +182,10 @@ public class CraftListener implements Listener {
 		/*
 		 * PLAYER GETS ITEM IN INVENTORY
 		 */
+		assert ERROR_GET != null;
 		if(!view.getTitle().equalsIgnoreCase("Crafting") && !customPlayer.isNew() && !player.isOp()) {
 			switch(customPlayer.getJob()) {
-			case 0:
+				case 0:
 				if((!customPlayer.hasSpe() && FARMER_GET_CRAFT.contains(itemtype)) || (customPlayer.hasSpe() && BREEDER_GET_CRAFT.contains(itemtype))) {
 					event.setCancelled(true);
 					player.sendMessage(ERROR_GET);
@@ -206,7 +210,6 @@ public class CraftListener implements Listener {
 				}
 				break;
 			}
-			return;
 		}
 	}
 	
