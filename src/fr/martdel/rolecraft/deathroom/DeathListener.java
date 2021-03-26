@@ -53,7 +53,7 @@ public class DeathListener implements Listener {
 
 		DeathRoom room = getFreeRespawnRoom();
 		if(room == null) {
-			customPlayer.setWaiting(1);
+			customPlayer.setCurrentDeathroom(-1);
 			event.setRespawnLocation(WAITING_ROOM);
 		} else room.spawnPlayer(customPlayer, event, plugin);
 	}
@@ -113,13 +113,13 @@ public class DeathListener implements Listener {
 				Location spawnpoint = player.getBedSpawnLocation();
 				assert spawnpoint != null;
 				player.teleport(spawnpoint);
-				customPlayer.setWaiting(0);
+				customPlayer.setCurrentDeathroom(0);
 			}
 		}
 	}
 
 	@EventHandler
-	public void onPNJUse(PlayerInteractEntityEvent event) {
+	public void onEntityUse(PlayerInteractEntityEvent event) {
 		Player player = event.getPlayer();
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
 		Entity entity = event.getRightClicked();
@@ -127,30 +127,31 @@ public class DeathListener implements Listener {
 
 		String respawn_entity_name = RoleCraft.config.getString("respawn_entity_name");
 		assert respawn_entity_name != null;
-		if(customPlayer.getWaiting() == 2 && name.contains(respawn_entity_name)){
-			// Repawn player
+		int current_deathroom = customPlayer.getCurrentDeathroom();
+		if(current_deathroom > 0 && name.equalsIgnoreCase(respawn_entity_name)){
+			// Respawn player
 			Location respawn = player.getBedSpawnLocation();
 			assert respawn != null;
 			player.teleport(respawn);
-			customPlayer.setWaiting(0);
 
-			String id_str = name.substring(24,25);
-			System.out.println(id_str);
-			int id = Integer.parseInt(id_str);
-			DeathRoom dr = DeathRoom.getRoomById(id, plugin);
+			DeathRoom dr = DeathRoom.getRoomById(current_deathroom, plugin);
+			customPlayer.setCurrentDeathroom(0);
 			dr.setCurrentlyUsed(false);
 
 			// Clear all of entities in the room (Items and Mobs)
 			Collection<Entity> entities = entity.getWorld().getNearbyEntities(entity.getLocation(), 10, 3, 10);
 			for(Entity e : entities){
-				if(!(e instanceof Player)) e.remove();
+				String e_name = e.getName();
+				if(!(e instanceof Player) && !e_name.equalsIgnoreCase(respawn_entity_name)){
+					e.remove();
+				}
 			}
 
 			// Tp a waiting player (if he exists)
 			scheduler.runTaskLater(plugin, () -> {
 				for(Player p : Bukkit.getOnlinePlayers()){
 					CustomPlayer customP = new CustomPlayer(p, plugin);
-					if(customP.getWaiting() == 1){
+					if(customP.getCurrentDeathroom() == -1){
 						DeathRoom room = getFreeRespawnRoom();
 						if(room != null) room.spawnPlayer(customP, plugin);
 						return;
@@ -160,6 +161,10 @@ public class DeathListener implements Listener {
 		}
 	}
 
+	/**
+	 * Get the first free waiting room
+	 * @return The found deathroom or null if nothing was found
+	 */
 	private DeathRoom getFreeRespawnRoom(){
 		for(DeathRoom room : DeathRoom.getAllRooms(plugin)){
 			if(!room.isCurrentlyUsed()) return room;

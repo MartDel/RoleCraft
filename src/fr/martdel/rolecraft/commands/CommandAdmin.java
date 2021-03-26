@@ -6,7 +6,9 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import fr.martdel.rolecraft.CustomItems;
@@ -16,6 +18,7 @@ import fr.martdel.rolecraft.player.Wallet;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class CommandAdmin implements CommandExecutor {
@@ -176,8 +179,10 @@ public class CommandAdmin implements CommandExecutor {
 				}
 				String mob_name = args[0];
 				try{
-					EntityType mob = EntityType.valueOf(mob_name);
-					player.getWorld().spawnEntity(player.getLocation(), mob);
+					EntityType mob = EntityType.valueOf(mob_name.toUpperCase(Locale.ROOT));
+					LivingEntity entity = (LivingEntity) player.getWorld().spawnEntity(player.getLocation(), mob);
+					entity.setInvulnerable(true);
+					entity.setAI(false);
 				} catch (IllegalArgumentException e){
 					player.sendMessage("Le mob n'a pas été trouvé...");
 				}

@@ -197,11 +197,11 @@ public class CustomPlayer {
 		sb.setObjective(this);
 	}
 
-	public void setWaiting(int score){
-		plugin.getWaiting().setScore(player, score);
+	public void setCurrentDeathroom(int score){
+		plugin.getDeathroomSb().setScore(player, score);
 	}
-	public int getWaiting(){
-		return plugin.getWaiting().getScore(player);
+	public int getCurrentDeathroom(){
+		return plugin.getDeathroomSb().getScore(player);
 	}
 	
 	/**
@@ -436,7 +436,7 @@ public class CustomPlayer {
 	 * Add the player to the database
 	 */
 	public void register() {
-		setWaiting(0);
+		setCurrentDeathroom(0);
 		try {
 			PreparedStatement add = db.getConnection().prepareStatement("INSERT INTO players(uuid, pseudo) VALUES(?, ?)");
 			add.setString(1, uuid.toString());

@@ -70,7 +70,7 @@ public class DeathRoom {
         spawnPlayer(player, plugin);
     }
     public void spawnPlayer(CustomPlayer player, RoleCraft plugin){
-        player.setWaiting(2);
+        player.setCurrentDeathroom(id);
         setCurrentlyUsed(true);
 
         List<DeathKey> keys = player.loadData().getKeys();
@@ -134,24 +134,26 @@ public class DeathRoom {
 
         // Spawn room items
         List<ItemStack> room_items = inventory.get("room");
-        BukkitScheduler scheduler = plugin.getServer().getScheduler();
-        scheduler.runTaskLater(plugin, new Runnable() {
-            private int i = 0;
-            @Override
-            public void run() {
-                ItemStack item = room_items.get(i);
-                assert RoleCraft.OVERWORLD != null;
-                if(i % 2 == 0){
-                    // First spawn
-                    RoleCraft.OVERWORLD.dropItem(itemsspawn1, item);
-                } else {
-                    // Second spawn
-                    RoleCraft.OVERWORLD.dropItem(itemsspawn2, item);
+        if(!room_items.isEmpty()){
+            BukkitScheduler scheduler = plugin.getServer().getScheduler();
+            scheduler.runTaskLater(plugin, new Runnable() {
+                private int i = 0;
+                @Override
+                public void run() {
+                    ItemStack item = room_items.get(i);
+                    assert RoleCraft.OVERWORLD != null;
+                    if(i % 2 == 0){
+                        // First spawn
+                        RoleCraft.OVERWORLD.dropItem(itemsspawn1, item);
+                    } else {
+                        // Second spawn
+                        RoleCraft.OVERWORLD.dropItem(itemsspawn2, item);
+                    }
+                    i++;
+                    if(i < room_items.size()) scheduler.runTaskLater(plugin, this, 10);
                 }
-                i++;
-                if(i < room_items.size()) scheduler.runTaskLater(plugin, this, 10);
-            }
-        }, 10);
+            }, 10);
+        }
 
         // Spawn drop items
         for (ItemStack item : inventory.get("drops")){
@@ -169,21 +171,21 @@ public class DeathRoom {
         List<DeathRoom> result = new ArrayList<>();
         List<Map<?, ?>> room_list = RoleCraft.config.getMapList("deathrooms");
         for (int i = 0; i < room_list.size(); i++){
-            result.add(getRoomById(i, plugin));
+            result.add(getRoomById(i+1, plugin));
         }
         return result;
     }
 
     /**
      * Get a DeathRoom by its id
-     * @param id The DeathRoom id
+     * @param id The DeathRoom id (id > 0)
      * @param plugin Instance of RoleCraft plugin
      * @return DeathRoom The DeathRoom to get
      */
     @SuppressWarnings("unchecked")
     public static DeathRoom getRoomById(int id, RoleCraft plugin){
         List<Map<?, ?>> room_list = RoleCraft.config.getMapList("deathrooms");
-        Map<String, ?> room_config = (Map<String, ?>) room_list.get(id);
+        Map<String, ?> room_config = (Map<String, ?>) room_list.get(id - 1);
 
         // Get room_state
         Location state_bloc = RoleCraft.getConfigLocation(room_config.get("state_bloc"), false);

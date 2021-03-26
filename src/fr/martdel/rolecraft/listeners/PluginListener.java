@@ -95,9 +95,9 @@ public class PluginListener implements Listener {
 		customPlayer.save();
 
 		// Update scoreboards
-		for (Player p : Bukkit.getOnlinePlayers()){
+		/*for (Player p : Bukkit.getOnlinePlayers()){
 			new CustomPlayer(p,  plugin).loadData().updateScoreboard();
-		}
+		}*/
 	}
 	
 	@EventHandler

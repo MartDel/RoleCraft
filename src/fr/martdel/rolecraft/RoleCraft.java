@@ -41,7 +41,7 @@ public class RoleCraft extends JavaPlugin {
 	
 	private DatabaseManager db;
 	private Score lvl;
-	private Score waiting;
+	private Score deathroom;
 	private Score recording;
 
 	private Map<String, Cinematic> cinematic_list = new HashMap<>();
@@ -54,7 +54,7 @@ public class RoleCraft extends JavaPlugin {
 
 		this.db = new DatabaseManager();
 		this.lvl = new Score(this, "Niveau");
-		this.waiting = new Score(this, "waiting");
+		this.deathroom = new Score(this, "deathroom");
 
 		// Admin scoreboard
 		this.recording = new Score(this, "recording");
@@ -241,7 +241,7 @@ public class RoleCraft extends JavaPlugin {
 
 	public DatabaseManager getDB() { return db; }
 	public Score getLvl() { return lvl; }
-	public Score getWaiting() { return waiting; }
+	public Score getDeathroomSb() { return deathroom; }
 	public Score getRecording() { return recording; }
 
 	public Map<String, Cinematic> getCinematicList() { return cinematic_list; }
