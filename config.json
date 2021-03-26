@@ -128,7 +128,7 @@
     ],
     "respawn_entity_name": "Réapparaître !",
     "waiting_room": {
-        "spawn": {"x": -200, "y": 69, "z": 1304}
+        "spawn": {"x": -501, "y": 180, "z": 1239}
     },
     "deathkeys": {
         "normal": {"lost": 25, "room": 25, "drop": 50},

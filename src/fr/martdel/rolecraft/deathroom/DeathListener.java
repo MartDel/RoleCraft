@@ -99,26 +99,6 @@ public class DeathListener implements Listener {
 	}
 
 	@EventHandler
-	public void onInteract(PlayerInteractEvent event){
-		Player player = event.getPlayer();
-		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
-		Block bloc = event.getClickedBlock();
-		if(bloc == null) return;
-		BlockState bs = bloc.getState();
-
-		if(bs instanceof Sign){
-			Sign sign = (Sign) bs;
-			// Respawn sign is clicked
-			if(sign.getLine(0).equalsIgnoreCase("respawn")){
-				Location spawnpoint = player.getBedSpawnLocation();
-				assert spawnpoint != null;
-				player.teleport(spawnpoint);
-				customPlayer.setCurrentDeathroom(0);
-			}
-		}
-	}
-
-	@EventHandler
 	public void onEntityUse(PlayerInteractEntityEvent event) {
 		Player player = event.getPlayer();
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
@@ -128,36 +108,47 @@ public class DeathListener implements Listener {
 		String respawn_entity_name = RoleCraft.config.getString("respawn_entity_name");
 		assert respawn_entity_name != null;
 		int current_deathroom = customPlayer.getCurrentDeathroom();
-		if(current_deathroom > 0 && name.equalsIgnoreCase(respawn_entity_name)){
-			// Respawn player
-			Location respawn = player.getBedSpawnLocation();
-			assert respawn != null;
-			player.teleport(respawn);
+		if(name.equalsIgnoreCase(respawn_entity_name)){
+			if(current_deathroom > 0){
+				// Respawn player
+				Location respawn = player.getBedSpawnLocation();
+				assert respawn != null;
+				player.teleport(respawn);
+				player.sendMessage("§2Bon retour parmi nous !");
 
-			DeathRoom dr = DeathRoom.getRoomById(current_deathroom, plugin);
-			customPlayer.setCurrentDeathroom(0);
-			dr.setCurrentlyUsed(false);
+				DeathRoom dr = DeathRoom.getRoomById(current_deathroom, plugin);
+				customPlayer.setCurrentDeathroom(0);
+				dr.setCurrentlyUsed(false);
 
-			// Clear all of entities in the room (Items and Mobs)
-			Collection<Entity> entities = entity.getWorld().getNearbyEntities(entity.getLocation(), 10, 3, 10);
-			for(Entity e : entities){
-				String e_name = e.getName();
-				if(!(e instanceof Player) && !e_name.equalsIgnoreCase(respawn_entity_name)){
-					e.remove();
-				}
-			}
-
-			// Tp a waiting player (if he exists)
-			scheduler.runTaskLater(plugin, () -> {
-				for(Player p : Bukkit.getOnlinePlayers()){
-					CustomPlayer customP = new CustomPlayer(p, plugin);
-					if(customP.getCurrentDeathroom() == -1){
-						DeathRoom room = getFreeRespawnRoom();
-						if(room != null) room.spawnPlayer(customP, plugin);
-						return;
+				// Clear all of entities in the room (Items and Mobs)
+				Collection<Entity> entities = entity.getWorld().getNearbyEntities(entity.getLocation(), 10, 3, 10);
+				for(Entity e : entities){
+					String e_name = e.getName();
+					if(!(e instanceof Player) && !e_name.equalsIgnoreCase(respawn_entity_name)){
+						e.remove();
 					}
 				}
-			}, 60);
+
+				// Tp a waiting player (if he exists)
+				scheduler.runTaskLater(plugin, () -> {
+					for(Player p : Bukkit.getOnlinePlayers()){
+						CustomPlayer customP = new CustomPlayer(p, plugin);
+						if(customP.getCurrentDeathroom() == -1){
+							DeathRoom room = getFreeRespawnRoom();
+							if(room != null) room.spawnPlayer(customP, plugin);
+							return;
+						}
+					}
+				}, 60);
+			} else if (current_deathroom == -1){
+				// Respawn player
+				Location respawn = player.getBedSpawnLocation();
+				assert respawn != null;
+				player.teleport(respawn);
+				player.sendMessage("§2Bon retour parmi nous !");
+				customPlayer.setCurrentDeathroom(0);
+			}
+
 		}
 	}
 

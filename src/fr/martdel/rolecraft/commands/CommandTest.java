@@ -32,7 +32,9 @@ public class CommandTest implements CommandExecutor {
 			
 			if(cmd.getName().equalsIgnoreCase("test")) {
 				// Test command
-				DeathRoom.getRoomById(1, plugin).setCurrentlyUsed(false);
+				DeathRoom dr = DeathRoom.getRoomById(1, plugin);
+				dr.setCurrentlyUsed(!dr.isCurrentlyUsed());
+				player.sendMessage("La première deathroom est " + (dr.isCurrentlyUsed() ? "indisponible" : "disponible"));
 			} else if(cmd.getName().equalsIgnoreCase("power")) {
 				if(args.length != 0) {
 					if(args[0].equalsIgnoreCase("summoner")) {
