@@ -42,6 +42,8 @@ public class CustomPlayer {
 
 	private final List<DeathKey> keys;
 
+	private String channel;
+
 	public CustomPlayer(Player player, RoleCraft rolecraft) {
 		this.player = player;
 		this.uuid = player.getUniqueId();
@@ -68,6 +70,13 @@ public class CustomPlayer {
 
 		// Keys
 		this.keys = new ArrayList<>();
+
+		// Channel
+		this.channel = "global";
+		for(String channel_name : rolecraft.channels.keySet()){
+			List<Player> c = rolecraft.channels.get(channel_name);
+			if(c.contains(player)) this.channel = channel_name;
+		}
 	}
 
 	/**
@@ -151,6 +160,7 @@ public class CustomPlayer {
 	 * Set player's max number of hearts
 	 * @param hearts Number of hearts (default : 10)
 	 */
+	@SuppressWarnings("deprecation")
 	public void setMaxHearts(int hearts) {
 		if(getMaxHearts() > hearts) {
 			player.setHealth(hearts * 2);
@@ -165,6 +175,7 @@ public class CustomPlayer {
 	 * Get player's max number of hearts
 	 * @return Number of hearts (default : 10)
 	 */
+	@SuppressWarnings("deprecation")
 	public int getMaxHearts() { return (int) player.getMaxHealth() / 2; }
 	
 	/**
@@ -472,6 +483,13 @@ public class CustomPlayer {
 	public boolean isLoaded() { return this.loaded; }
 	public TeamManager getTeam() { return TeamManager.getPlayerTeam(plugin, player); }
 	public Wallet getWallet() { return new Wallet(player); }
+
+	public String getChannel() { return channel; }
+	public void setChannel(String channel) {
+		plugin.channels.get(this.channel).remove(player);
+		plugin.channels.get(channel).add(player);
+		this.channel = channel;
+	}
 	
 	public Boolean isAdmin() { return this.is_admin; }
 	public void setAdmin(Boolean is_admin) { this.is_admin = is_admin; }
