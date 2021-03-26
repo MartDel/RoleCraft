@@ -70,6 +70,10 @@ public class CommandTest implements CommandExecutor {
 							ItemStack flyingmob = FlyingMob.getItemStack();
 							player.getInventory().addItem(flyingmob);
 							break;
+						case "bug":
+							ItemStack bug = Bug.getItemStack();
+							player.getInventory().addItem(bug);
+							break;
 						default:
 							player.sendMessage("Aucun pouvoir n'a été trouvé avec ce nom...");
 							break;

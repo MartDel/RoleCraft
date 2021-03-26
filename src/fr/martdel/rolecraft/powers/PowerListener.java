@@ -125,12 +125,19 @@ public class PowerListener implements Listener {
 						PowerLoader loader = new PowerLoader(plugin, player, Invisibility.getItemStack());
 						loader.startLoading(Invisibility.COOLDOWN);
 					} else if(name.equalsIgnoreCase(FlyingMob.ITEMNAME)){
-						// Invisibility power
+						// Flying mobs power
 						event.setCancelled(true);
 						FlyingMob flyingMob = new FlyingMob(player, plugin);
 						flyingMob.start();
 						PowerLoader loader = new PowerLoader(plugin, player, FlyingMob.getItemStack());
 						loader.startLoading(FlyingMob.COOLDOWN);
+					} else if(name.equalsIgnoreCase(Bug.ITEMNAME)){
+						// Bug power
+						event.setCancelled(true);
+						Bug bug = new Bug(player, plugin);
+						bug.start();
+						PowerLoader loader = new PowerLoader(plugin, player, Bug.getItemStack());
+						loader.startLoading(Bug.COOLDOWN);
 					}
 				}
 			}

@@ -615,6 +615,13 @@
             "radius": 5,
             "duration": 300
         },
+        "bug": {
+            "item_name": "§5Bug",
+            "item_type": "REDSTONE_TORCH",
+            "cooldown": 2400,
+            "radius": 5,
+            "duration": 100
+        },
         "loader": {
             "item_type": "CLOCK",
             "item_name1": "§8Chargement de",
