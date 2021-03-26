@@ -99,7 +99,7 @@ public class PowerListener implements Listener {
 							item.setItemMeta(iMeta);
 						}
 					}
-					
+
 					if(name.equalsIgnoreCase(Bunker.ITEMNAME)) {
 						// Bunker power
 						event.setCancelled(true);
@@ -124,6 +124,13 @@ public class PowerListener implements Listener {
 						invisibility.start();
 						PowerLoader loader = new PowerLoader(plugin, player, Invisibility.getItemStack());
 						loader.startLoading(Invisibility.COOLDOWN);
+					} else if(name.equalsIgnoreCase(FlyingMob.ITEMNAME)){
+						// Invisibility power
+						event.setCancelled(true);
+						FlyingMob flyingMob = new FlyingMob(player, plugin);
+						flyingMob.start();
+						PowerLoader loader = new PowerLoader(plugin, player, FlyingMob.getItemStack());
+						loader.startLoading(FlyingMob.COOLDOWN);
 					}
 				}
 			}

@@ -568,7 +568,7 @@
         },
         "summoner": {
             "item_name": "§5Invocateur",
-            "spawner_type": "STICK",
+            "spawner_type": "BLAZE_ROD",
             "viewfinder_type": "BOW",
             "life": 400,
             "attack_delay": 10,
@@ -607,6 +607,13 @@
                 "Selectionnez un slot vide pour passer inaperçu"
             ],
             "stop_msg": "§5Vous n'êtes plus §cinvisibles"
+        },
+        "flymob": {
+            "item_name": "§5Dispersion",
+            "item_type": "FEATHER",
+            "cooldown": 2400,
+            "radius": 5,
+            "duration": 300
         },
         "loader": {
             "item_type": "CLOCK",

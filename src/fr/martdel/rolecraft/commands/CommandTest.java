@@ -37,27 +37,42 @@ public class CommandTest implements CommandExecutor {
 				player.sendMessage("La première deathroom est " + (dr.isCurrentlyUsed() ? "indisponible" : "disponible"));
 			} else if(cmd.getName().equalsIgnoreCase("power")) {
 				if(args.length != 0) {
-					if(args[0].equalsIgnoreCase("summoner")) {
-						ItemStack summoner = SummonMob.getSpawner();
-						player.getInventory().addItem(summoner);
-					} else if(args[0].equalsIgnoreCase("shockwave")) {
-						ItemStack shockwave = ShockWave.getItemStack();
-						player.getInventory().addItem(shockwave);
-					} else if(args[0].equalsIgnoreCase("bunker")) {
-						ItemStack bunker = Bunker.getItemStack();
-						player.getInventory().addItem(bunker);
-					} else if(args[0].equalsIgnoreCase("bomb")) {
-						ItemStack bomb = Bomb.getItemStack();
-						player.getInventory().addItem(bomb);
-					} else if(args[0].equalsIgnoreCase("telekinesis")) {	
-						ItemStack tk = Telekinesis.getItemStack();
-						player.getInventory().addItem(tk);
-					} else if(args[0].equalsIgnoreCase("fertility")) {	
-						ItemStack fertility = Fertility.getItemStack();
-						player.getInventory().addItem(fertility);
-					} else if(args[0].equalsIgnoreCase("invisibility")) {
-						ItemStack invisibility = Invisibility.getItemStack();
-						player.getInventory().addItem(invisibility);
+					switch (args[0]){
+						case "summoner":
+							ItemStack summoner = SummonMob.getSpawner();
+							player.getInventory().addItem(summoner);
+							break;
+						case "shockwave":
+							ItemStack shockwave = ShockWave.getItemStack();
+							player.getInventory().addItem(shockwave);
+							break;
+						case "bunker":
+							ItemStack bunker = Bunker.getItemStack();
+							player.getInventory().addItem(bunker);
+							break;
+						case "bomb":
+							ItemStack bomb = Bomb.getItemStack();
+							player.getInventory().addItem(bomb);
+							break;
+						case "telekinesis":
+							ItemStack tk = Telekinesis.getItemStack();
+							player.getInventory().addItem(tk);
+							break;
+						case "fertility":
+							ItemStack fertility = Fertility.getItemStack();
+							player.getInventory().addItem(fertility);
+							break;
+						case "invisibility":
+							ItemStack invisibility = Invisibility.getItemStack();
+							player.getInventory().addItem(invisibility);
+							break;
+						case "flymob":
+							ItemStack flyingmob = FlyingMob.getItemStack();
+							player.getInventory().addItem(flyingmob);
+							break;
+						default:
+							player.sendMessage("Aucun pouvoir n'a été trouvé avec ce nom...");
+							break;
 					}
 				}
 			}
