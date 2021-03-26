@@ -30,6 +30,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.management.relation.Role;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.List;
@@ -94,6 +95,9 @@ public class PluginListener implements Listener {
 		customPlayer.setIp(ip);
 		customPlayer.save();
 
+		// Manage channels
+		plugin.channels.get("global").add(player);
+
 		// Update scoreboards
 		/*for (Player p : Bukkit.getOnlinePlayers()){
 			new CustomPlayer(p,  plugin).loadData().updateScoreboard();
@@ -113,6 +117,9 @@ public class PluginListener implements Listener {
 		} catch (Exception e) {
 			event.setQuitMessage("(§4-§r) " + player.getDisplayName());
 		}
+
+		// Manage channels
+		plugin.channels.get("global").remove(player);
 	}
 	
 	@EventHandler
@@ -120,31 +127,32 @@ public class PluginListener implements Listener {
 		Player player = event.getPlayer();
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
 		TeamManager team = customPlayer.getTeam();
+		String msg = event.getMessage();
+		String username = player.getDisplayName();
 		String color = team.getColor();
 		String prefix = team.getTeam().getPrefix();
-		
-		// <%1$s> %2$s
-		event.setFormat("§" + color +  prefix + "§r %1$s> %2$s");
+		event.setCancelled(true);
+
+		// Manage channels
+		for(Player p : plugin.channels.get("global")){
+			p.sendMessage("§" + color +  prefix + "§r " + (p.equals(player) ? "Vous" : username) + "> " + msg);
+		}
 	}
 	
 	@EventHandler
 	public void onDie(PlayerDeathEvent event) {
+		// A player die
 		Player player = event.getEntity();
 		CustomPlayer customPlayer = new CustomPlayer(player, plugin);
 		TeamManager team = customPlayer.getTeam();
-		/*
-		 * NEW PLAYER DIES
-		 */
 		TeamManager team_new = new TeamManager(plugin, "Nouveau");
 		if(team.getName().equals(team_new.getName())) event.setKeepInventory(true);
 	}
 	
 	@EventHandler
 	public void onCraft(CraftItemEvent event) {
+		// Remove emerald craft
 		ItemStack item = event.getCurrentItem();
-		/*
-		 * REMOVE EMERALD CRAFT
-		 */
 		assert item != null;
 		if(item.getType().equals(Material.EMERALD)) event.setCancelled(true);
 	}
@@ -156,9 +164,7 @@ public class PluginListener implements Listener {
 		ItemStack item = event.getItemDrop().getItemStack();
 		ItemMeta itemMeta = item.getItemMeta();
 		if(item.getType().equals(Material.WRITTEN_BOOK)) {
-			/*
-			 * PLAYER DROPS AN IMPORTANT BOOK
-			 */
+			// Player can't drop some useful books
 			BookMeta bookMeta = (BookMeta) itemMeta;
 			assert bookMeta != null;
 			String title = bookMeta.getTitle();
@@ -169,9 +175,7 @@ public class PluginListener implements Listener {
 				event.setCancelled(true);
 			}
 		} else if(item.getType().equals(Material.COMPASS)) {
-			/*
-			 * PLAYER DROPS THE START COMPASS
-			 */
+			// Player can't drop the start compass
 			customPlayer.loadData();
 			if(customPlayer.isNew()) event.setCancelled(true);
 		}
@@ -179,26 +183,23 @@ public class PluginListener implements Listener {
 	
 	@EventHandler
 	public void onEntityDamage(EntityDamageByEntityEvent event) {
-		Entity p = event.getDamager();
-		Entity entity = event.getEntity();
+		Entity damager = event.getDamager();
+		Entity victim = event.getEntity();
 		DamageCause cause = event.getCause();
-		/*
-		 * NEW PLAYER IS DAMAGED
-		 */
-		if (entity instanceof Player) {
-			Player victim = (Player) entity;
-			CustomPlayer customVictim = new CustomPlayer(victim, plugin).loadData();
+
+		// A new player can't be damaged
+		if (victim instanceof Player) {
+			Player v = (Player) victim;
+			CustomPlayer customVictim = new CustomPlayer(v, plugin).loadData();
 			if (customVictim.isNew()) {
 				event.setCancelled(true);
 				return;
 			}
 		}
 
-		if (p instanceof Player) {
-			Player player = (Player) p;
-			/*
-			 * PLAYER MAKES DAMAGE WITH A TOOL
-			 */
+		// Tools make low damages
+		if (damager instanceof Player) {
+			Player player = (Player) damager;
 			Material weapon = player.getItemInHand().getType();
 			if (cause.equals(DamageCause.ENTITY_ATTACK) && FORBIDDEN_WEAPONS.contains(weapon)) {
 				event.setDamage(0.5);
@@ -214,11 +215,9 @@ public class PluginListener implements Listener {
 		InventoryView view = event.getView();
 		String title = view.getTitle();
 		Inventory inv = event.getClickedInventory();
-
 		if(item == null) return;
-		/*
-		 * PLAYER CHOOSES HIS JOB
-		 */
+
+		// Choose a job
 		if(title.equalsIgnoreCase("§9Choisir son métier")) {
 			customPlayer.loadData();
 			ItemMeta meta = item.getItemMeta();
@@ -265,9 +264,6 @@ public class PluginListener implements Listener {
 			customPlayer.save();
 			event.setCancelled(true);
 		} else if(title.contains(CustomItems.LETTERBOX.getName())) {
-			/*
-			 * SEND ITEMS IN A LETTERBOX
-			 */
 			if(event.getSlot() == 26) {
 				// Get letterbox
 				Location compass_target = player.getCompassTarget();

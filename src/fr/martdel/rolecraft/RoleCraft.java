@@ -23,6 +23,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -46,6 +47,8 @@ public class RoleCraft extends JavaPlugin {
 
 	private Map<String, Cinematic> cinematic_list = new HashMap<>();
 
+	public Map<String, List<Player>> channels;
+
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();		
@@ -58,6 +61,11 @@ public class RoleCraft extends JavaPlugin {
 
 		// Admin scoreboard
 		this.recording = new Score(this, "recording");
+
+		// Channels
+		this.channels = new HashMap<>();
+		this.channels.put("global", new ArrayList<>());
+		this.channels.put("dungeon1", new ArrayList<>());
 
 		// Load cinematic files
 		String[] names = new File(Cinematic.PATH).list();
