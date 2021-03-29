@@ -58,6 +58,8 @@ starter_pack:
   rubis:
     builder: 50
     else: 20
+effects:
+  hunger: 1200
 prices:
   letterbox: 5
 sell:

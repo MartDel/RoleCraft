@@ -20,25 +20,26 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import javax.management.relation.Role;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @SuppressWarnings("deprecation")
 public class PluginListener implements Listener {
 	
 	private static final List<Material> FORBIDDEN_WEAPONS= RoleCraft.getConfigMaterialList("controled_items.weapons");
+	private static final int HUNGER_DURATION = RoleCraft.config.getInt("effects.hunger");
 	
 	private final RoleCraft plugin;
 
@@ -147,6 +148,25 @@ public class PluginListener implements Listener {
 		TeamManager team = customPlayer.getTeam();
 		TeamManager team_new = new TeamManager(plugin, "Nouveau");
 		if(team.getName().equals(team_new.getName())) event.setKeepInventory(true);
+	}
+
+	@EventHandler
+	public void onEat(PlayerItemConsumeEvent event){
+		// Player eats something
+		Player player = event.getPlayer();
+		ItemStack food = event.getItem();
+		Material foodtype = food.getType();
+		Material[] track_foods = {
+			Material.BEEF, Material.CHICKEN, Material.MUTTON, Material.PORKCHOP, Material.RABBIT,
+			Material.PUFFERFISH, Material.COD, Material.SALMON, Material.ROTTEN_FLESH, Material.SPIDER_EYE, Material.TROPICAL_FISH
+		};
+		if(Arrays.asList(track_foods).contains(foodtype)){
+			// Player eats a forbidden food (not cooked)
+			if(new Random().nextInt(2) == 1){
+				System.out.println("Applying hunger to " + player.getDisplayName() + "...");
+				player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, HUNGER_DURATION, 1));
+			}
+		}
 	}
 	
 	@EventHandler

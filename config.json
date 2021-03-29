@@ -88,6 +88,10 @@
         }
     },
 
+    "effects": {
+        "hunger": 1200
+    },
+
     "prices": {
         "letterbox": 5
     },
