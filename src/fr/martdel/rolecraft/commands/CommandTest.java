@@ -74,6 +74,10 @@ public class CommandTest implements CommandExecutor {
 							ItemStack bug = Bug.getItemStack();
 							player.getInventory().addItem(bug);
 							break;
+						case "killingspree":
+							ItemStack ks = KillingSpree.getItemStack();
+							player.getInventory().addItem(ks);
+							break;
 						default:
 							player.sendMessage("Aucun pouvoir n'a été trouvé avec ce nom...");
 							break;

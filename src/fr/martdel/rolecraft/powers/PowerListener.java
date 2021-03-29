@@ -138,6 +138,13 @@ public class PowerListener implements Listener {
 						bug.start();
 						PowerLoader loader = new PowerLoader(plugin, player, Bug.getItemStack());
 						loader.startLoading(Bug.COOLDOWN);
+					} else if(name.equalsIgnoreCase(KillingSpree.ITEMNAME)){
+						// Bug power
+						event.setCancelled(true);
+						KillingSpree ks = new KillingSpree(player, plugin);
+						ks.start();
+//						PowerLoader loader = new PowerLoader(plugin, player, KillingSpree.getItemStack());
+//						loader.startLoading(KillingSpree.COOLDOWN);
 					}
 				}
 			}

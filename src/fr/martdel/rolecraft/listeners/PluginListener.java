@@ -57,7 +57,7 @@ public class PluginListener implements Listener {
 			
 			event.setJoinMessage("(§a+§r) §" + color + prefix + "§r" + player.getDisplayName());
 
-			customPlayer.updateScoreboard();
+//			customPlayer.updateScoreboard();
 			
 			System.out.println(player.getDisplayName() + " vient de rejoindre le serveur.");
 			System.out.println("Il a choisi le metier de " + customPlayer.getStringJob("fr"));

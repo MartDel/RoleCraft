@@ -626,6 +626,18 @@
             "radius": 5,
             "duration": 100
         },
+        "killingspree": {
+            "item_name": "§5Folie meurtrière",
+            "item_type": "BLAZE_POWDER",
+            "cooldown": 2400,
+            "radius": 5,
+            "duration": 300,
+            "effects": {
+                "strength": 1,
+                "speed": 0,
+                "resistance": 1
+            }
+        },
         "loader": {
             "item_type": "CLOCK",
             "item_name1": "§8Chargement de",
