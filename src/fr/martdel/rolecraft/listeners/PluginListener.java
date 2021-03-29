@@ -163,8 +163,9 @@ public class PluginListener implements Listener {
 		if(Arrays.asList(track_foods).contains(foodtype)){
 			// Player eats a forbidden food (not cooked)
 			if(new Random().nextInt(2) == 1){
-				System.out.println("Applying hunger to " + player.getDisplayName() + "...");
+				System.out.println("Applying hunger and poison to " + player.getDisplayName() + "...");
 				player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, HUNGER_DURATION, 1));
+				player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, HUNGER_DURATION, 1));
 			}
 		}
 	}
