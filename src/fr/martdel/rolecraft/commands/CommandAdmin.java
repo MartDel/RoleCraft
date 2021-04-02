@@ -89,7 +89,7 @@ public class CommandAdmin implements CommandExecutor {
 				Map<String, Cinematic> cinematic_list = plugin.getCinematicList();
 				switch (args[0]){
 					case "rec":
-						if(plugin.getRecording().getScore(player) == 1) return false;
+						if(plugin.getRecordingSB().getScore(player) == 1) return false;
 						BukkitScheduler scheduler = plugin.getServer().getScheduler();
 						scheduler.runTaskLater(plugin, new Runnable() {
 							private int t = 3;
@@ -106,12 +106,12 @@ public class CommandAdmin implements CommandExecutor {
 						}, 20);
 						break;
 					case "stop":
-						if(plugin.getRecording().getScore(player) == 0) return false;
-						plugin.getRecording().setScore(player, 0);
+						if(plugin.getRecordingSB().getScore(player) == 0) return false;
+						plugin.getRecordingSB().setScore(player, 0);
 						player.sendMessage("L'enregistrement §ca été arrété");
 						break;
 					case "save":
-						if(plugin.getRecording().getScore(player) == 1) return false;
+						if(plugin.getRecordingSB().getScore(player) == 1) return false;
 						if(args.length <= 1){
 							player.sendMessage("§4Veuillez préciser le nom de la cinématique !");
 							return false;
@@ -125,7 +125,7 @@ public class CommandAdmin implements CommandExecutor {
 						}
 						break;
 					case "play":
-						if(plugin.getRecording().getScore(player) == 1) return false;
+						if(plugin.getRecordingSB().getScore(player) == 1) return false;
 						String search;
 						if(args.length == 1) search = "last";
 						else search = args[1];

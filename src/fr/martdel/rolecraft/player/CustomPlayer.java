@@ -228,7 +228,6 @@ public class CustomPlayer {
 				this.ip = result.getString("IP");
 				this.is_admin = result.getByte("admin") == 1;
 				this.level = result.getInt("level");
-				this.score = result.getInt("score");
 				this.job = result.getInt("job") == 0 ? null : result.getInt("job") - 1;
 				this.has_spe = result.getByte("spe") == 1;
 
@@ -334,14 +333,13 @@ public class CustomPlayer {
 			return;
 		}
 		try {
-			PreparedStatement update_player = db.getConnection().prepareStatement("UPDATE players SET IP=?, admin=?, level=?, score=?, job=?, spe=? WHERE uuid=?");
+			PreparedStatement update_player = db.getConnection().prepareStatement("UPDATE players SET IP=?, admin=?, level=?, job=?, spe=? WHERE uuid=?");
 			update_player.setString(1, ip);
 			update_player.setByte(2, (byte) (is_admin ? 1 : 0));
 			update_player.setInt(3, level);
-			update_player.setInt(4, score);
-			update_player.setInt(5, job == null ? 0 : job + 1);
-			update_player.setByte(6, (byte) (has_spe ? 1 : 0));
-			update_player.setString(7, uuid.toString());
+			update_player.setInt(4, job == null ? 0 : job + 1);
+			update_player.setByte(5, (byte) (has_spe ? 1 : 0));
+			update_player.setString(6, uuid.toString());
 			update_player.executeUpdate();
 			update_player.close();
 
@@ -496,7 +494,7 @@ public class CustomPlayer {
 
 	public Integer getLevel() { return level; }
 	public void setLevel(Integer level) {
-		plugin.getLvl().setScore(player, level);
+		plugin.getLvlSB().setScore(player, level);
 		this.level = level;
 	}
 	

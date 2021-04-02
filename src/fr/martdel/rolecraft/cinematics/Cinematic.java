@@ -127,7 +127,7 @@ public class Cinematic {
      */
     public static void record(Player player, RoleCraft plugin, Runnable callback) {
         List<Location> locations = new ArrayList<>();
-        Score recording = plugin.getRecording();
+        Score recording = plugin.getRecordingSB();
         recording.setScore(player, 1);
         BukkitScheduler scheduler = plugin.getServer().getScheduler();
         scheduler.runTaskLater(plugin, new Runnable() {

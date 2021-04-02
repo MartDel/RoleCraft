@@ -41,9 +41,13 @@ public class RoleCraft extends JavaPlugin {
 	private static final String[] TESTCOMMANDS = {"test", "power"};
 	
 	private DatabaseManager db;
-	private Score lvl;
-	private Score deathroom;
-	private Score recording;
+	private Score jobSB;
+	private Score isNewSB;
+	private Score scoreSB;
+	private Score lvlSB;
+	private Score hasSpeSB;
+	private Score deathroomSB;
+	private Score isRecordingSB;
 
 	private Map<String, Cinematic> cinematic_list = new HashMap<>();
 
@@ -56,11 +60,15 @@ public class RoleCraft extends JavaPlugin {
 		RoleCraft.config = this.getConfig();
 
 		this.db = new DatabaseManager();
-		this.lvl = new Score(this, "Niveau");
-		this.deathroom = new Score(this, "deathroom");
+		this.jobSB = new Score(this, "job");
+		this.isNewSB = new Score(this, "isNew");
+		this.scoreSB = new Score(this, "score");
+		this.lvlSB = new Score(this, "level");
+		this.hasSpeSB = new Score(this, "hasSpe");
+		this.deathroomSB = new Score(this, "deathroom");
 
 		// Admin scoreboard
-		this.recording = new Score(this, "recording");
+		this.isRecordingSB = new Score(this, "isRecording");
 
 		// Channels
 		this.channels = new HashMap<>();
@@ -248,9 +256,9 @@ public class RoleCraft extends JavaPlugin {
 	///////////////////
 
 	public DatabaseManager getDB() { return db; }
-	public Score getLvl() { return lvl; }
-	public Score getDeathroomSb() { return deathroom; }
-	public Score getRecording() { return recording; }
+	public Score getLvlSB() { return lvlSB; }
+	public Score getDeathroomSB() { return deathroomSB; }
+	public Score getRecordingSB() { return isRecordingSB; }
 
 	public Map<String, Cinematic> getCinematicList() { return cinematic_list; }
 	public void setCinematicList(Map<String, Cinematic> cinematic_list) { this.cinematic_list = cinematic_list; }
