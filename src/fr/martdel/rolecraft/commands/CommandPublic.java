@@ -3,8 +3,7 @@ package fr.martdel.rolecraft.commands;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import fr.martdel.rolecraft.*;
 import fr.martdel.rolecraft.MapChecker.LocationChecker;
@@ -13,13 +12,21 @@ import fr.martdel.rolecraft.player.CustomPlayer;
 import fr.martdel.rolecraft.player.TeamManager;
 import fr.martdel.rolecraft.player.Wallet;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import fr.martdel.rolecraft.database.DatabaseManager;
+import org.bukkit.inventory.PlayerInventory;
+
+import javax.management.relation.Role;
 
 public class CommandPublic implements CommandExecutor {
 	
@@ -85,6 +92,18 @@ public class CommandPublic implements CommandExecutor {
 				 * SWITCH AN ADMIN TO RP OR A RP ADMIN TO ADMIN
 				 */
 				if(customPlayer.isAdmin()) {
+					// Get his admin chest
+					Object chest_config = RoleCraft.config.get("admin_chests." + player.getDisplayName());
+					if(chest_config == null){
+						player.sendMessage("§4Vous n'êtes pas enregistré dans le fichier de configuration...");
+						return false;
+					}
+					Location chest_loc = RoleCraft.getConfigLocation((MemorySection) chest_config, false);
+					assert RoleCraft.OVERWORLD != null;
+					Block chest_bloc = RoleCraft.OVERWORLD.getBlockAt(chest_loc);
+					Chest chest = (Chest) chest_bloc.getState();
+					Inventory chest_inv = chest.getInventory();
+
 					if(player.isOp()) {
 						player.setOp(false);
 						player.setGameMode(GameMode.SURVIVAL);
@@ -93,11 +112,47 @@ public class CommandPublic implements CommandExecutor {
 						team_str = RoleCraft.firstLetterToUpperCase(team_str);
 						team.move(player, team_str);
 
+						// Get back stored inventory
+						PlayerInventory inv = player.getInventory();
+						inv.clear();
+						List<ItemStack> contents = Arrays.asList(chest_inv.getContents());
+						for(int i = 0; i < contents.size(); i++){
+							ItemStack stack = contents.get(i);
+							if(stack != null && i >= 9){
+								inv.setItem(i - 18, stack);
+							}
+						}
+						// Set armor
+						inv.setHelmet(contents.get(0));
+						inv.setChestplate(contents.get(1));
+						inv.setLeggings(contents.get(2));
+						inv.setBoots(contents.get(3));
+						inv.setItemInOffHand(contents.get(4));
+						chest_inv.clear();
+						player.updateInventory();
+
 						player.sendMessage("Vous n'êtes plus OP");
 					} else {
 						player.setOp(true);
 						player.setGameMode(GameMode.CREATIVE);
 						team.move(player, "Admin");
+
+						// Store current player's inventory
+						PlayerInventory inv = player.getInventory();
+						List<ItemStack> contents = Arrays.asList(inv.getContents());
+						for(int i = 0; i < 36; i++){
+							ItemStack stack = contents.get(i);
+							if(stack != null) chest_inv.setItem(i + 18, contents.get(i));
+						}
+						// Set armor
+						chest_inv.setItem(0, inv.getHelmet());
+						chest_inv.setItem(1, inv.getChestplate());
+						chest_inv.setItem(2, inv.getLeggings());
+						chest_inv.setItem(3, inv.getBoots());
+						chest_inv.setItem(4, inv.getItemInOffHand());
+						inv.clear();
+						player.updateInventory();
+
 						player.sendMessage("Vous êtes OP");
 					}
 //					customPlayer.updateScoreboard();

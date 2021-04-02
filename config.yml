@@ -29,6 +29,11 @@ team_colors:
   Ingenieur: d
   Admin: '9'
   Nouveau: b
+admin_chests:
+  MartDel:
+    x: -342
+    y: 68
+    z: 1384
 ground:
   underground: 50
   floor: 80
