@@ -650,6 +650,13 @@
         }
     },
 
+    "dungeons": {
+        "basic_farmer": {
+            "type": 1,
+            "required_jobs": [0]
+        }
+    },
+
     "announcements": [
         "§bSeules les épées peuvent infliger des dégâts. Rappelez-vous en si vous n’êtes ni Aventurier, ni Garde, ni Éleveur.",
         "§bN’oubliez pas de rejoindre notre serveur discord pour une meilleure communication avec les autres joueurs : https://discord.gg/mSGVzjJ",

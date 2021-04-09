@@ -3,17 +3,13 @@ package fr.martdel.rolecraft.powers;
 import fr.martdel.rolecraft.RoleCraft;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlyingMob {
+public class FlyingMob extends Power {
 
     public static final String ITEMNAME = RoleCraft.config.getString("powers.flymob.item_name");
     public static final int COOLDOWN = RoleCraft.config.getInt("powers.flymob.cooldown");
@@ -27,6 +23,7 @@ public class FlyingMob {
     private final BukkitScheduler scheduler;
 
     public FlyingMob(Player player, RoleCraft plugin) {
+        super(ITEMNAME, ITEMTYPE);
         this.player = player;
         this.plugin = plugin;
         this.scheduler = plugin.getServer().getScheduler();
@@ -62,21 +59,5 @@ public class FlyingMob {
                 bat.remove();
             }
         }, DURATION);
-    }
-
-    /**
-     * Get item to start the power
-     * @return The ItemStack to give to the player
-     */
-    public static ItemStack getItemStack() {
-        assert ITEMTYPE != null;
-        ItemStack item = new ItemStack(ITEMTYPE);
-        ItemMeta itemmeta = item.getItemMeta();
-        assert itemmeta != null;
-        itemmeta.setDisplayName(ITEMNAME);
-        itemmeta.addEnchant(Enchantment.DURABILITY, 200, true);
-        itemmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        item.setItemMeta(itemmeta);
-        return item;
     }
 }

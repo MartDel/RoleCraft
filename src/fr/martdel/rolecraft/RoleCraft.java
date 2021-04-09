@@ -163,6 +163,11 @@ public class RoleCraft extends JavaPlugin {
 	 * @param orientation If the raw contains orientations data
 	 * @return Location The found location
 	 */
+	public static Location getConfigLocation(String path, boolean orientation){
+		MemorySection section = (MemorySection) config.get(path);
+		assert section != null;
+		return getConfigLocation(section, orientation);
+	}
 	public static Location getConfigLocation(MemorySection data, boolean orientation){
 		String x_str = data.getString("x"); assert x_str != null;
 		String y_str = data.getString("y"); assert y_str != null;
