@@ -209,10 +209,10 @@ public class CustomPlayer {
 	}
 
 	public void setCurrentDeathroom(int score){
-		plugin.getDeathroomSb().setScore(player, score);
+		plugin.getDeathroomSB().setScore(player, score);
 	}
 	public int getCurrentDeathroom(){
-		return plugin.getDeathroomSb().getScore(player);
+		return plugin.getDeathroomSB().getScore(player);
 	}
 	
 	/**

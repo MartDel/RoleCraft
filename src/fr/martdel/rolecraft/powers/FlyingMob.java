@@ -26,7 +26,7 @@ public class FlyingMob extends Power {
         super(ITEMNAME, ITEMTYPE);
         this.player = player;
         this.plugin = plugin;
-        this.scheduler = plugin.getServer().getScheduler();
+        this.scheduler = plugin != null ? plugin.getServer().getScheduler() : null;
     }
 
     /**

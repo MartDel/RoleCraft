@@ -67,7 +67,7 @@ public class CommandTest implements CommandExecutor {
 							player.getInventory().addItem(invisibility);
 							break;
 						case "flymob":
-							ItemStack flyingmob = FlyingMob.getItemStack();
+							ItemStack flyingmob = new FlyingMob(null, null).getItemStack();
 							player.getInventory().addItem(flyingmob);
 							break;
 						case "bug":

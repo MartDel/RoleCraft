@@ -129,7 +129,7 @@ public class PowerListener implements Listener {
 						event.setCancelled(true);
 						FlyingMob flyingMob = new FlyingMob(player, plugin);
 						flyingMob.start();
-						PowerLoader loader = new PowerLoader(plugin, player, FlyingMob.getItemStack());
+						PowerLoader loader = new PowerLoader(plugin, player, flyingMob.getItemStack());
 						loader.startLoading(FlyingMob.COOLDOWN);
 					} else if(name.equalsIgnoreCase(Bug.ITEMNAME)){
 						// Bug power
